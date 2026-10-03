@@ -1,5 +1,5 @@
 name: Setup Linux dependencies
-description: Install and setup dependencies for building Freesm Launcher
+description: Install and setup dependencies for building Bee Launcher
 
 runs:
   using: composite
@@ -19,7 +19,8 @@ runs:
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }}
-      run: |
+      # values come from dpkg-architecture and $HOME, not user input
+      run: | # zizmor: ignore[github-env]
         # Determinate AppImage architecture to use
         dpkg_arch="$(dpkg-architecture -q DEB_HOST_ARCH_CPU)"
         case "$dpkg_arch" in

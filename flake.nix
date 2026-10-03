@@ -5,12 +5,10 @@
     substituters = [
       "https://cache.nixos.org"
       "https://cache.garnix.io"
-      "https://freesmlauncher.cachix.org"
     ];
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
-      "freesmlauncher.cachix.org-1:Jcp5Q9wiLL+EDv8Mh7c6L9xGk+lXr7/otpKxMOuBuDs="
     ];
   };
 
@@ -74,11 +72,11 @@
     };
   in {
     overlays.default = final: prev: {
-      freesmlauncher-unwrapped = final.callPackage ./nix/unwrapped.nix {
+      beelauncher-unwrapped = final.callPackage ./nix/unwrapped.nix {
         inherit nix-filter libnbtplusplus self;
       };
 
-      freesmlauncher = final.callPackage ./nix/wrapper.nix {
+      beelauncher = final.callPackage ./nix/wrapper.nix {
         jvmPack = mkJvmPack final;
       };
     };
@@ -88,26 +86,26 @@
 
       jvmPack = mkJvmPack pkgs;
 
-      freesmlauncher-unwrapped = pkgs.callPackage ./nix/unwrapped.nix {
+      beelauncher-unwrapped = pkgs.callPackage ./nix/unwrapped.nix {
         inherit nix-filter libnbtplusplus self;
       };
 
-      freesmlauncher = pkgs.callPackage ./nix/wrapper.nix {
-        inherit freesmlauncher-unwrapped jvmPack;
+      beelauncher = pkgs.callPackage ./nix/wrapper.nix {
+        inherit beelauncher-unwrapped jvmPack;
       };
 
-      freesmlauncher-unwrapped-debug = freesmlauncher-unwrapped.overrideAttrs {
+      beelauncher-unwrapped-debug = beelauncher-unwrapped.overrideAttrs {
         cmakeBuildType = "Debug";
         dontStrip = true;
       };
 
-      freesmlauncher-debug = pkgs.callPackage ./nix/wrapper.nix {
-        freesmlauncher-unwrapped = freesmlauncher-unwrapped-debug;
+      beelauncher-debug = pkgs.callPackage ./nix/wrapper.nix {
+        beelauncher-unwrapped = beelauncher-unwrapped-debug;
       };
     in {
-      inherit freesmlauncher freesmlauncher-unwrapped freesmlauncher-debug freesmlauncher-unwrapped-debug jvmPack;
+      inherit beelauncher beelauncher-unwrapped beelauncher-debug beelauncher-unwrapped-debug jvmPack;
 
-      default = freesmlauncher;
+      default = beelauncher;
     });
 
     devShells = forEachSystem (system: let
@@ -117,7 +115,7 @@
       };
     in {
       default = pkgs.mkShell {
-        inputsFrom = [pkgs.freesmlauncher-unwrapped];
+        inputsFrom = [pkgs.beelauncher-unwrapped];
 
         packages = with pkgs; [
           ccache

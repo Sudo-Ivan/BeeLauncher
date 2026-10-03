@@ -1,0 +1,9 @@
+{
+  "name": "bee-launcher-commitlint",
+  "private": true,
+  "description": "Pinned dev dependencies for the commitlint CI job",
+  "devDependencies": {
+    "@commitlint/cli": "19.8.1",
+    "conventional-changelog-conventionalcommits": "8.0.0"
+  }
+}

@@ -6,7 +6,7 @@
 >
 > - [Garnix binary cache guide](https://garnix.io/docs/ci/caching)
 >
-> We also provide a secondary cache through [**Cachix**](https://app.cachix.org/cache/freesmlauncher#pull).
+> We also provide a secondary cache through [**Cachix**](https://app.cachix.org/cache/beelauncher#pull).
 > Additional information is available in the official
 > [Cachix getting started guide](https://docs.cachix.org/getting-started#using-binaries-with-nix).
 
@@ -14,14 +14,14 @@
 
 # Running and installing on NixOS
 
-This guide explains how to run and install **FreesmLauncher** on NixOS.
+This guide explains how to run and install **BeeLauncher** on NixOS.
 
 </div>
 
 ## Running without installation
 
 ```fish
-nix run github:FreesmTeam/FreesmLauncher#freesmlauncher
+nix run github:Sudo-Ivan/BeeLauncher#beelauncher
 ```
 
 ## Installation
@@ -33,13 +33,13 @@ Add the flake input to your `flake.nix`:
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    freesmlauncher = {
-      url = "github:FreesmTeam/FreesmLauncher";
+    beelauncher = {
+      url = "github:Sudo-Ivan/BeeLauncher";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, freesmlauncher, ... }: {
+  outputs = { self, nixpkgs, beelauncher, ... }: {
     # your outputs
   };
 }
@@ -48,11 +48,11 @@ Add the flake input to your `flake.nix`:
 ### NixOS configuration
 
 ```nix
-{ pkgs, system, freesmlauncher, ... }:
+{ pkgs, system, beelauncher, ... }:
 
 {
   environment.systemPackages = [
-    freesmlauncher.packages.${system}.freesmlauncher
+    beelauncher.packages.${system}.beelauncher
   ];
 }
 ```
@@ -60,11 +60,11 @@ Add the flake input to your `flake.nix`:
 ### Home Manager configuration
 
 ```nix
-{ pkgs, system, freesmlauncher, ... }:
+{ pkgs, system, beelauncher, ... }:
 
 {
   home.packages = [
-    freesmlauncher.packages.${system}.freesmlauncher
+    beelauncher.packages.${system}.beelauncher
   ];
 }
 ```
@@ -74,7 +74,7 @@ Add the flake input to your `flake.nix`:
 To update the flake input:
 
 ```fish
-nix flake update freesmlauncher
+nix flake update beelauncher
 ```
 
 Or update all inputs:

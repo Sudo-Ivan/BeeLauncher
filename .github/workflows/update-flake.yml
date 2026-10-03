@@ -13,34 +13,26 @@ permissions:
 
 jobs:
   update-flake:
-    if: github.repository == 'FreesmTeam/FreesmLauncher'
+    if: github.repository == 'Sudo-Ivan/BeeLauncher'
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@v16
-      - uses: DeterminateSystems/flake-checker-action@v5
-      - uses: DeterminateSystems/update-flake-lock@v24
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          commit-msg: "chore(nix): update `flake.lock` via CI/CD"
-          pr-title: "chore(nix): update `flake.lock`"
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@e50d5f73bfe71c2dd0aa4218de8f4afa59f8f81d # v16
+      - uses: DeterminateSystems/flake-checker-action@4b90f9fc724969ff153fe1803460917c84fe00a3 # v5
+      - uses: DeterminateSystems/update-flake-lock@a2bbe0274e3a0c4194390a1e445f734c597ebc37 # v24
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-msg: "chore(nix): update flake.lock via CI/CD"
+          pr-title: "chore(nix): update flake.lock"
           pr-labels: |
-            [0] : Freesm
-            [1] : Nix-related
-            [2] : Chore (other)
-            [3] : Priority: Low
-            [4] : Complexity: Easy
-            [5] : Status: Done
-            [6] : Platform: Linux
-            [6] : Platform: macOS
-            [7] : Component: Code (other)
-            [8] : User: End-Users
-            [9] : Bug: None
-            [10] : Pull Request
-          git-author-name: John Nix
-          git-author-email: github-actions[bot]@users.noreply.github.com
-          git-commiter-name: John Nix
-          git-commiter-email: github-actions[bot]@users.noreply.github.com
+            chore
+            nix
+          git-author-name: github-actions[bot]
+          git-author-email: 41898282+github-actions[bot]@users.noreply.github.com
+          git-commiter-name: github-actions[bot]
+          git-commiter-email: 41898282+github-actions[bot]@users.noreply.github.com
           pr-reviewers: |
-            s0me1newithhand7s
-         
+            Sudo-Ivan

@@ -1,6 +1,6 @@
-## Freesm Launcher
+## Bee Launcher
 
-      Freesm Launcher - Minecraft Launcher
+      Bee Launcher - Minecraft Launcher
       Copyright (C) 2024-2026 Freesm Launcher Contributors
 
       This program is free software: you can redistribute it and/or modify

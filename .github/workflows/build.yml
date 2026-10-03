@@ -17,6 +17,31 @@ on:
       environment:
         description: Deployment environment to run under
         type: string
+    secrets:
+      GPG_PRIVATE_KEY:
+        required: false
+      GPG_PRIVATE_KEY_ID:
+        required: false
+      APPLE_CODESIGN_CERT:
+        required: false
+      APPLE_CODESIGN_PASSWORD:
+        required: false
+      APPLE_CODESIGN_ID:
+        required: false
+      APPLE_NOTARIZE_APPLE_ID:
+        required: false
+      APPLE_NOTARIZE_TEAM_ID:
+        required: false
+      APPLE_NOTARIZE_PASSWORD:
+        required: false
+      SPARKLE_ED25519_KEY:
+        required: false
+      AZURE_CLIENT_ID:
+        required: false
+      AZURE_TENANT_ID:
+        required: false
+      AZURE_SUBSCRIPTION_ID:
+        required: false
   workflow_dispatch:
     inputs:
       build-type:
@@ -104,13 +129,14 @@ jobs:
       ##
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           submodules: true
+          persist-credentials: false
 
       - name: Setup dependencies
         id: setup-dependencies
-        uses: ./.github/actions/setup-dependencies
+        uses: $/.github/actions/setup-dependencies
         with:
           build-type: ${{ env.BUILD_TYPE }}
           artifact-name: ${{ matrix.artifact-name }}
@@ -146,7 +172,7 @@ jobs:
 
       - name: Package (Linux)
         if: ${{ runner.os == 'Linux' }}
-        uses: ./.github/actions/package/linux
+        uses: $/.github/actions/package/linux
         with:
           version: ${{ steps.short-version.outputs.version }}
           build-type: ${{ steps.setup-dependencies.outputs.build-type }}
@@ -158,7 +184,7 @@ jobs:
 
       - name: Package (macOS)
         if: ${{ runner.os == 'macOS' }}
-        uses: ./.github/actions/package/macos
+        uses: $/.github/actions/package/macos
         with:
           version: ${{ steps.short-version.outputs.version }}
           build-type: ${{ steps.setup-dependencies.outputs.build-type }}
@@ -174,7 +200,7 @@ jobs:
 
       - name: Package (Windows)
         if: ${{ runner.os == 'Windows' }}
-        uses: ./.github/actions/package/windows
+        uses: $/.github/actions/package/windows
         env:
           CI_HAS_ACCESS_TO_AZURE: ${{ vars.CI_HAS_ACCESS_TO_AZURE || '' }}
         with:

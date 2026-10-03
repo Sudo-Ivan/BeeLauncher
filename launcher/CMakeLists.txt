@@ -914,12 +914,12 @@ SET(LAUNCHER_SOURCES
     # GUI - themes
     ui/themes/FusionTheme.cpp
     ui/themes/FusionTheme.h
-    ui/themes/FreesmTheme.cpp
-    ui/themes/FreesmTheme.h
+    ui/themes/BeeTheme.cpp
+    ui/themes/BeeTheme.h
     ui/themes/GruvboxTheme.cpp
     ui/themes/GruvboxTheme.h
-    ui/themes/FreesmLightTheme.cpp
-    ui/themes/FreesmLightTheme.h
+    ui/themes/BeeLightTheme.cpp
+    ui/themes/BeeLightTheme.h
     ui/themes/BrightTheme.cpp
     ui/themes/BrightTheme.h
     ui/themes/CustomTheme.cpp
@@ -936,10 +936,6 @@ SET(LAUNCHER_SOURCES
     ui/themes/IconTheme.h
     ui/themes/ThemeManager.cpp
     ui/themes/ThemeManager.h
-    ui/themes/CatPack.cpp
-    ui/themes/CatPack.h
-    ui/themes/CatPainter.cpp
-    ui/themes/CatPainter.h
 
     # Processes
     LaunchMode.h
@@ -1351,7 +1347,6 @@ if (NOT Apple)
 endif()
 
 qt_add_resources(LAUNCHER_RESOURCES
-    resources/backgrounds/backgrounds.qrc
     resources/multimc/multimc.qrc
     resources/pe_dark/pe_dark.qrc
     resources/pe_light/pe_light.qrc

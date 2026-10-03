@@ -1,5 +1,5 @@
 name: Setup Dependencies
-description: Install and setup dependencies for building Freesm Launcher
+description: Install and setup dependencies for building Bee Launcher
 
 inputs:
   build-type:
@@ -36,17 +36,17 @@ runs:
   steps:
     - name: Setup Linux dependencies
       if: ${{ runner.os == 'Linux' }}
-      uses: ./.github/actions/setup-dependencies/linux
+      uses: $/.github/actions/setup-dependencies/linux
 
     - name: Setup macOS dependencies
       if: ${{ runner.os == 'macOS' }}
-      uses: ./.github/actions/setup-dependencies/macos
+      uses: $/.github/actions/setup-dependencies/macos
       with:
         build-type: ${{ inputs.build-type }}
 
     - name: Setup Windows dependencies
       if: ${{ runner.os == 'Windows' }}
-      uses: ./.github/actions/setup-dependencies/windows
+      uses: $/.github/actions/setup-dependencies/windows
       with:
         build-type: ${{ inputs.build-type }}
         msystem: ${{ inputs.msystem }}
@@ -55,7 +55,7 @@ runs:
     # TODO(@getchoo): Get this working on MSYS2!
     - name: Setup ccache
       if: ${{ (runner.os != 'Windows' || inputs.msystem == '') && inputs.build-type == 'Debug' }}
-      uses: hendrikmuhs/ccache-action@v1.2.22
+      uses: hendrikmuhs/ccache-action@33522472633dbd32578e909b315f5ee43ba878ce # v1.2.22
       with:
         variant: sccache
         create-symlink: ${{ runner.os != 'Windows' }}
@@ -67,13 +67,14 @@ runs:
       env:
         # Only use ccache on MSYS2
         CCACHE_VARIANT: ${{ (runner.os == 'Windows' && inputs.msystem != '') && 'ccache' || 'sccache' }}
-      run: |
+      # CCACHE_VARIANT is a fixed constant, not user input
+      run: | # zizmor: ignore[github-env]
         echo "CMAKE_C_COMPILER_LAUNCHER=$CCACHE_VARIANT" >> "$GITHUB_ENV"
         echo "CMAKE_CXX_COMPILER_LAUNCHER=$CCACHE_VARIANT" >> "$GITHUB_ENV"
 
     - name: Install Qt
       if: ${{ inputs.msystem == '' }}
-      uses: jurplel/install-qt-action@v4
+      uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125 # v4
       with:
         aqtversion: "==3.1.*"
         version: ${{ inputs.qt-version }}

@@ -47,12 +47,10 @@ class AppearanceWidget : public QWidget {
    private:
     void applyIconTheme(int index);
     void applyWidgetTheme(int index);
-    void applyCatTheme(int index);
     void applySnow(bool visible);
     void loadThemeSettings();
 
     void updateConsolePreview();
-    void updateCatPreview();
 
     Ui::AppearanceWidget* m_ui;
     QTextCharFormat m_defaultFormat;

@@ -27,7 +27,7 @@
  * permission notice:
  *
  *      Copyright 2013-2021 MultiMC Contributors
- *      Copyright 2024-2025 FreesmLauncher Maintainers
+ *      Copyright 2024-2025 BeeLauncher Maintainers
  *
  *      Licensed under the Apache License, Version 2.0 (the "License");
  *      you may not use this file except in compliance with the License.
@@ -694,8 +694,7 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
 
         // Theming
         m_settings->registerSetting("IconTheme", QString("fluent_dark"));
-        m_settings->registerSetting("ApplicationTheme", QString("freesm"));
-        m_settings->registerSetting("BackgroundCat", QString("typescript"));
+        m_settings->registerSetting("ApplicationTheme", QString("bee"));
         m_settings->registerSetting("Snow", isWinter);
 
         // Remembered state
@@ -849,11 +848,6 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
         // Custom Commands
         m_settings->registerSetting({ "PreLaunchCommand", "PreLaunchCmd" }, "");
         m_settings->registerSetting({ "PostExitCommand", "PostExitCmd" }, "");
-
-        // The cat
-        m_settings->registerSetting("TheCat", true);
-        m_settings->registerSetting("CatOpacity", 100);
-        m_settings->registerSetting("CatFit", "fit");
 
         m_settings->registerSetting("CopyIngameScreenshots", false);
 
@@ -1303,7 +1297,7 @@ bool Application::createSetupWizard()
             const QString style =
                 QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark ? QStringLiteral("dark") : QStringLiteral("bright");
 #else
-            const QString style = QStringLiteral("freesm");
+            const QString style = QStringLiteral("bee");
 #endif
 
             settings()->set("ApplicationTheme", style);

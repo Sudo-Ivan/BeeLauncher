@@ -1,5 +1,5 @@
 name: Package for Windows
-description: Create a Windows package for Freesm Launcher
+description: Create a Windows package for Bee Launcher
 
 inputs:
   version:
@@ -34,24 +34,26 @@ runs:
       shell: msys2 {0}
       env:
         BUILD_DIR: build
+        BUILD_TYPE: ${{ inputs.build-type }}
         INSTALL_DIR: install
       run: |
-        cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }}
-        touch ${{ env.INSTALL_DIR }}/manifest.txt
-        for l in $(find ${{ env.INSTALL_DIR }} -type f); do l=$(cygpath -u $l); l=${l#$(pwd)/}; l=${l#${{ env.INSTALL_DIR }}/}; l=${l#./}; echo $l; done >> ${{ env.INSTALL_DIR }}/manifest.txt
+        cmake --install "$BUILD_DIR" --config "$BUILD_TYPE"
+        touch "$INSTALL_DIR"/manifest.txt
+        for l in $(find "$INSTALL_DIR" -type f); do l=$(cygpath -u $l); l=${l#$(pwd)/}; l=${l#"$INSTALL_DIR"/}; l=${l#./}; echo $l; done >> "$INSTALL_DIR"/manifest.txt
 
     - name: Package (MSVC)
       if: ${{ inputs.msystem == '' }}
       shell: pwsh
       env:
         BUILD_DIR: build
+        BUILD_TYPE: ${{ inputs.build-type }}
         INSTALL_DIR: install
       run: |
-        cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }}
+        cmake --install "$env:BUILD_DIR" --config "$env:BUILD_TYPE"
 
-        cd ${{ github.workspace }}
+        cd "$env:GITHUB_WORKSPACE"
 
-        Get-ChildItem ${{ env.INSTALL_DIR }} -Recurse | ForEach FullName | Resolve-Path -Relative | %{ $_.TrimStart('.\') } | %{ $_.TrimStart('${{ env.INSTALL_DIR }}') } | %{ $_.TrimStart('\') } | Out-File -FilePath ${{ env.INSTALL_DIR }}/manifest.txt
+        Get-ChildItem "$env:INSTALL_DIR" -Recurse | ForEach FullName | Resolve-Path -Relative | %{ $_.TrimStart('.\') } | %{ $_.TrimStart("$env:INSTALL_DIR") } | %{ $_.TrimStart('\') } | Out-File -FilePath "$env:INSTALL_DIR/manifest.txt"
 
     - name: Emit warning for unsigned builds
       if: ${{ env.CI_HAS_ACCESS_TO_AZURE == '' || inputs.azure-client-id == '' }}
@@ -61,7 +63,7 @@ runs:
 
     - name: Login to Azure
       if: ${{ env.CI_HAS_ACCESS_TO_AZURE != '' && inputs.azure-client-id != '' }}
-      uses: azure/login@v3
+      uses: azure/login@935127ca5bb3c4b02c9c2c10060028383878f33f # v3
       with:
         client-id: ${{ inputs.azure-client-id }}
         tenant-id: ${{ inputs.azure-tenant-id }}
@@ -69,12 +71,13 @@ runs:
 
     - name: Sign executables
       if: ${{ env.CI_HAS_ACCESS_TO_AZURE != '' && inputs.azure-client-id != '' }}
-      uses: azure/artifact-signing-action@v1
+      uses: azure/artifact-signing-action@b443cf8ea4124818d2ea9f043cba29fc3ec47b16 # v1
       with:
         endpoint: https://eus.codesigning.azure.net/
-        trusted-signing-account-name: FreesmLauncher
-        certificate-profile-name: FreesmLauncher
+        trusted-signing-account-name: BeeLauncher
+        certificate-profile-name: BeeLauncher
         files-folder: ${{ github.workspace }}\install\
+
         files-folder-filter: dll,exe
         files-folder-recurse: true
         files-folder-depth: 2
@@ -99,25 +102,27 @@ runs:
       shell: msys2 {0}
       env:
         BUILD_DIR: build
+        BUILD_TYPE: ${{ inputs.build-type }}
         INSTALL_DIR: install
         INSTALL_PORTABLE_DIR: install-portable
       run: |
-        cp -r ${{ env.INSTALL_DIR }} ${{ env.INSTALL_PORTABLE_DIR }}  # cmake install on Windows is slow, let's just copy instead
-        cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }} --prefix ${{ env.INSTALL_PORTABLE_DIR }} --component portable
-        for l in $(find ${{ env.INSTALL_PORTABLE_DIR }} -type f); do l=$(cygpath -u $l); l=${l#$(pwd)/}; l=${l#${{ env.INSTALL_PORTABLE_DIR }}/}; l=${l#./}; echo $l; done >> ${{ env.INSTALL_PORTABLE_DIR }}/manifest.txt
+        cp -r "$INSTALL_DIR" "$INSTALL_PORTABLE_DIR"  # cmake install on Windows is slow, let's just copy instead
+        cmake --install "$BUILD_DIR" --config "$BUILD_TYPE" --prefix "$INSTALL_PORTABLE_DIR" --component portable
+        for l in $(find "$INSTALL_PORTABLE_DIR" -type f); do l=$(cygpath -u $l); l=${l#$(pwd)/}; l=${l#"$INSTALL_PORTABLE_DIR"/}; l=${l#./}; echo $l; done >> "$INSTALL_PORTABLE_DIR"/manifest.txt
 
     - name: Package (MSVC, portable)
       if: ${{ inputs.msystem == '' }}
       shell: pwsh
       env:
         BUILD_DIR: build
+        BUILD_TYPE: ${{ inputs.build-type }}
         INSTALL_DIR: install
         INSTALL_PORTABLE_DIR: install-portable
       run: |
-        cp -r ${{ env.INSTALL_DIR }} ${{ env.INSTALL_PORTABLE_DIR }}  # cmake install on Windows is slow, let's just copy instead
-        cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }} --prefix ${{ env.INSTALL_PORTABLE_DIR }} --component portable
+        cp -r "$env:INSTALL_DIR" "$env:INSTALL_PORTABLE_DIR"  # cmake install on Windows is slow, let's just copy instead
+        cmake --install "$env:BUILD_DIR" --config "$env:BUILD_TYPE" --prefix "$env:INSTALL_PORTABLE_DIR" --component portable
 
-        Get-ChildItem ${{ env.INSTALL_PORTABLE_DIR }} -Recurse | ForEach FullName | Resolve-Path -Relative | %{ $_.TrimStart('.\') } | %{ $_.TrimStart('${{ env.INSTALL_PORTABLE_DIR }}') } | %{ $_.TrimStart('\') } | Out-File -FilePath ${{ env.INSTALL_DIR }}/manifest.txt
+        Get-ChildItem "$env:INSTALL_PORTABLE_DIR" -Recurse | ForEach FullName | Resolve-Path -Relative | %{ $_.TrimStart('.\') } | %{ $_.TrimStart("$env:INSTALL_PORTABLE_DIR") } | %{ $_.TrimStart('\') } | Out-File -FilePath "$env:INSTALL_DIR/manifest.txt"
 
     - name: Package (installer)
       shell: pwsh
@@ -129,27 +134,27 @@ runs:
         NSCURL_SHA256: "AEE6C4BE3CB6455858E9C1EE4B3AFE0DB9960FA03FE99CCDEDC28390D57CCBB0"
       run: |
         New-Item -Name NSISPlugins -ItemType Directory
-        Invoke-Webrequest https://github.com/negrutiu/nsis-nscurl/releases/download/"${{ env.NSCURL_VERSION }}"/NScurl.zip -OutFile NSISPlugins\NScurl.zip
+        Invoke-Webrequest https://github.com/negrutiu/nsis-nscurl/releases/download/"$env:NSCURL_VERSION"/NScurl.zip -OutFile NSISPlugins\NScurl.zip
         $nscurl_hash = Get-FileHash NSISPlugins\NScurl.zip -Algorithm Sha256 | Select-Object -ExpandProperty Hash
-        if ( $nscurl_hash -ne "${{ env.nscurl_sha256 }}") {
+        if ( $nscurl_hash -ne "$env:NSCURL_SHA256") {
           echo "::error:: NSCurl.zip sha256 mismatch"
           exit 1
         }
         Expand-Archive -Path NSISPlugins\NScurl.zip -DestinationPath NSISPlugins\NScurl
 
-        cd ${{ env.INSTALL_DIR }}
-        makensis -NOCD "${{ github.workspace }}/${{ env.BUILD_DIR }}/program_info/win_install.nsi"
+        cd "$env:INSTALL_DIR"
+        makensis -NOCD "$env:GITHUB_WORKSPACE/$env:BUILD_DIR/program_info/win_install.nsi"
 
     - name: Sign installer
       if: ${{ env.CI_HAS_ACCESS_TO_AZURE != '' && inputs.azure-client-id != '' }}
-      uses: azure/artifact-signing-action@v1
+      uses: azure/artifact-signing-action@b443cf8ea4124818d2ea9f043cba29fc3ec47b16 # v1
       with:
         endpoint: https://eus.codesigning.azure.net/
-        trusted-signing-account-name: FreesmLauncher
-        certificate-profile-name: FreesmLauncher
+        trusted-signing-account-name: BeeLauncher
+        certificate-profile-name: BeeLauncher
 
         files: |
-          ${{ github.workspace }}\FreesmLauncher-Setup.exe
+          ${{ github.workspace }}\BeeLauncher-Setup.exe
 
         # recommended in https://github.com/Azure/artifact-signing-action#timestamping-1
         timestamp-rfc3161: 'http://timestamp.acs.microsoft.com'
@@ -168,19 +173,19 @@ runs:
         exclude-interactive-browser-credential: true
 
     - name: Upload binary zip
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
       with:
-        name: FreesmLauncher-${{ inputs.artifact-name }}-${{ inputs.version }}-${{ inputs.build-type }}
+        name: BeeLauncher-${{ inputs.artifact-name }}-${{ inputs.version }}-${{ inputs.build-type }}
         path: install/**
 
     - name: Upload portable zip
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
       with:
-        name: FreesmLauncher-${{ inputs.artifact-name }}-Portable-${{ inputs.version }}-${{ inputs.build-type }}
+        name: BeeLauncher-${{ inputs.artifact-name }}-Portable-${{ inputs.version }}-${{ inputs.build-type }}
         path: install-portable/**
 
     - name: Upload installer
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
       with:
-        name: FreesmLauncher-${{ inputs.artifact-name }}-Setup-${{ inputs.version }}-${{ inputs.build-type }}
-        path: FreesmLauncher-Setup.exe
+        name: BeeLauncher-${{ inputs.artifact-name }}-Setup-${{ inputs.version }}-${{ inputs.build-type }}
+        path: BeeLauncher-Setup.exe

@@ -34,7 +34,7 @@
 #include <QUrl>
 #include <memory>
 
-#define FREESM_EXTERNAL_EXE
+#define BEE_EXTERNAL_EXE
 #include "FileSystem.h"
 
 class FileLinkApp : public QCoreApplication {

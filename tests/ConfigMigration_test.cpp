@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-only
 /*
- *  Freesm Launcher - Minecraft Launcher
+ *  Bee Launcher - Minecraft Launcher
  *  Copyright (C) 2026 so5iso4ka <so5iso4ka@icloud.com>
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ class ConfigMigrationTest : public QObject {
         ConfigMigration::migrate(
             from, to,
             [](ConfigMigration::Setting setting, QString group) {
-                if (group.isEmpty() && setting.key == "CatFit") {
+                if (group.isEmpty() && setting.key == "StatusBarVisible") {
                     setting.value = "skinny";
                 }
                 if (group.isEmpty() && setting.key == "MaxMemAlloc") {
@@ -92,7 +92,7 @@ class ConfigMigrationTest : public QObject {
                 return setting;
             },
             [](ConfigMigration::Setting setting, QString group) {
-                if (group.startsWith("Cat") && setting.value.canConvert<int>()) {
+                if (group.startsWith("Status") && setting.value.canConvert<int>()) {
                     setting.value = setting.value.toInt() * 2;
                 }
                 return setting;

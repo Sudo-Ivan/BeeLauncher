@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>Maintainers - The Core Team Behind Freesm Launcher</h1>
+  <h1>Maintainers - The Core Team Behind Bee Launcher</h1>
 </div>
 
 <div align="center">

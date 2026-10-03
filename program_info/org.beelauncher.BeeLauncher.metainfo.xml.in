@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>@Launcher_AppID@</id>
+  <name>Bee Launcher</name>
+  <summary>A custom launcher for Minecraft that allows you to easily manage multiple installations of Minecraft at once</summary>
+  <developer id="org.beelauncher">
+      <name>Bee Launcher Contributors</name>
+    </developer>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  <description>
+    <p>Bee Launcher is a custom launcher for Minecraft that focuses on predictability, long term stability and simplicity.</p>
+    <p>Features:</p>
+    <ul>
+      <li>Easily install game modifications, such as Fabric, Forge and Quilt</li>
+      <li>Easily install and update modpacks from the Launcher</li>
+      <li>Control your Java settings, and enable Mangohud or Gamemode with a toggle</li>
+      <li>Manage worlds and resource packs from the launcher</li>
+      <li>See logs and other details easily through a dashboard</li>
+      <li>Kill Minecraft in case of a crash/freeze</li>
+      <li>Isolate Minecraft instances to keep everything clean</li>
+      <li>Install and update mods directly from the launcher</li>
+      <li>Customize the launcher with themes, and more</li>
+      <li>No DRM: play free, play now</li>
+    </ul>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <caption>The main Bee Launcher window</caption>
+      <image type="source" width="1117" height="780">https://raw.githubusercontent.com/Sudo-Ivan/BeeLauncher/refs/heads/master/docs/screenshots/beelauncher_home_screenshot.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Modpack adding</caption>
+      <image type="source" width="1058" height="540">https://raw.githubusercontent.com/Sudo-Ivan/BeeLauncher/refs/heads/master/docs/screenshots/beelauncher_instance_add_screenshot.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Modpack updating (from Prism Launcher)</caption>
+      <image type="source" width="930" height="677">https://prismlauncher.org/img/screenshots/ModpackUpdateDark.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Mod installation (from Prism Launcher)</caption>
+      <image type="source" width="848" height="558">https://prismlauncher.org/img/screenshots/ModInstallDark.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Mod updating (from Prism Launcher)</caption>
+      <image type="source" width="860" height="748">https://prismlauncher.org/img/screenshots/ModUpdateDark.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Instance management (from Prism Launcher)</caption>
+      <image type="source" width="960" height="659">https://prismlauncher.org/img/screenshots/PropertiesDark.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>MiSide background :3</caption>
+      <image type="source" width="1117" height="766">https://raw.githubusercontent.com/Sudo-Ivan/BeeLauncher/refs/heads/master/docs/screenshots/beelauncher_home_screenshot_opacity.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Customization</caption>
+      <image type="source" width="1264" height="809">https://raw.githubusercontent.com/Sudo-Ivan/BeeLauncher/refs/heads/master/docs/screenshots/beelauncher_settings_theme_screenshot.png</image>
+    </screenshot>
+  </screenshots>
+  <releases>
+    <release version="@Launcher_VERSION_NAME@" date="@Launcher_BUILD_TIMESTAMP@"></release>
+  </releases>
+  <url type="homepage">https://github.com/Sudo-Ivan/BeeLauncher</url>
+  <url type="help">https://github.com/Sudo-Ivan/BeeLauncher</url>
+  <url type="bugtracker">https://github.com/Sudo-Ivan/BeeLauncher/issues</url>
+  <url type="contact">https://github.com/Sudo-Ivan/BeeLauncher/</url>
+  <url type="vcs-browser">https://github.com/Sudo-Ivan/BeeLauncher</url>
+  <url type="contribute">https://github.com/Sudo-Ivan/BeeLauncher/blob/master/CONTRIBUTING.md</url>
+  <url type="translate">https://hosted.weblate.org/projects/beelauncher/beelauncher-launcher/</url>
+  <content_rating type="oars-1.1">
+    <content_attribute id="violence-fantasy">moderate</content_attribute>
+    <content_attribute id="social-chat">intense</content_attribute>
+  </content_rating>
+  <launchable type="desktop-id">@Launcher_AppID@.desktop</launchable>
+</component>

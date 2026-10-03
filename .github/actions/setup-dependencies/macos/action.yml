@@ -18,7 +18,8 @@ runs:
 
     - name: Set JAVA_HOME
       shell: bash
-      run: |
+      # value comes from java_home, not user input
+      run: | # zizmor: ignore[github-env]
         echo "JAVA_HOME=$(/usr/libexec/java_home -v 17)" >> "$GITHUB_ENV"
 
     - name: Setup vcpkg cache
@@ -28,7 +29,8 @@ runs:
         USERNAME: ${{ github.repository_owner }}
         GITHUB_TOKEN: ${{ github.token }}
         FEED_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
-      run: |
+      # values are the repository owner and the run token, not user input
+      run: | # zizmor: ignore[github-env]
         mono `vcpkg fetch nuget | tail -n 1` \
           sources add \
           -Source "$FEED_URL" \
@@ -43,5 +45,6 @@ runs:
 
     - name: Setup vcpkg environment
       shell: bash
-      run: |
+      # value comes from the runner image, not user input
+      run: | # zizmor: ignore[github-env]
         echo "VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT" >> "$GITHUB_ENV"

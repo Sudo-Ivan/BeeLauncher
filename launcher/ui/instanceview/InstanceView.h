@@ -19,7 +19,7 @@
  * This file incorporates work covered by the following copyright and
  * permission notice:
  *
- *      Copyright 2024-2025 FreesmLauncher Contributors
+ *      Copyright 2024-2025 BeeLauncher Contributors
  *      Copyright 2013-2021 MultiMC Contributors
  *
  *      Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,7 +43,6 @@
 #include <QScrollBar>
 #include <functional>
 #include "VisualGroup.h"
-#include "ui/themes/CatPainter.h"
 
 struct InstanceViewRoles {
     enum { GroupRole = Qt::UserRole, ProgressValueRole, ProgressMaximumRole };
@@ -80,7 +79,6 @@ class InstanceView : public QAbstractItemView {
     virtual QRegion visualRegionForSelection(const QItemSelection& selection) const override;
 
     int spacing() const { return m_spacing; };
-    void setPaintCat(bool visible);
 
    public slots:
     virtual void updateGeometries() override;
@@ -148,7 +146,6 @@ class InstanceView : public QAbstractItemView {
     int m_currentItemsPerRow = -1;
     int m_currentCursorColumn = -1;
     mutable QCache<int, QRect> m_geometryCache;
-    CatPainter* m_cat = nullptr;
     bool m_snowVisible = false;
     std::vector<Snowflake> m_snowflakes;
     QTimer* m_snowTimer = nullptr;

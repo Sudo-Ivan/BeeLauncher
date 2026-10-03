@@ -10,7 +10,7 @@ permissions: { }
 jobs:
   build_release:
     name: Build Release
-    uses: ./.github/workflows/build.yml
+    uses: $/.github/workflows/build.yml
     permissions:
       contents: read
       # Required for Azure Trusted Signing
@@ -20,107 +20,115 @@ jobs:
     with:
       build-type: Release
       environment: Release
-    secrets: inherit
+    secrets:
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GPG_PRIVATE_KEY_ID: ${{ secrets.GPG_PRIVATE_KEY_ID }}
+      APPLE_CODESIGN_CERT: ${{ secrets.APPLE_CODESIGN_CERT }}
+      APPLE_CODESIGN_PASSWORD: ${{ secrets.APPLE_CODESIGN_PASSWORD }}
+      APPLE_CODESIGN_ID: ${{ secrets.APPLE_CODESIGN_ID }}
+      APPLE_NOTARIZE_APPLE_ID: ${{ secrets.APPLE_NOTARIZE_APPLE_ID }}
+      APPLE_NOTARIZE_TEAM_ID: ${{ secrets.APPLE_NOTARIZE_TEAM_ID }}
+      APPLE_NOTARIZE_PASSWORD: ${{ secrets.APPLE_NOTARIZE_PASSWORD }}
+      SPARKLE_ED25519_KEY: ${{ secrets.SPARKLE_ED25519_KEY }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
   create_release:
     needs: build_release
     permissions:
       contents: write
     runs-on: ubuntu-slim
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           submodules: "true"
-          path: "FreesmLauncher-source"
+          persist-credentials: false
+          path: "BeeLauncher-source"
       - name: Download artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
       - name: Grab and store version
         run: |
-          tag_name=$(echo ${{ github.ref }} | grep -oE "[^/]+$")
+          tag_name="${GITHUB_REF_NAME}"
           echo "VERSION=$tag_name" >> $GITHUB_ENV
       - name: Package artifacts properly
         run: |
-          mv ${{ github.workspace }}/FreesmLauncher-source FreesmLauncher-${{ env.VERSION }}
-          mv FreesmLauncher-Linux-Qt6-Portable*/FreesmLauncher-portable.tar.gz FreesmLauncher-Linux-Qt6-Portable-${{ env.VERSION }}.tar.gz
-          mv FreesmLauncher-Linux-aarch64-Qt6-Portable*/FreesmLauncher-portable.tar.gz FreesmLauncher-Linux-aarch64-Qt6-Portable-${{ env.VERSION }}.tar.gz
-          mv FreesmLauncher-*.AppImage/FreesmLauncher-*-x86_64.AppImage FreesmLauncher-Linux-x86_64.AppImage
-          mv FreesmLauncher-*.AppImage.zsync/FreesmLauncher-*-x86_64.AppImage.zsync FreesmLauncher-Linux-x86_64.AppImage.zsync
-          mv FreesmLauncher-*.AppImage/FreesmLauncher-*-aarch64.AppImage FreesmLauncher-Linux-aarch64.AppImage
-          mv FreesmLauncher-*.AppImage.zsync/FreesmLauncher-*-aarch64.AppImage.zsync FreesmLauncher-Linux-aarch64.AppImage.zsync
-          mv FreesmLauncher-macOS*/FreesmLauncher.zip FreesmLauncher-macOS-${{ env.VERSION }}.zip
-          mv FreesmLauncher-macOS*/FreesmLauncher.dmg FreesmLauncher-macOS-${{ env.VERSION }}.dmg
+          mv "$GITHUB_WORKSPACE"/BeeLauncher-source "BeeLauncher-$VERSION"
+          mv BeeLauncher-Linux-Qt6-Portable*/BeeLauncher-portable.tar.gz "BeeLauncher-Linux-Qt6-Portable-$VERSION.tar.gz"
+          mv BeeLauncher-Linux-aarch64-Qt6-Portable*/BeeLauncher-portable.tar.gz "BeeLauncher-Linux-aarch64-Qt6-Portable-$VERSION.tar.gz"
+          mv BeeLauncher-*.AppImage/BeeLauncher-*-x86_64.AppImage BeeLauncher-Linux-x86_64.AppImage
+          mv BeeLauncher-*.AppImage.zsync/BeeLauncher-*-x86_64.AppImage.zsync BeeLauncher-Linux-x86_64.AppImage.zsync
+          mv BeeLauncher-*.AppImage/BeeLauncher-*-aarch64.AppImage BeeLauncher-Linux-aarch64.AppImage
+          mv BeeLauncher-*.AppImage.zsync/BeeLauncher-*-aarch64.AppImage.zsync BeeLauncher-Linux-aarch64.AppImage.zsync
+          mv BeeLauncher-macOS*/BeeLauncher.zip "BeeLauncher-macOS-$VERSION.zip"
+          mv BeeLauncher-macOS*/BeeLauncher.dmg "BeeLauncher-macOS-$VERSION.dmg"
 
-          tar --exclude='.git' -czf FreesmLauncher-${{ env.VERSION }}.tar.gz FreesmLauncher-${{ env.VERSION }}
+          tar --exclude='.git' -czf "BeeLauncher-$VERSION.tar.gz" "BeeLauncher-$VERSION"
 
-          for d in FreesmLauncher-Windows-MSVC*; do
+          for d in BeeLauncher-Windows-MSVC*; do
             cd "${d}" || continue
             LEGACY="$(echo -n ${d} | grep -o Legacy || true)"
             ARM64="$(echo -n ${d} | grep -o arm64 || true)"
             INST="$(echo -n ${d} | grep -o Setup || true)"
             PORT="$(echo -n ${d} | grep -o Portable || true)"
-            NAME="FreesmLauncher-Windows-MSVC"
+            NAME="BeeLauncher-Windows-MSVC"
             test -z "${LEGACY}" || NAME="${NAME}-Legacy"
             test -z "${ARM64}" || NAME="${NAME}-arm64"
             test -z "${PORT}" || NAME="${NAME}-Portable"
-            test -z "${INST}" || mv FreesmLauncher-*.exe ../${NAME}-Setup-${{ env.VERSION }}.exe
-            test -n "${INST}" || zip -r -9 "../${NAME}-${{ env.VERSION }}.zip" *
+            test -z "${INST}" || mv BeeLauncher-*.exe "../${NAME}-Setup-${VERSION}.exe"
+            test -n "${INST}" || zip -r -9 "../${NAME}-${VERSION}.zip" *
             cd ..
           done
 
-          for d in FreesmLauncher-Windows-MinGW-w64*; do
+          for d in BeeLauncher-Windows-MinGW-w64*; do
             cd "${d}" || continue
             INST="$(echo -n ${d} | grep -o Setup || true)"
             PORT="$(echo -n ${d} | grep -o Portable || true)"
-            NAME="FreesmLauncher-Windows-MinGW-w64"
+            NAME="BeeLauncher-Windows-MinGW-w64"
             test -z "${PORT}" || NAME="${NAME}-Portable"
-            test -z "${INST}" || mv FreesmLauncher-*.exe ../${NAME}-Setup-${{ env.VERSION }}.exe
-            test -n "${INST}" || zip -r -9 "../${NAME}-${{ env.VERSION }}.zip" *
+            test -z "${INST}" || mv BeeLauncher-*.exe "../${NAME}-Setup-${VERSION}.exe"
+            test -n "${INST}" || zip -r -9 "../${NAME}-${VERSION}.zip" *
             cd ..
           done
 
-          for d in FreesmLauncher-Windows-MinGW-arm64*; do
+          for d in BeeLauncher-Windows-MinGW-arm64*; do
             cd "${d}" || continue
             INST="$(echo -n ${d} | grep -o Setup || true)"
             PORT="$(echo -n ${d} | grep -o Portable || true)"
-            NAME="FreesmLauncher-Windows-MinGW-arm64"
+            NAME="BeeLauncher-Windows-MinGW-arm64"
             test -z "${PORT}" || NAME="${NAME}-Portable"
-            test -z "${INST}" || mv FreesmLauncher-*.exe ../${NAME}-Setup-${{ env.VERSION }}.exe
-            test -n "${INST}" || zip -r -9 "../${NAME}-${{ env.VERSION }}.zip" *
+            test -z "${INST}" || mv BeeLauncher-*.exe "../${NAME}-Setup-${VERSION}.exe"
+            test -n "${INST}" || zip -r -9 "../${NAME}-${VERSION}.zip" *
             cd ..
           done
 
       - name: Create release
-        id: create_release
-        uses: softprops/action-gh-release@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ github.ref }}
-          name: Freesm Launcher ${{ env.VERSION }}
-          draft: true
-          prerelease: false
-          fail_on_unmatched_files: true
-          files: |
-            FreesmLauncher-Linux-x86_64.AppImage
-            FreesmLauncher-Linux-x86_64.AppImage.zsync
-            FreesmLauncher-Linux-aarch64.AppImage
-            FreesmLauncher-Linux-aarch64.AppImage.zsync
-            FreesmLauncher-Linux-Qt6-Portable-${{ env.VERSION }}.tar.gz
-            FreesmLauncher-Linux-aarch64-Qt6-Portable-${{ env.VERSION }}.tar.gz
-            FreesmLauncher-Windows-MinGW-w64-${{ env.VERSION }}.zip
-            FreesmLauncher-Windows-MinGW-w64-Portable-${{ env.VERSION }}.zip
-            FreesmLauncher-Windows-MinGW-w64-Setup-${{ env.VERSION }}.exe
-            FreesmLauncher-Windows-MinGW-arm64-${{ env.VERSION }}.zip
-            FreesmLauncher-Windows-MinGW-arm64-Portable-${{ env.VERSION }}.zip
-            FreesmLauncher-Windows-MinGW-arm64-Setup-${{ env.VERSION }}.exe
-            FreesmLauncher-Windows-MSVC-arm64-${{ env.VERSION }}.zip
-            FreesmLauncher-Windows-MSVC-arm64-Portable-${{ env.VERSION }}.zip
-            FreesmLauncher-Windows-MSVC-arm64-Setup-${{ env.VERSION }}.exe
-            FreesmLauncher-Windows-MSVC-${{ env.VERSION }}.zip
-            FreesmLauncher-Windows-MSVC-Portable-${{ env.VERSION }}.zip
-            FreesmLauncher-Windows-MSVC-Setup-${{ env.VERSION }}.exe
-            FreesmLauncher-macOS-${{ env.VERSION }}.zip
-            FreesmLauncher-macOS-${{ env.VERSION }}.dmg
-            FreesmLauncher-${{ env.VERSION }}.tar.gz
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "Bee Launcher $VERSION" \
+            --draft \
+            --verify-tag \
+            "BeeLauncher-Linux-x86_64.AppImage" \
+            "BeeLauncher-Linux-x86_64.AppImage.zsync" \
+            "BeeLauncher-Linux-aarch64.AppImage" \
+            "BeeLauncher-Linux-aarch64.AppImage.zsync" \
+            "BeeLauncher-Linux-Qt6-Portable-$VERSION.tar.gz" \
+            "BeeLauncher-Linux-aarch64-Qt6-Portable-$VERSION.tar.gz" \
+            "BeeLauncher-Windows-MinGW-w64-$VERSION.zip" \
+            "BeeLauncher-Windows-MinGW-w64-Portable-$VERSION.zip" \
+            "BeeLauncher-Windows-MinGW-w64-Setup-$VERSION.exe" \
+            "BeeLauncher-Windows-MinGW-arm64-$VERSION.zip" \
+            "BeeLauncher-Windows-MinGW-arm64-Portable-$VERSION.zip" \
+            "BeeLauncher-Windows-MinGW-arm64-Setup-$VERSION.exe" \
+            "BeeLauncher-Windows-MSVC-arm64-$VERSION.zip" \
+            "BeeLauncher-Windows-MSVC-arm64-Portable-$VERSION.zip" \
+            "BeeLauncher-Windows-MSVC-arm64-Setup-$VERSION.exe" \
+            "BeeLauncher-Windows-MSVC-$VERSION.zip" \
+            "BeeLauncher-Windows-MSVC-Portable-$VERSION.zip" \
+            "BeeLauncher-Windows-MSVC-Setup-$VERSION.exe" \
+            "BeeLauncher-macOS-$VERSION.zip" \
+            "BeeLauncher-macOS-$VERSION.dmg" \
+            "BeeLauncher-$VERSION.tar.gz"
