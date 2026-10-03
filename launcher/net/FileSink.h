@@ -35,7 +35,9 @@
 
 #pragma once
 
-#include "PSaveFile.h"
+#include <QFile>
+#include <memory>
+
 #include "Sink.h"
 
 namespace Net {
@@ -46,6 +48,7 @@ class FileSink : public Sink {
 
    public:
     auto init(QNetworkRequest& request) -> Task::State override;
+    void statusReceived(QNetworkReply& reply) override;
     auto write(QByteArray& data) -> Task::State override;
     auto abort() -> Task::State override;
     auto finalize(QNetworkReply& reply) -> Task::State override;
@@ -55,10 +58,15 @@ class FileSink : public Sink {
    protected:
     virtual auto initCache(QNetworkRequest&) -> Task::State;
     virtual auto finalizeCache(QNetworkReply& reply) -> Task::State;
+    QString partFileName() const;
 
    protected:
     QString m_filename;
     bool m_wroteAnyData = false;
-    std::unique_ptr<PSaveFile> m_output_file;
+    std::unique_ptr<QFile> m_output_file;
+    qint64 m_resume_offset = 0;
+    bool m_resuming = false;
+    bool m_status_seen = false;
+    bool m_skip_writes = false;
 };
 }  // namespace Net

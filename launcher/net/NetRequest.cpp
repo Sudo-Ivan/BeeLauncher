@@ -56,6 +56,8 @@
 #include "MMCTime.h"
 #include "StringUtils.h"
 
+#include <QRandomGenerator>
+
 namespace Net {
 
 NetRequest::NetRequest() : Task()
@@ -164,14 +166,49 @@ void NetRequest::onProgress(qint64 bytesReceived, qint64 bytesTotal)
     setProgress(bytesReceived, bytesTotal);
 }
 
+static bool isRetryableError(QNetworkReply::NetworkError error, int statusCode)
+{
+    // never retry errors that are deterministic or client-side
+    switch (error) {
+        case QNetworkReply::NoError:
+        case QNetworkReply::ContentNotFoundError:
+        case QNetworkReply::ContentAccessDenied:
+        case QNetworkReply::AuthenticationRequiredError:
+        case QNetworkReply::ContentReSendError:
+        case QNetworkReply::ContentConflictError:
+        case QNetworkReply::ContentGoneError:
+        case QNetworkReply::ContentOperationNotPermittedError:
+        case QNetworkReply::ProtocolInvalidOperationError:
+        case QNetworkReply::ProtocolFailure:
+        case QNetworkReply::SslHandshakeFailedError:
+        case QNetworkReply::ProxyAuthenticationRequiredError:
+            return false;
+        default:
+            break;
+    }
+
+    if (statusCode == 404 || statusCode == 401 || statusCode == 403 || statusCode == 410) {
+        return false;
+    }
+
+    // server errors and rate limits are worth retrying
+    if (statusCode >= 400) {
+        return statusCode >= 500 || statusCode == 408 || statusCode == 429;
+    }
+
+    // connection-level failures (timeout, refused, closed early, etc.)
+    return true;
+}
+
 void NetRequest::downloadError(QNetworkReply::NetworkError error)
 {
-    if (error == QNetworkReply::OperationCanceledError) {
+    if (error == QNetworkReply::OperationCanceledError && m_state == State::AbortedByUser) {
         qCCritical(logCat) << getUid().toString() << "Aborted" << m_url.toString();
         m_state = State::Failed;
-    } else if (replyStatusCode() == 429 /* HTTP Too Many Requests*/ && m_options & Option::AutoRetry) {
-        qCDebug(logCat) << getUid().toString() << "Rate Limited!";
-        int64_t delay = 10 * std::pow(2, m_retryCount);
+    } else if ((m_options & Option::AutoRetry) && isRetryableError(error, replyStatusCode())) {
+        qCDebug(logCat) << getUid().toString() << "Retryable failure:" << error << "HTTP" << replyStatusCode();
+        // exponential backoff with a bit of jitter, honoring Retry-After
+        int64_t delay = std::pow(2, m_retryCount) + (QRandomGenerator::global()->generate() % 2);
         if (m_reply->hasRawHeader("Retry-After")) {
             auto retryAfter = m_reply->rawHeader("Retry-After");
             if (retryAfter.trimmed().endsWith("GMT")) /* HTTP Date format */ {
@@ -269,16 +306,23 @@ auto NetRequest::handleRedirect() -> bool
 void NetRequest::handleAutoRetry(int64_t delay)
 {
     m_retryCount++;
-    if (delay > 60 || m_retryCount > 4) {
-        /* 1 minute is too long to wait for retry, fail for now */
+    int maxRetries = 6;
+#if defined(LAUNCHER_APPLICATION)
+    if (APPLICATION_DYN) {
+        maxRetries = APPLICATION->settings()->get("NumberOfAutoRetries").toInt();
+    }
+#endif
+    if (delay > 60 || m_retryCount > maxRetries) {
+        /* over a minute is too long to wait for retry, fail for now */
         m_state = State::Failed;
         auto retryAfter = QDateTime::currentDateTime().addSecs(delay);
-        emitFailed(tr("Request Rate Limited for %n second(s): Retry After %1", "seconds", delay)
+        emitFailed(tr("Request failed repeatedly: Retry After %1")
                        .arg(retryAfter.toLocalTime().toString(QLocale::system().dateTimeFormat(QLocale::ShortFormat))));
         return;
     } else {
-        qCDebug(logCat) << getUid().toString() << "Retyring Request in" << delay << "seconds";
-        setStatus(tr("Rate Limited: Waiting %n second(s)", "seconds", delay));
+        qCDebug(logCat) << getUid().toString() << "Retrying request" << m_url.toString() << "in" << delay << "seconds, attempt"
+                        << m_retryCount << "of" << maxRetries;
+        setStatus(tr("Retrying in %n second(s) (attempt %1)", "seconds", delay).arg(m_retryCount));
         m_retryTimer.setTimerType(Qt::VeryCoarseTimer);
         m_retryTimer.setSingleShot(true);
         m_retryTimer.setInterval(delay * 1000);
@@ -323,6 +367,7 @@ void NetRequest::downloadFinished()
     }
 
     // make sure we got all the remaining data, if any
+    m_sink->statusReceived(*m_reply);
     auto data = m_reply->readAll();
     if (data.size()) {
         qCDebug(logCat) << getUid().toString() << "Writing extra" << data.size() << "bytes";
@@ -356,6 +401,7 @@ void NetRequest::downloadFinished()
 void NetRequest::downloadReadyRead()
 {
     if (m_state == State::Running) {
+        m_sink->statusReceived(*m_reply);
         auto data = m_reply->readAll();
         m_state = m_sink->write(data);
         if (replyStatusCode() >= 400) {

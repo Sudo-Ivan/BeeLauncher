@@ -46,6 +46,7 @@ class Sink {
 
    public:
     virtual auto init(QNetworkRequest& request) -> Task::State = 0;
+    virtual void statusReceived(QNetworkReply& reply) { Q_UNUSED(reply) };
     virtual auto write(QByteArray& data) -> Task::State = 0;
     virtual auto abort() -> Task::State = 0;
     virtual auto finalize(QNetworkReply& reply) -> Task::State = 0;

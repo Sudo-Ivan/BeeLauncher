@@ -703,6 +703,7 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
         m_settings->registerSetting("NumberOfConcurrentTasks", 10);
         m_settings->registerSetting("NumberOfConcurrentDownloads", 6);
         m_settings->registerSetting("NumberOfManualRetries", 1);
+        m_settings->registerSetting("NumberOfAutoRetries", 6);
         m_settings->registerSetting("RequestTimeout", 60);
 
         QString defaultMonospace;

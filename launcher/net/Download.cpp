@@ -55,7 +55,7 @@ auto Download::makeCached(QUrl url, MetaEntryPtr entry, Options options) -> Down
     auto dl = makeShared<Download>();
     dl->m_url = url;
     dl->setObjectName(QString("CACHE:") + url.toString());
-    dl->m_options = options;
+    dl->m_options = options | Option::AutoRetry;
     auto md5Node = new ChecksumValidator(QCryptographicHash::Md5);
     auto cachedNode = new MetaCacheSink(entry, md5Node, options.testFlag(Option::MakeEternal));
     dl->m_sink.reset(cachedNode);
@@ -68,7 +68,7 @@ auto Download::makeByteArray(QUrl url, Options options) -> std::pair<Download::P
     auto dl = makeShared<Download>();
     dl->m_url = url;
     dl->setObjectName(QString("BYTES:") + url.toString());
-    dl->m_options = options;
+    dl->m_options = options | Option::AutoRetry;
 
     auto sink = std::make_unique<ByteArraySink>();
     QByteArray* response = sink->output();
@@ -82,7 +82,7 @@ auto Download::makeFile(QUrl url, QString path, Options options) -> Download::Pt
     auto dl = makeShared<Download>();
     dl->m_url = url;
     dl->setObjectName(QString("FILE:") + url.toString());
-    dl->m_options = options;
+    dl->m_options = options | Option::AutoRetry;
     dl->m_sink.reset(new FileSink(path));
     return dl;
 }
