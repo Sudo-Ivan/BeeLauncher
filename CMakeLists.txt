@@ -203,9 +203,6 @@ set(Launcher_META_URL "https://meta.freesmlauncher.org/v1/" CACHE STRING "URL to
 # Imgur API Client ID
 set(Launcher_IMGUR_CLIENT_ID "5b97b0713fba4a3" CACHE STRING "Client ID you can get from Imgur when you register an application")
 
-# Discord Client ID
-set(Launcher_DISCORD_CLIENT_ID "1378362128125263882" CACHE STRING "Discord application ID")
-
 # Bug tracker URL
 set(Launcher_BUG_TRACKER_URL "https://github.com/Sudo-Ivan/BeeLauncher/issues" CACHE STRING "URL for the bug tracker.")
 
@@ -215,9 +212,6 @@ set(Launcher_TRANSLATION_FILES_URL "https://i18n.prismlauncher.org/" CACHE STRIN
 
 # Telegram Space. Empty hides the menu entry.
 set(Launcher_TELEGRAM_URL "" CACHE STRING "URL to the Telegram Chat")
-
-# Discord URL. Empty hides the menu entry.
-set(Launcher_DISCORD_URL "" CACHE STRING "URL for the Discord guild.")
 
 # Subreddit URL. Empty hides the menu entry.
 set(Launcher_SUBREDDIT_URL "" CACHE STRING "URL for the subreddit.")

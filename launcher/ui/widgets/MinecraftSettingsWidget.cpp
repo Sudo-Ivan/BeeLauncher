@@ -87,7 +87,6 @@ MinecraftSettingsWidget::MinecraftSettingsWidget(MinecraftInstance* instance, QW
         m_ui->legacySettingsGroupBox->setCheckable(true);
         m_ui->elybyGroupBox->setCheckable(true);
         m_ui->authGroupBox->setCheckable(true);
-        m_ui->discordGroupBox->setCheckable(true);
 
         m_quickPlaySingleplayer = m_instance->traits().contains("feature:is_quick_play_singleplayer");
         if (m_quickPlaySingleplayer) {
@@ -273,8 +272,6 @@ void MinecraftSettingsWidget::loadSettings()
             m_ui->injectorImplChangeVersionButton->setText(m_injectorVersionToSave);
         }
     }
-    m_ui->discordGroupBox->setChecked(m_instance == nullptr || settings->get("OverrideDiscord").toBool());
-    m_ui->enableRichPresenceCheck->setChecked(settings->get("EnableDiscordRichPresence").toBool());
 
     if (m_instance != nullptr) {
         // HACK: if we change enable state of child widgets while it's unchecked this creates inconsistency
@@ -496,17 +493,6 @@ void MinecraftSettingsWidget::saveSettings()
     } else {
         settings->reset("InjectorUid");
         settings->reset("InjectorVersion");
-    }
-
-    bool discord = m_instance == nullptr || m_ui->discordGroupBox->isChecked();
-
-    if (m_instance != nullptr)
-        settings->set("OverrideDiscord", discord);
-
-    if (discord) {
-        settings->set("EnableDiscordRichPresence", m_ui->enableRichPresenceCheck->isChecked());
-    } else {
-        settings->reset("EnableDiscordRichPresence");
     }
 
     // Game time

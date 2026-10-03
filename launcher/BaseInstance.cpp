@@ -135,9 +135,6 @@ BaseInstance::BaseInstance(SettingsObject* globalSettings, std::unique_ptr<Setti
     m_settings->registerSetting("ManagedPackURL", "");
 
     m_settings->registerSetting("Profiler", "");
-
-    auto discordSetting = m_settings->registerSetting("OverrideDiscord", false);
-    m_settings->registerOverride(globalSettings->getSetting("EnableDiscordRichPresence"), discordSetting);
 }
 
 BaseInstance::~BaseInstance() {}

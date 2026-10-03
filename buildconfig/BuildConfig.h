@@ -151,11 +151,6 @@ class Config {
     QString IMGUR_CLIENT_ID;
 
     /**
-     * Discord application ID
-     */
-    QString DISCORD_CLIENT_ID;
-
-    /**
      * Client ID you can get from Microsoft Identity Platform when you register an application
      */
     QString MSA_CLIENT_ID;
@@ -181,7 +176,6 @@ class Config {
     QString BUG_TRACKER_URL;
     QString TRANSLATIONS_URL;
     QString TELEGRAM_URL;
-    QString DISCORD_URL;
     QString SUBREDDIT_URL;
 
     QString DEFAULT_RESOURCE_BASE = "https://resources.download.minecraft.net/";

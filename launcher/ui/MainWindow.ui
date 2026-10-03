@@ -223,7 +223,6 @@
     <addaction name="actionAddToPATH"/>
     <addaction name="separator"/>
     <addaction name="actionTELEGRAM"/>
-    <addaction name="actionDISCORD"/>
     <addaction name="actionREDDIT"/>
     <addaction name="separator"/>
     <addaction name="actionMoreNews"/>
@@ -596,17 +595,7 @@
     <string>Open the bug tracker to report a bug with %1.</string>
    </property>
   </action>
-  <action name="actionDISCORD">
-   <property name="icon">
-    <iconset theme="discord"/>
-   </property>
-   <property name="text">
-    <string>&amp;Discord Guild</string>
-   </property>
-   <property name="toolTip">
-    <string>Open %1 Discord guild.</string>
-   </property>
-  </action>
+
   <action name="actionTELEGRAM">
    <property name="icon">
     <iconset theme="telegram"/>

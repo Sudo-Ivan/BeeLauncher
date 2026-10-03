@@ -49,7 +49,7 @@
 #include "java/JavaVersion.h"
 
 #include "launch/LaunchTask.h"
-#include "launch/SetDiscordActivity.h"
+
 #include "launch/TaskStepWrapper.h"
 #include "launch/steps/CheckJava.h"
 #include "launch/steps/LookupServerAddress.h"
@@ -1258,10 +1258,6 @@ LaunchTask* MinecraftInstance::createLaunchTask(AuthSessionPtr session, Minecraf
         process->appendStep(makeShared<ReconstructAssets>(pptr));
     }
 
-    if (m_settings->get("EnableDiscordRichPresence").toBool()) {
-        process->appendStep(makeShared<SetDiscordActivity>(pptr, true));
-    }
-
     {
         // actually launch the game
         auto step = makeShared<LauncherPartLaunch>(pptr);
@@ -1269,10 +1265,6 @@ LaunchTask* MinecraftInstance::createLaunchTask(AuthSessionPtr session, Minecraf
         step->setAuthSession(session);
         step->setTargetToJoin(targetToJoin);
         process->appendStep(step);
-    }
-
-    if (m_settings->get("EnableDiscordRichPresence").toBool()) {
-        process->appendStep(makeShared<SetDiscordActivity>(pptr, false));
     }
 
     // run post-exit command if that's needed

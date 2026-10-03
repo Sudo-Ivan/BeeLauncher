@@ -111,7 +111,6 @@ Config::Config()
     HELP_URL = "@Launcher_HELP_URL@";
     LOGIN_CALLBACK_URL = "@Launcher_LOGIN_CALLBACK_URL@";
     IMGUR_CLIENT_ID = "@Launcher_IMGUR_CLIENT_ID@";
-    DISCORD_CLIENT_ID = "@Launcher_DISCORD_CLIENT_ID@";
     MSA_CLIENT_ID = "@Launcher_MSA_CLIENT_ID@";
     ELYBY_CLIENT_ID = "@Launcher_ELYBY_CLIENT_ID@";
     FLAME_API_KEY = "@Launcher_CURSEFORGE_API_KEY@";
@@ -125,7 +124,6 @@ Config::Config()
     TRANSLATIONS_URL = "@Launcher_TRANSLATIONS_URL@";
     TRANSLATION_FILES_URL = "@Launcher_TRANSLATION_FILES_URL@";
     TELEGRAM_URL = "@Launcher_TELEGRAM_URL@";
-    DISCORD_URL = "@Launcher_DISCORD_URL@";
     SUBREDDIT_URL = "@Launcher_SUBREDDIT_URL@";
 }
 

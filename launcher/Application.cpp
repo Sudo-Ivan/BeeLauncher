@@ -127,8 +127,6 @@
 #include "meta/Index.h"
 #include "translations/TranslationsModel.h"
 
-#include "discord/DiscordIntegration.h"
-
 #include <DesktopServices.h>
 #include <FileSystem.h>
 #include <LocalPeer.h>
@@ -887,11 +885,6 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
         // in future, more pages may be added - so this name is chosen to avoid needing migration
         m_settings->registerSetting("WorldManagementGeometry", "");
 
-        m_settings->registerSetting("EnableDiscordRichPresence", false);
-        m_settings->registerSetting("AlwaysShowInDiscord", false);
-        if (m_settings->get("AlwaysShowInDiscord").toBool()) {
-            discord();
-        }
 
         // HACK: This code feels so stupid is there a less stupid way of doing this?
         {
@@ -1561,14 +1554,6 @@ JavaInstallList* Application::javalist()
     return m_javalist.get();
 }
 
-std::shared_ptr<DiscordIntegration> Application::discord()
-{
-    // lazy initialize
-    if (!m_discord) {
-        m_discord = std::make_shared<DiscordIntegration>(m_settings->get("AlwaysShowInDiscord").toBool());
-    }
-    return m_discord;
-}
 
 QIcon Application::logo()
 {

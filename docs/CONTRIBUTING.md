@@ -9,7 +9,7 @@
 
 We expect authentic engagement in our community.
 
-- Do not post output from Large Language Models or similar generative AI as comments on GitHub or our discord server, as
+- Do not post output from Large Language Models or similar generative AI as comments on GitHub, as
   such comments tend to be formulaic and low-quality content.
 - If you use generative AI tools as an aid in developing code or documentation changes, ensure that you fully understand
   the proposed changes and can explain why they are the correct approach.

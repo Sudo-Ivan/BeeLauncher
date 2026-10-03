@@ -96,7 +96,6 @@ class MainWindow : public QMainWindow {
 
     void on_actionTELEGRAM_triggered();
 
-    void on_actionDISCORD_triggered();
 
     void on_actionCopyInstance_triggered();
 

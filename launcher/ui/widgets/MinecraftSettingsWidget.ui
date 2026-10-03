@@ -698,25 +698,6 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="discordGroupBox">
-             <property name="title">
-              <string>Discord</string>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_181">
-              <item>
-               <widget class="QCheckBox" name="enableRichPresenceCheck">
-                <property name="text">
-                 <string>Show launcher in Discord Rich Presence during gameplay</string>
-                </property>
-                <property name="tristate">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
             <spacer name="verticalSpacer_2">
              <property name="orientation">
               <enum>Qt::Orientation::Vertical</enum>

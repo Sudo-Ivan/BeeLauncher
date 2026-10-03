@@ -217,7 +217,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     {
         ui->actionReportBug->setVisible(!BuildConfig.BUG_TRACKER_URL.isEmpty());
         ui->actionTELEGRAM->setVisible(!BuildConfig.TELEGRAM_URL.isEmpty());
-        ui->actionDISCORD->setVisible(!BuildConfig.DISCORD_URL.isEmpty());
         ui->actionREDDIT->setVisible(!BuildConfig.SUBREDDIT_URL.isEmpty());
 
         ui->actionCheckUpdate->setVisible(APPLICATION->updaterEnabled());
@@ -1157,10 +1156,6 @@ void MainWindow::on_actionREDDIT_triggered()
     DesktopServices::openUrl(QUrl(BuildConfig.SUBREDDIT_URL));
 }
 
-void MainWindow::on_actionDISCORD_triggered()
-{
-    DesktopServices::openUrl(QUrl(BuildConfig.DISCORD_URL));
-}
 
 void MainWindow::on_actionTELEGRAM_triggered()
 {

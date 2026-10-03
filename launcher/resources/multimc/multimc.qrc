@@ -219,8 +219,6 @@
         <!-- telegram logo -->
         <file>scalable/telegram.svg</file>
 
-        <!-- discord logo icon thing. from discord. traced from bitmap -->
-        <file>scalable/discord.svg</file>
 
         <!-- flat instance icons CC BY-SA 4.0, Santiago Cézar -->
         <file>scalable/instances/chicken.svg</file>
