@@ -885,7 +885,6 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
         // in future, more pages may be added - so this name is chosen to avoid needing migration
         m_settings->registerSetting("WorldManagementGeometry", "");
 
-
         // HACK: This code feels so stupid is there a less stupid way of doing this?
         {
             m_settings->registerSetting("PastebinURL", "");
@@ -1553,7 +1552,6 @@ JavaInstallList* Application::javalist()
     }
     return m_javalist.get();
 }
-
 
 QIcon Application::logo()
 {

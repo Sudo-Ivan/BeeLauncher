@@ -195,15 +195,6 @@ set(PRISM_UPDATE_SOURCES
     updater/PrismExternalUpdater.cpp
 )
 
-# Backend for the news bar... there's usually no news.
-set(NEWS_SOURCES
-    # News System
-    news/NewsChecker.h
-    news/NewsChecker.cpp
-    news/NewsEntry.h
-    news/NewsEntry.cpp
-)
-
 # Icon interface
 set(ICONS_SOURCES
     # Icons System and related code
@@ -308,7 +299,6 @@ set(MINECRAFT_SOURCES
     minecraft/launch/VerifyJavaInstall.h
     minecraft/launch/AutoInstallJava.cpp
     minecraft/launch/AutoInstallJava.h
-
 
     minecraft/GradleSpecifier.h
     minecraft/MinecraftInstance.cpp
@@ -597,7 +587,6 @@ set(PACKWIZ_SOURCES
     modplatform/packwiz/Packwiz.cpp
 )
 
-
 set(TECHNIC_SOURCES
     modplatform/technic/SingleZipPackInstallTask.h
     modplatform/technic/SingleZipPackInstallTask.cpp
@@ -777,8 +766,6 @@ ecm_qt_export_logging_category(
     EXPORT "${Launcher_Name}"
 )
 
-
-
 if(KDE_INSTALL_LOGGINGCATEGORIESDIR)  # only install if there is a standard path for this
     ecm_qt_install_logging_categories(
         EXPORT "${Launcher_Name}"
@@ -793,7 +780,6 @@ set(LOGIC_SOURCES
     ${NET_SOURCES}
     ${LAUNCH_SOURCES}
     ${UPDATE_SOURCES}
-    ${NEWS_SOURCES}
     ${MINECRAFT_SOURCES}
     ${SCREENSHOTS_SOURCES}
     ${TASKS_SOURCES}
@@ -1119,8 +1105,6 @@ SET(LAUNCHER_SOURCES
     ui/dialogs/NewComponentDialog.h
     ui/dialogs/NewInstanceDialog.cpp
     ui/dialogs/NewInstanceDialog.h
-    ui/dialogs/NewsDialog.cpp
-    ui/dialogs/NewsDialog.h
     ui/pagedialog/PageDialog.cpp
     ui/pagedialog/PageDialog.h
     ui/dialogs/ProgressDialog.cpp
@@ -1303,7 +1287,6 @@ qt_wrap_ui(LAUNCHER_UI
     ui/dialogs/NewInstanceDialog.ui
     ui/dialogs/NetworkJobFailedDialog.ui
     ui/dialogs/NewComponentDialog.ui
-    ui/dialogs/NewsDialog.ui
     ui/dialogs/ProfileSelectDialog.ui
     ui/dialogs/ExportInstanceDialog.ui
     ui/dialogs/ExportPackDialog.ui

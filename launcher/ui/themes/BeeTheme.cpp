@@ -276,7 +276,7 @@ QString BeeTheme::appStyleSheet()
            "QToolButton {padding: 6px;}QDialog QListView::icon, QDialog QListView::text {left: 0px;}InstanceView {padding: "
            "5px;background-color: rgba(0,0,0,30%);}#mainToolBar {background: rgba(0,0,0,0%);}#instanceToolBar {background: "
            "rgba(0,0,0,40%);}#mainToolBar QToolButton {padding: 5px;}#mainToolBar QToolButton[popupMode=\"2\"] {padding-right: "
-           "20px;}#statusBar, #newsToolBar {background: rgba(0,0,0,50%);}#statusBar QLabel {padding: 20px;padding-top: 0px;padding-bottom: "
+           "20px;}#statusBar {background: rgba(0,0,0,50%);}#statusBar QLabel {padding: 20px;padding-top: 0px;padding-bottom: "
            "15px;}QSizeGrip {height: 0px;width: 0px;}QToolTip {border: 1px solid #181825;color: white;padding: 2px;border-radius: "
            "3px;background: #181825;}QListView {padding: 5px;}";
 }

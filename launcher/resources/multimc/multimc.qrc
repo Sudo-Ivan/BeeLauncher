@@ -4,7 +4,6 @@
         <file>index.theme</file>
 
         <!-- REDDIT logo icon, needs reddit license! -->
-        <file>scalable/reddit-alien.svg</file>
 
         <!-- launcher settings page -->
         <file>scalable/launcher.svg</file>
@@ -216,8 +215,6 @@
         <!-- placeholder when loading screenshot images -->
         <file>scalable/screenshot-placeholder.svg</file>
 
-        <!-- telegram logo -->
-        <file>scalable/telegram.svg</file>
 
 
         <!-- flat instance icons CC BY-SA 4.0, Santiago Cézar -->

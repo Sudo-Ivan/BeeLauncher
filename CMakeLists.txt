@@ -171,18 +171,16 @@ endif()
 ##################################### Set Application options #####################################
 
 ######## Set URLs ########
-set(Launcher_NEWS_RSS_URL "" CACHE STRING "URL to fetch the news RSS feed from. Empty disables the news checker.")
-set(Launcher_NEWS_OPEN_URL "https://github.com/Sudo-Ivan/BeeLauncher/releases" CACHE STRING "URL that gets opened when the user clicks 'More News'")
 set(Launcher_WIKI_URL "https://prismlauncher.org/wiki/" CACHE STRING "URL that gets opened when the user clicks 'Launcher Help'")
 set(Launcher_HELP_URL "https://prismlauncher.org/wiki/help-pages/%1" CACHE STRING "URL (with arg %1 to be substituted with page-id) that gets opened when the user requests help in a dialog window")
-set(Launcher_LOGIN_CALLBACK_URL "https://freesmlauncher.org/successful-login" CACHE STRING "URL that gets opened when the user successfully logins.")
+set(Launcher_LOGIN_CALLBACK_URL "https://github.com/Sudo-Ivan/BeeLauncher" CACHE STRING "URL that gets opened when the user successfully logins.")
 set(Launcher_LEGACY_FMLLIBS_BASE_URL "https://files.prismlauncher.org/fmllibs/" CACHE STRING "URL for legacy (<=1.5.2) FML Libraries.")
 
 ######## Set version numbers ########
 set(Launcher_VERSION_MAJOR 2)
 set(Launcher_VERSION_MINOR 3)
 set(Launcher_VERSION_PATCH 1)
-set(Launcher_VERSION_CODENAME "Maple")
+set(Launcher_VERSION_CODENAME "Honey")
 
 set(Launcher_VERSION_NAME "${Launcher_VERSION_MAJOR}.${Launcher_VERSION_MINOR}.${Launcher_VERSION_PATCH}")
 set(Launcher_VERSION_NAME4 "${Launcher_VERSION_MAJOR}.${Launcher_VERSION_MINOR}.${Launcher_VERSION_PATCH}.0")
@@ -209,12 +207,6 @@ set(Launcher_BUG_TRACKER_URL "https://github.com/Sudo-Ivan/BeeLauncher/issues" C
 # Translations Platform URL
 set(Launcher_TRANSLATIONS_URL "https://hosted.weblate.org/projects/prismlauncher/launcher/" CACHE STRING "URL for the translations platform.")
 set(Launcher_TRANSLATION_FILES_URL "https://i18n.prismlauncher.org/" CACHE STRING "URL for the translations files.")
-
-# Telegram Space. Empty hides the menu entry.
-set(Launcher_TELEGRAM_URL "" CACHE STRING "URL to the Telegram Chat")
-
-# Subreddit URL. Empty hides the menu entry.
-set(Launcher_SUBREDDIT_URL "" CACHE STRING "URL for the subreddit.")
 
 # Builds
 set(Launcher_QT_VERSION_MAJOR "6" CACHE STRING "Major Qt version to build against")

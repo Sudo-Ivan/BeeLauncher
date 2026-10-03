@@ -280,7 +280,7 @@ QString BeeLightTheme::appStyleSheet()
            "5px;background-color: rgba(255, 255, 255, 100%);}#mainToolBar {background: rgba(255, 255, 255, 100%);}#instanceToolBar "
            "{background: "
            "rgba(255, 255, 255, 100%);}#mainToolBar QToolButton {padding: 5px;}#mainToolBar QToolButton[popupMode=\"2\"] {padding-right: "
-           "20px;}#statusBar, #newsToolBar {background: rgba(255, 255, 255, 100%);}#statusBar QLabel {padding: 20px;padding-top: "
+           "20px;}#statusBar {background: rgba(255, 255, 255, 100%);}#statusBar QLabel {padding: 20px;padding-top: "
            "0px;padding-bottom: "
            "15px;}QSizeGrip {height: 0px;width: 0px;}QToolTip {border: 1px solid #ffffff;color: #000000;padding: 2px;border-radius: "
            "3px;background: #ffffff;}QListView {padding: 5px;}";

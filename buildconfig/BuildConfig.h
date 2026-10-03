@@ -120,17 +120,6 @@ class Config {
     QString GIT_REFSPEC;
 
     /**
-     * This is used to fetch the news RSS feed.
-     * It defaults in CMakeLists.txt to "https://multimc.org/rss.xml"
-     */
-    QString NEWS_RSS_URL;
-
-    /**
-     * URL that gets opened when the user clicks "More News"
-     */
-    QString NEWS_OPEN_URL;
-
-    /**
      * URL that gets opened when the user clicks 'Launcher Help'
      */
     QString WIKI_URL;
@@ -175,8 +164,6 @@ class Config {
 
     QString BUG_TRACKER_URL;
     QString TRANSLATIONS_URL;
-    QString TELEGRAM_URL;
-    QString SUBREDDIT_URL;
 
     QString DEFAULT_RESOURCE_BASE = "https://resources.download.minecraft.net/";
     QString LIBRARY_BASE = "https://libraries.minecraft.net/";

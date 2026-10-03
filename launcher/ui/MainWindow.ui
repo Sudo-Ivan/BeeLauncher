@@ -65,33 +65,6 @@
    <addaction name="separator"/>
    <addaction name="actionAccountsButton"/>
   </widget>
-  <widget class="QToolBar" name="newsToolBar">
-   <property name="windowTitle">
-    <string>News Toolbar</string>
-   </property>
-   <property name="allowedAreas">
-    <set>Qt::ToolBarArea::BottomToolBarArea|Qt::ToolBarArea::TopToolBarArea</set>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>16</width>
-     <height>16</height>
-    </size>
-   </property>
-   <property name="toolButtonStyle">
-    <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
-   </property>
-   <property name="floatable">
-    <bool>false</bool>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>BottomToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="actionMoreNews"/>
-  </widget>
   <widget class="WideBar" name="instanceToolBar">
    <property name="windowTitle">
     <string>Instance Toolbar</string>
@@ -222,10 +195,7 @@
        <addaction name="actionViewLog"/>
     <addaction name="actionAddToPATH"/>
     <addaction name="separator"/>
-    <addaction name="actionTELEGRAM"/>
-    <addaction name="actionREDDIT"/>
     <addaction name="separator"/>
-    <addaction name="actionMoreNews"/>
     <addaction name="actionCheckUpdate"/>
     <addaction name="actionOpenWiki"/>
     <addaction name="actionAbout"/>
@@ -237,17 +207,6 @@
    <addaction name="accountsMenu"/>
    <addaction name="helpMenu"/>
   </widget>
-  <action name="actionMoreNews">
-   <property name="icon">
-    <iconset theme="news"/>
-   </property>
-   <property name="text">
-       <string>More News...</string>
-   </property>
-   <property name="toolTip">
-    <string>Open the development blog to read more news about %1.</string>
-   </property>
-  </action>
 
   <action name="actionToggleStatusBar">
    <property name="checkable">
@@ -596,28 +555,6 @@
    </property>
   </action>
 
-  <action name="actionTELEGRAM">
-   <property name="icon">
-    <iconset theme="telegram"/>
-   </property>
-   <property name="text">
-    <string>&amp;Telegram Chat</string>
-   </property>
-   <property name="toolTip">
-    <string>Open %1 Telegram chat.</string>
-   </property>
-  </action>
-  <action name="actionREDDIT">
-   <property name="icon">
-    <iconset theme="reddit-alien"/>
-   </property>
-   <property name="text">
-    <string>Sub&amp;reddit</string>
-   </property>
-   <property name="toolTip">
-    <string>Open %1 subreddit.</string>
-   </property>
-  </action>
   <action name="actionAbout">
    <property name="icon">
     <iconset theme="about"/>
