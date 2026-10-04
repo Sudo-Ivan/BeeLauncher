@@ -238,7 +238,7 @@ QList<Library::ExpectedFile> Library::expectedFiles(const RuntimeContext& runtim
     QList<ExpectedFile> out;
     bool local = isLocal();
 
-    auto add_expected = [this, local, &out](QString storage, QString sha1) {
+    auto add_expected = [local, &out](QString storage, QString sha1) {
         ExpectedFile f;
         f.storage = std::move(storage);
         f.sha1 = std::move(sha1);
