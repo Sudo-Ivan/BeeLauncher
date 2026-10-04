@@ -38,6 +38,7 @@
 #include "ServersPage.h"
 #include "Application.h"
 #include "ServerPingTask.h"
+#include "ui/dialogs/CreateShortcutDialog.h"
 #include "ui/dialogs/CustomMessageBox.h"
 #include "ui_ServersPage.h"
 
@@ -677,6 +678,7 @@ void ServersPage::updateState()
     ui->actionMove_Up->setEnabled(serverEditEnabled);
     ui->actionRemove->setEnabled(serverEditEnabled);
     ui->actionJoin->setEnabled(serverEditEnabled);
+    ui->actionCreate_Shortcut->setEnabled(serverEditEnabled);
 
     if (server) {
         ui->addressLine->setText(server->m_address);
@@ -758,6 +760,16 @@ void ServersPage::on_actionJoin_triggered()
 {
     const auto& address = m_model->at(currentServer)->m_address;
     APPLICATION->launch(m_inst, LaunchMode::Normal, std::make_shared<MinecraftTarget>(MinecraftTarget::parse(address, false)));
+}
+
+void ServersPage::on_actionCreate_Shortcut_triggered()
+{
+    const auto& address = m_model->at(currentServer)->m_address;
+
+    CreateShortcutDialog shortcutDlg(m_inst, this, QString(), address);
+    if (!shortcutDlg.exec())
+        return;
+    shortcutDlg.createShortcut();
 }
 
 void ServersPage::on_actionRefresh_triggered()

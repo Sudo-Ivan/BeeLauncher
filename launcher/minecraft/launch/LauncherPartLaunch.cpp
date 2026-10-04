@@ -42,6 +42,7 @@
 #include "Commandline.h"
 #include "FileSystem.h"
 #include "launch/LaunchTask.h"
+#include "minecraft/CrashAnalyzer.h"
 #include "minecraft/MinecraftInstance.h"
 
 #ifdef Q_OS_LINUX
@@ -169,10 +170,16 @@ void LauncherPartLaunch::on_state(LoggedProcess::State state)
             emitFailed(tr(reason).arg(m_process.errorString()));
             return;
         }
-        case LoggedProcess::Aborted:
+        case LoggedProcess::Aborted: {
+            m_parent->setPid(-1);
+            m_parent->instance()->setMinecraftRunning(false);
+            emitFailed(tr("Game crashed."));
+            return;
+        }
         case LoggedProcess::Crashed: {
             m_parent->setPid(-1);
             m_parent->instance()->setMinecraftRunning(false);
+            reportCrashAnalysis();
             emitFailed(tr("Game crashed."));
             return;
         }
@@ -186,6 +193,7 @@ void LauncherPartLaunch::on_state(LoggedProcess::State state)
             // if the exit code wasn't 0, report this as a crash
             auto exitCode = m_process.exitCode();
             if (exitCode != 0) {
+                reportCrashAnalysis();
                 emitFailed(tr("Game crashed."));
                 return;
             }
@@ -222,6 +230,21 @@ void LauncherPartLaunch::proceed()
         m_process.write(launchString.toUtf8());
         mayProceed = false;
     }
+}
+
+void LauncherPartLaunch::reportCrashAnalysis()
+{
+    auto findings = CrashAnalyzer::analyzeGameDir(m_parent->instance()->gameRoot());
+    if (findings.isEmpty())
+        return;
+
+    emit logLine(tr("================= Crash analysis =================\n"), MessageLevel::Launcher);
+    for (const auto& finding : findings) {
+        emit logLine(tr("%1: %2\n").arg(finding.title, finding.details), MessageLevel::Warning);
+        for (const auto& line : finding.evidence)
+            emit logLine("    " + line + "\n", MessageLevel::Warning);
+    }
+    emit logLine(tr("==================================================\n"), MessageLevel::Launcher);
 }
 
 bool LauncherPartLaunch::abort()

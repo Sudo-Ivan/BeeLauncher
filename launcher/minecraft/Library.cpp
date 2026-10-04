@@ -228,6 +228,68 @@ QList<Net::NetRequest::Ptr> Library::getDownloads(const RuntimeContext& runtimeC
 }
 
 /**
+ * @brief Get the list of files this library should provide for integrity checking.
+ *
+ * This mirrors the branching in getDownloads, but only reports the expected
+ * storage paths and checksums instead of constructing download requests.
+ */
+QList<Library::ExpectedFile> Library::expectedFiles(const RuntimeContext& runtimeContext) const
+{
+    QList<ExpectedFile> out;
+    bool local = isLocal();
+
+    auto add_expected = [this, local, &out](QString storage, QString sha1) {
+        ExpectedFile f;
+        f.storage = std::move(storage);
+        f.sha1 = std::move(sha1);
+        f.local = local;
+        out.append(f);
+    };
+
+    QString raw_storage = storageSuffix(runtimeContext);
+    if (m_mojangDownloads) {
+        if (isNative()) {
+            auto nativeClassifier = getCompatibleNative(runtimeContext);
+            if (!nativeClassifier.isNull()) {
+                if (nativeClassifier.contains("${arch}")) {
+                    auto nat32info = m_mojangDownloads->getDownloadInfo(QString(nativeClassifier).replace("${arch}", "32"));
+                    if (nat32info) {
+                        auto cooked_storage = raw_storage;
+                        cooked_storage.replace("${arch}", "32");
+                        add_expected(cooked_storage, nat32info->sha1);
+                    }
+                    auto nat64info = m_mojangDownloads->getDownloadInfo(QString(nativeClassifier).replace("${arch}", "64"));
+                    if (nat64info) {
+                        auto cooked_storage = raw_storage;
+                        cooked_storage.replace("${arch}", "64");
+                        add_expected(cooked_storage, nat64info->sha1);
+                    }
+                } else {
+                    auto info = m_mojangDownloads->getDownloadInfo(nativeClassifier);
+                    if (info) {
+                        add_expected(raw_storage, info->sha1);
+                    }
+                }
+            }
+        } else {
+            if (m_mojangDownloads->artifact) {
+                add_expected(raw_storage, m_mojangDownloads->artifact->sha1);
+            }
+        }
+    } else {
+        if (raw_storage.contains("${arch}")) {
+            QString cooked_storage = raw_storage;
+            add_expected(cooked_storage.replace("${arch}", "32"), QString());
+            cooked_storage = raw_storage;
+            add_expected(cooked_storage.replace("${arch}", "64"), QString());
+        } else {
+            add_expected(raw_storage, QString());
+        }
+    }
+    return out;
+}
+
+/**
  * @brief Check if the library is active in the given runtime context.
  *
  * This function evaluates rules to determine if the library should be active,

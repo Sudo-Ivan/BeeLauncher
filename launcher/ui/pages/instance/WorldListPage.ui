@@ -85,6 +85,7 @@
    <addaction name="actionAdd"/>
    <addaction name="separator"/>
    <addaction name="actionJoin"/>
+   <addaction name="actionCreate_Shortcut"/>
    <addaction name="actionRename"/>
    <addaction name="actionCopy"/>
    <addaction name="actionRemove"/>
@@ -104,6 +105,11 @@
   <action name="actionJoin">
    <property name="text">
     <string>Join</string>
+   </property>
+  </action>
+  <action name="actionCreate_Shortcut">
+   <property name="text">
+    <string>Create Shortcut</string>
    </property>
   </action>
   <action name="actionRename">

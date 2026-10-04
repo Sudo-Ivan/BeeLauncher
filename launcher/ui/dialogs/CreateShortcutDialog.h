@@ -28,7 +28,10 @@ class CreateShortcutDialog : public QDialog {
     Q_OBJECT
 
    public:
-    explicit CreateShortcutDialog(BaseInstance* instance, QWidget* parent = nullptr);
+    explicit CreateShortcutDialog(BaseInstance* instance,
+                                  QWidget* parent = nullptr,
+                                  const QString& presetWorld = QString(),
+                                  const QString& presetServer = QString());
     ~CreateShortcutDialog();
 
     void createShortcut();

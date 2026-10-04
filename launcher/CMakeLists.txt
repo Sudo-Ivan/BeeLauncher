@@ -268,6 +268,8 @@ set(MINECRAFT_SOURCES
     minecraft/update/FoldersTask.h
     minecraft/update/LibrariesTask.cpp
     minecraft/update/LibrariesTask.h
+    minecraft/update/RepairTask.h
+    minecraft/update/RepairTask.cpp
 
     minecraft/launch/ApplyLibraryOverride.cpp
     minecraft/launch/ApplyLibraryOverride.h
@@ -340,6 +342,15 @@ set(MINECRAFT_SOURCES
     minecraft/World.cpp
     minecraft/WorldList.h
     minecraft/WorldList.cpp
+    minecraft/CrashAnalyzer.h
+    minecraft/CrashAnalyzer.cpp
+    minecraft/InstanceBackup.h
+    minecraft/InstanceBackup.cpp
+
+    migrate/DetectedProfile.h
+    migrate/DetectedProfile.cpp
+    migrate/MigrateInstanceTask.h
+    migrate/MigrateInstanceTask.cpp
 
     minecraft/mod/MetadataHandler.h
     minecraft/mod/Mod.h
@@ -948,6 +959,8 @@ SET(LAUNCHER_SOURCES
     ui/pages/instance/ModFolderPage.h
     ui/pages/instance/NotesPage.cpp
     ui/pages/instance/NotesPage.h
+    ui/pages/instance/BackupsPage.cpp
+    ui/pages/instance/BackupsPage.h
     ui/pages/instance/LogPage.cpp
     ui/pages/instance/LogPage.h
     ui/pages/instance/InstanceSettingsPage.h
@@ -1063,6 +1076,8 @@ SET(LAUNCHER_SOURCES
 
     ui/pages/modplatform/ImportPage.cpp
     ui/pages/modplatform/ImportPage.h
+    ui/pages/modplatform/MigratePage.cpp
+    ui/pages/modplatform/MigratePage.h
 
     ui/pages/modplatform/OptionalModDialog.cpp
     ui/pages/modplatform/OptionalModDialog.h
@@ -1253,6 +1268,7 @@ qt_wrap_ui(LAUNCHER_UI
     ui/pages/global/ExternalToolsPage.ui
     ui/pages/instance/ExternalResourcesPage.ui
     ui/pages/instance/NotesPage.ui
+    ui/pages/instance/BackupsPage.ui
     ui/pages/instance/LogPage.ui
     ui/pages/instance/ServersPage.ui
     ui/pages/instance/OtherLogsPage.ui
@@ -1268,6 +1284,7 @@ qt_wrap_ui(LAUNCHER_UI
     ui/pages/modplatform/legacy_ftb/Page.ui
     ui/pages/modplatform/import_ftb/ImportFTBPage.ui
     ui/pages/modplatform/ImportPage.ui
+    ui/pages/modplatform/MigratePage.ui
     ui/pages/modplatform/OptionalModDialog.ui
     ui/pages/modplatform/ftb/FtbPage.ui
     ui/pages/modplatform/modrinth/ModrinthPage.ui

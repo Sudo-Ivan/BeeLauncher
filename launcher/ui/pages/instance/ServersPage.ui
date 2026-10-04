@@ -152,6 +152,7 @@
    <addaction name="actionMove_Up"/>
    <addaction name="actionMove_Down"/>
    <addaction name="actionJoin"/>
+   <addaction name="actionCreate_Shortcut"/>
    <addaction name="separator"/>
    <addaction name="actionRefresh"/>
   </widget>
@@ -178,6 +179,11 @@
   <action name="actionJoin">
    <property name="text">
     <string>Join</string>
+   </property>
+  </action>
+  <action name="actionCreate_Shortcut">
+   <property name="text">
+    <string>Create Shortcut</string>
    </property>
   </action>
   <action name="actionRefresh">

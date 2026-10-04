@@ -327,6 +327,58 @@ class LibraryTest : public QObject {
                  QUrl("https://libraries.minecraft.net/tv/twitch/twitch-platform/5.16/twitch-platform-5.16-natives-windows-64.jar"));
     }
 
+    void test_expectedFiles_artifact()
+    {
+        RuntimeContext r = dummyContext();
+        auto test = readMojangJson(QFINDTESTDATA("testdata/Libraries/lib-simple.json"));
+        auto files = test->expectedFiles(r);
+        QCOMPARE(files.size(), 1);
+        QCOMPARE(files[0].storage, QString("com/paulscode/codecwav/20101023/codecwav-20101023.jar"));
+        QCOMPARE(files[0].sha1, QString("12f031cfe88fef5c1dd36c563c0a3a69bd7261da"));
+        QCOMPARE(files[0].local, false);
+    }
+    void test_expectedFiles_native()
+    {
+        RuntimeContext r = dummyContext("osx");
+        auto test = readMojangJson(QFINDTESTDATA("testdata/Libraries/lib-native.json"));
+        auto files = test->expectedFiles(r);
+        QCOMPARE(files.size(), 1);
+        QCOMPARE(files[0].storage,
+                 QString("org/lwjgl/lwjgl/lwjgl-platform/2.9.4-nightly-20150209/"
+                         "lwjgl-platform-2.9.4-nightly-20150209-natives-osx.jar"));
+        QCOMPARE(files[0].sha1, QString("bcab850f8f487c3f4c4dbabde778bb82bd1a40ed"));
+    }
+    void test_expectedFiles_nativeArch()
+    {
+        RuntimeContext r = dummyContext("windows");
+        auto test = readMojangJson(QFINDTESTDATA("testdata/Libraries/lib-native-arch.json"));
+        auto files = test->expectedFiles(r);
+        QCOMPARE(files.size(), 2);
+        QCOMPARE(files[0].storage, QString("tv/twitch/twitch-platform/5.16/twitch-platform-5.16-natives-windows-32.jar"));
+        QCOMPARE(files[1].storage, QString("tv/twitch/twitch-platform/5.16/twitch-platform-5.16-natives-windows-64.jar"));
+        QCOMPARE(files[0].sha1, QString("7c6affe439099806a4f552da14c42f9d643d8b23"));
+    }
+    void test_expectedFiles_noChecksum()
+    {
+        RuntimeContext r = dummyContext();
+        Library test("test.package:testname:testversion");
+        test.setRepositoryURL("file://foo/bar");
+        auto files = test.expectedFiles(r);
+        QCOMPARE(files.size(), 1);
+        QCOMPARE(files[0].storage, QString("test/package/testname/testversion/testname-testversion.jar"));
+        QVERIFY(files[0].sha1.isEmpty());
+        QCOMPARE(files[0].local, false);
+    }
+    void test_expectedFiles_local()
+    {
+        RuntimeContext r = dummyContext();
+        auto test = readMojangJson(QFINDTESTDATA("testdata/Libraries/lib-simple.json"));
+        test->setHint("local");
+        auto files = test->expectedFiles(r);
+        QCOMPARE(files.size(), 1);
+        QCOMPARE(files[0].local, true);
+    }
+
    private:
     std::unique_ptr<HttpMetaCache> cache;
     QString dataDir;

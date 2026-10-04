@@ -37,6 +37,7 @@
 
 #include "WorldListPage.h"
 #include "minecraft/WorldList.h"
+#include "ui/dialogs/CreateShortcutDialog.h"
 #include "ui/dialogs/CustomMessageBox.h"
 #include "ui_WorldListPage.h"
 
@@ -119,6 +120,7 @@ void WorldListPage::openedImpl()
 
     if (!m_inst || !m_inst->traits().contains("feature:is_quick_play_singleplayer")) {
         ui->toolBar->removeAction(ui->actionJoin);
+        ui->toolBar->removeAction(ui->actionCreate_Shortcut);
     }
 
     const auto setting_name = QString("WideBarVisibility_%1").arg(id());
@@ -383,9 +385,11 @@ void WorldListPage::worldChanged([[maybe_unused]] const QModelIndex& current, [[
 
     auto supportsJoin = m_inst && m_inst->traits().contains("feature:is_quick_play_singleplayer");
     ui->actionJoin->setEnabled(enable && supportsJoin);
+    ui->actionCreate_Shortcut->setEnabled(enable && supportsJoin);
 
     if (!supportsJoin) {
         ui->toolBar->removeAction(ui->actionJoin);
+        ui->toolBar->removeAction(ui->actionCreate_Shortcut);
     }
 }
 
@@ -475,6 +479,21 @@ void WorldListPage::on_actionJoin_triggered()
     auto worldVariant = m_worlds->data(index, WorldList::ObjectRole);
     auto world = (World*)worldVariant.value<void*>();
     APPLICATION->launch(m_inst, LaunchMode::Normal, std::make_shared<MinecraftTarget>(MinecraftTarget::parse(world->folderName(), true)));
+}
+
+void WorldListPage::on_actionCreate_Shortcut_triggered()
+{
+    QModelIndex index = getSelectedWorld();
+    if (!index.isValid()) {
+        return;
+    }
+    auto worldVariant = m_worlds->data(index, WorldList::ObjectRole);
+    auto world = (World*)worldVariant.value<void*>();
+
+    CreateShortcutDialog shortcutDlg(m_inst, this, world->folderName());
+    if (!shortcutDlg.exec())
+        return;
+    shortcutDlg.createShortcut();
 }
 
 #include "WorldListPage.moc"

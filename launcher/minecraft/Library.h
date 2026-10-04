@@ -149,6 +149,19 @@ class Library {
                                              QStringList& failedLocalFiles,
                                              const QString& overridePath) const;
 
+    /// A file this library expects to have on disk
+    struct ExpectedFile {
+        /// path relative to the libraries storage root
+        QString storage;
+        /// expected sha1 of the file, empty if unknown
+        QString sha1;
+        /// the file lives inside the instance instead of the shared libraries dir
+        bool local = false;
+    };
+
+    /// Get the list of files this library should provide, for integrity checking
+    QList<ExpectedFile> expectedFiles(const RuntimeContext& runtimeContext) const;
+
     QString getCompatibleNative(const RuntimeContext& runtimeContext) const;
 
    private: /* methods */

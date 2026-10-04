@@ -126,6 +126,7 @@
     <addaction name="actionKillInstance"/>
     <addaction name="separator"/>
     <addaction name="actionEditInstance"/>
+    <addaction name="actionRepairInstance"/>
     <addaction name="actionChangeInstGroup"/>
     <addaction name="actionViewSelectedInstFolder"/>
     <addaction name="actionExportInstance"/>
@@ -349,6 +350,17 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="actionRepairInstance">
+   <property name="icon">
+    <iconset theme="checkupdate"/>
+   </property>
+   <property name="text">
+    <string>&amp;Repair</string>
+   </property>
+   <property name="toolTip">
+    <string>Verify instance files against their checksums and re-download broken ones.</string>
    </property>
   </action>
   <action name="actionViewSelectedInstFolder">

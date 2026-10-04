@@ -40,6 +40,9 @@ class LauncherPartLaunch : public LaunchStep {
     void on_state(LoggedProcess::State state);
 
    private:
+    void reportCrashAnalysis();
+
+   private:
     LoggedProcess m_process;
     QString m_command;
     AuthSessionPtr m_session;

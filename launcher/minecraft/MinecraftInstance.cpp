@@ -65,6 +65,7 @@
 #include "minecraft/launch/EnsureAvailableMemory.h"
 #include "minecraft/launch/EnsureOfflineLibraries.h"
 #include "minecraft/launch/ExtractNatives.h"
+#include "minecraft/InstanceBackup.h"
 #include "minecraft/launch/LauncherPartLaunch.h"
 #include "minecraft/launch/ModMinecraftJar.h"
 #include "minecraft/launch/PrintInstanceInfo.h"
@@ -264,6 +265,10 @@ void MinecraftInstance::loadSpecificSettings()
     m_settings->registerSetting("JoinServerOnLaunch", false);
     m_settings->registerSetting("JoinServerOnLaunchAddress", "");
     m_settings->registerSetting("JoinWorldOnLaunch", "");
+
+    m_settings->registerSetting("AutoBackupEnabled", false);
+    m_settings->registerSetting("AutoBackupIntervalHours", 24);
+    m_settings->registerSetting("AutoBackupKeepCount", 10);
 
     // Use account for instance, this does not have a global override
     m_settings->registerSetting("UseAccountForInstance", false);
@@ -1169,6 +1174,13 @@ LaunchTask* MinecraftInstance::createLaunchTask(AuthSessionPtr session, Minecraf
     // create the .minecraft folder and server-resource-packs (workaround for Minecraft bug MCL-3732)
     {
         process->appendStep(makeShared<CreateGameFolders>(pptr));
+    }
+
+    // optional automatic backup before launch
+    if (settings()->get("AutoBackupEnabled").toBool()) {
+        auto intervalHours = settings()->get("AutoBackupIntervalHours").toInt();
+        auto keepCount = settings()->get("AutoBackupKeepCount").toInt();
+        process->appendStep(makeShared<TaskStepWrapper>(pptr, makeShared<BackupInstanceTask>(this, intervalHours, keepCount)));
     }
 
     if (!targetToJoin && settings()->get("JoinServerOnLaunch").toBool()) {

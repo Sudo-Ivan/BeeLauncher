@@ -55,7 +55,7 @@
 #include "minecraft/WorldList.h"
 #include "minecraft/auth/AccountList.h"
 
-CreateShortcutDialog::CreateShortcutDialog(BaseInstance* instance, QWidget* parent)
+CreateShortcutDialog::CreateShortcutDialog(BaseInstance* instance, QWidget* parent, const QString& presetWorld, const QString& presetServer)
     : QDialog(parent), ui(new Ui::CreateShortcutDialog), m_instance(instance)
 {
     ui->setupUi(this);
@@ -95,8 +95,22 @@ CreateShortcutDialog::CreateShortcutDialog(BaseInstance* instance, QWidget* pare
             // Entry name: World Name [Game Mode] - Last Played: DateTime
             QString entry_name = tr("%1 [%2] - Last Played: %3")
                                      .arg(world.name(), world.gameType().toTranslatedString(), world.lastPlayed().toString(Qt::ISODate));
-            ui->worldSelectionBox->addItem(entry_name, world.name());
+            ui->worldSelectionBox->addItem(entry_name, world.folderName());
         }
+    }
+
+    // Apply preset targets, e.g. when opened from the Worlds or Servers page
+    if (!presetWorld.isEmpty()) {
+        int worldIndex = ui->worldSelectionBox->findData(presetWorld);
+        if (worldIndex != -1) {
+            ui->targetCheckbox->setChecked(true);
+            ui->worldTarget->setChecked(true);
+            ui->worldSelectionBox->setCurrentIndex(worldIndex);
+        }
+    } else if (!presetServer.isEmpty()) {
+        ui->targetCheckbox->setChecked(true);
+        ui->serverTarget->setChecked(true);
+        ui->serverAddressBox->setText(presetServer);
     }
 
     // Populate accounts

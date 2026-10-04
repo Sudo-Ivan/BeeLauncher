@@ -85,6 +85,8 @@
 #include <launch/LaunchTask.h>
 #include <minecraft/MinecraftInstance.h>
 #include <minecraft/auth/AccountList.h>
+#include <minecraft/update/RepairTask.h>
+#include <tasks/SequentialTask.h>
 #include <net/ApiDownload.h>
 #include <net/NetJob.h>
 #include <tools/BaseProfiler.h>
@@ -1296,6 +1298,46 @@ void MainWindow::on_actionEditInstance_triggered()
     }
 }
 
+void MainWindow::on_actionRepairInstance_triggered()
+{
+    auto instance = dynamic_cast<MinecraftInstance*>(m_selectedInstance);
+    if (!instance)
+        return;
+    if (instance->isRunning()) {
+        CustomMessageBox::selectable(this, tr("Instance is running"),
+                                     tr("Stop the instance before running repair."), QMessageBox::Warning)
+            ->show();
+        return;
+    }
+
+    auto task = makeShared<SequentialTask>(tr("Repairing instance %1").arg(instance->name()));
+    auto verify = makeShared<RepairVerifyTask>(instance);
+    task->addTask(verify);
+    for (auto updateTask : instance->createUpdateTask()) {
+        task->addTask(updateTask);
+    }
+
+    ProgressDialog progressDialog(this);
+    if (!progressDialog.execWithTask(task.get()))
+        return;
+
+    if (verify->brokenCount() > 0) {
+        CustomMessageBox::selectable(this, tr("Instance repaired"),
+                                     tr("Re-downloaded %1 corrupted or missing files for instance %2.")
+                                         .arg(verify->brokenCount())
+                                         .arg(instance->name()),
+                                     QMessageBox::Information)
+            ->show();
+    } else {
+        CustomMessageBox::selectable(this, tr("Instance healthy"),
+                                     tr("All %1 checked files of instance %2 are intact.")
+                                         .arg(verify->checkedCount())
+                                         .arg(instance->name()),
+                                     QMessageBox::Information)
+            ->show();
+    }
+}
+
 void MainWindow::on_actionManageAccounts_triggered()
 {
     APPLICATION->ShowGlobalSettings(this, "accounts");
@@ -1643,6 +1685,7 @@ void MainWindow::updateStatusCenter()
 void MainWindow::setInstanceActionsEnabled(bool enabled)
 {
     ui->actionEditInstance->setEnabled(enabled);
+    ui->actionRepairInstance->setEnabled(enabled);
     ui->actionChangeInstGroup->setEnabled(enabled);
     ui->actionViewSelectedInstFolder->setEnabled(enabled);
     ui->actionExportInstance->setEnabled(enabled);
