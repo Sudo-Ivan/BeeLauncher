@@ -51,6 +51,7 @@ configure_file(${Launcher_APP_BINARY_NAME}.qrc.in ${Launcher_APP_BINARY_NAME}.qr
 configure_file(${Launcher_APP_BINARY_NAME}.manifest.in ${Launcher_APP_BINARY_NAME}.manifest @ONLY)
 configure_file(${Launcher_APP_BINARY_NAME}.ico ${Launcher_APP_BINARY_NAME}.ico COPYONLY)
 configure_file(${Launcher_SVGFileName} ${Launcher_SVGFileName} COPYONLY)
+configure_file(${Launcher_AppID}_256.png ${Launcher_AppID}_256.png COPYONLY)
 configure_file(${Launcher_AppID}.mime.xml ${Launcher_AppID}.xml COPYONLY)
 
 if(MSVC)
@@ -75,6 +76,14 @@ Section "Visual Studio Runtime"
 SectionEnd
 !endif
 ]=])
+endif()
+
+if(NOT Launcher_UPDATER_GITHUB_REPO STREQUAL "" AND NOT Launcher_BUILD_ARTIFACT STREQUAL "")
+    set(Launcher_NSIS_UPDATER_INSTALL "File \"${Launcher_APP_BINARY_NAME}_updater.exe\"")
+    set(Launcher_NSIS_UPDATER_UNINSTALL "Delete $INSTDIR\\${Launcher_APP_BINARY_NAME}_updater.exe")
+else()
+    set(Launcher_NSIS_UPDATER_INSTALL "")
+    set(Launcher_NSIS_UPDATER_UNINSTALL "")
 endif()
 
 configure_file(win_install.nsi.in win_install.nsi @ONLY)
