@@ -110,6 +110,7 @@ jobs:
             --title "Bee Launcher $VERSION" \
             --draft \
             --verify-tag \
+            --repo "$GITHUB_REPOSITORY" \
             "BeeLauncher-Linux-x86_64.AppImage" \
             "BeeLauncher-Linux-x86_64.AppImage.zsync" \
             "BeeLauncher-Linux-aarch64.AppImage" \
