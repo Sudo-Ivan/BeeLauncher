@@ -23,6 +23,7 @@ jobs:
       - name: Install commitlint
         run: |
           npm ci --prefix .github/commitlint
+          ln -s .github/commitlint/node_modules node_modules
           echo "$PWD/.github/commitlint/node_modules/.bin" >> "$GITHUB_PATH"
 
       - name: Validate current commit (last commit) with commitlint
