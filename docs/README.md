@@ -50,6 +50,12 @@ Based on FreesmLauncher (Prism Launcher **11.1.1**)
 - Custom authentication server support
 - Polished, minimalist dark and light themes based on a [Fluent-Dark](https://github.com/PrismLauncher/Themes/tree/main/themes/Fluent-Dark) theme with honey accent colors and [Microsoft Fluent](https://fluent2.microsoft.design/iconography) icons
 - In-game screenshots copying to the buffer history without any mods support
+- Quick Play shortcuts: create desktop or menu shortcuts that launch straight into a world or server, right from the Worlds and Servers pages
+- Crash analysis: when the game crashes, the launcher scans the logs and crash reports and points out the likely cause, like low memory, missing mod dependencies or driver problems
+- Instance repair: verifies libraries, jars and assets against their checksums and re-downloads only the broken files
+- Instance backups: manual or scheduled snapshots with rotation and one-click restore from the Backups page
+- Migration: detects and imports instances from the vanilla launcher, MultiMC family, CurseForge, Modrinth App and GDLauncher, including worlds, mods and configs
+- Resumable downloads with automatic retries for Minecraft files, mods, libraries and Java runtimes
 - Animated snow effect for those who love... snow?
 - Random username and instance icon selection with ultra-super-advanced and cryptographically secure, absolutely random number generator based on the [lavarand](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 - FLOSS
@@ -68,6 +74,11 @@ Based on FreesmLauncher (Prism Launcher **11.1.1**)
 | Discord Rich Presence                    | ❌             | ✅               | ❌                | ❌    | ❌       | ❌             | ❌             | ❌       | ❌             | ❌              |
 | Built-in news feed                       | ❌             | ✅               | ❌                | ❌    | ❌       | ❌             | ❌             | ❌       | ❌             | ❌              |
 | Cat packs and anime content              | ❌             | ✅               | ❌                | ❌    | ❌       | ❌             | ❌             | ❌       | ❌             | ❌              |
+| Quick Play shortcuts (world/server)      | ✅             | ✅               | ❌                | ✅    | ❌       | ❌             | ❌             | ❌       | ❌             | ✅              |
+| Crash analysis                           | ✅             | ❌               | ❌                | ✅    | ❌       | ❌             | ❌             | ❌       | ❌             | ❌              |
+| Instance repair (checksum verification)  | ✅             | ❌               | ❌                | ❌    | ❌       | ❌             | ❌             | ❌       | ❌             | ❌              |
+| Instance backups with rotation           | ✅             | ❌               | ❌                | ❌    | ❌       | ❌             | ❌             | ❌       | ❌             | ❌              |
+| Migration from other launchers           | ✅             | ❌               | ❌                | ❌    | ❌       | ❌             | ❌             | ❌       | ❌             | ❌              |
 | Fork                                     | FreesmLauncher | PrismLauncher   | FjordLauncher    | ❌    | PollyMC | PrismLauncher | PrismLauncher | MultiMC | PrismLauncher | PolyMC         |
 
 ¹ doesn't use official Ely.by authlib patches
