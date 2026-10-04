@@ -178,8 +178,8 @@ set(Launcher_LEGACY_FMLLIBS_BASE_URL "https://files.prismlauncher.org/fmllibs/" 
 
 ######## Set version numbers ########
 set(Launcher_VERSION_MAJOR 2)
-set(Launcher_VERSION_MINOR 3)
-set(Launcher_VERSION_PATCH 1)
+set(Launcher_VERSION_MINOR 4)
+set(Launcher_VERSION_PATCH 0)
 set(Launcher_VERSION_CODENAME "Honey")
 
 set(Launcher_VERSION_NAME "${Launcher_VERSION_MAJOR}.${Launcher_VERSION_MINOR}.${Launcher_VERSION_PATCH}")
