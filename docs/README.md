@@ -83,6 +83,7 @@ Bee Launcher also disables the built-in updater and the upstream network integra
 Download Bee Launcher from our [official website](https://github.com/Sudo-Ivan/BeeLauncher) or the [GitHub Releases](https://github.com/Sudo-Ivan/BeeLauncher/releases) page. Packages are available for **Linux, Windows, and macOS**.
 ### Development builds
 
+
 Please understand that these builds are not intended for most users. There may be bugs and other instabilities. You have been warned.
 
 There are development builds available through:
