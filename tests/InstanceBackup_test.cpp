@@ -74,15 +74,19 @@ class InstanceBackupTest : public QObject {
     {
         QTemporaryDir tmp;
         QVERIFY(tmp.isValid());
-        QString gameRoot = FS::PathCombine(tmp.path(), "game");
+        // on macOS the temp dir lives under /var, which is a symlink. The zip
+        // extractor refuses to write through symlinked paths, so use the
+        // canonical location for everything.
+        QString root = QFileInfo(tmp.path()).canonicalFilePath();
+        QString gameRoot = FS::PathCombine(root, "game");
         writeFile(FS::PathCombine(gameRoot, "options.txt"), "fov:90\n");
         writeFile(FS::PathCombine(gameRoot, "saves/world/level.dat"), "leveldata");
         writeFile(FS::PathCombine(gameRoot, "mods/mod.jar"), "jarbytes");
 
-        QString zipPath = FS::PathCombine(tmp.path(), "backup.zip");
+        QString zipPath = FS::PathCombine(root, "backup.zip");
         QCOMPARE(InstanceBackup::createBackup(gameRoot, zipPath), QString());
 
-        QString outDir = FS::PathCombine(tmp.path(), "out");
+        QString outDir = FS::PathCombine(root, "out");
         auto extracted = MMCZip::extractDir(zipPath, outDir);
         QVERIFY(extracted.has_value());
 
