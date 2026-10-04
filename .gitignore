@@ -63,3 +63,4 @@ flatbuild
 
 # Snap
 *.snap
+.github/commitlint/node_modules/
