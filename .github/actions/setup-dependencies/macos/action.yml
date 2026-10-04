@@ -24,24 +24,11 @@ runs:
 
     - name: Setup vcpkg cache
       if: ${{ inputs.build-type == 'Debug' }}
-      shell: bash
-      env:
-        USERNAME: ${{ github.repository_owner }}
-        GITHUB_TOKEN: ${{ github.token }}
-        FEED_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
-      # values are the repository owner and the run token, not user input
-      run: | # zizmor: ignore[github-env]
-        mono `vcpkg fetch nuget | tail -n 1` \
-          sources add \
-          -Source "$FEED_URL" \
-          -StorePasswordInClearText \
-          -Name GitHubPackages \
-          -UserName "$USERNAME" \
-          -Password "$GITHUB_TOKEN"
-        mono `vcpkg fetch nuget | tail -n 1` \
-          setapikey "$GITHUB_TOKEN" \
-          -Source "$FEED_URL"
-        echo "VCPKG_BINARY_SOURCES=clear;nuget,$FEED_URL,readwrite" >> "$GITHUB_ENV"
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.cache/vcpkg/archives
+        key: ${{ runner.os }}-vcpkg-${{ inputs.build-type }}
+        restore-keys: ${{ runner.os }}-vcpkg-
 
     - name: Setup vcpkg environment
       shell: bash

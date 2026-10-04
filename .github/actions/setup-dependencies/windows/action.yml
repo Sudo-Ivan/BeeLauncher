@@ -35,24 +35,11 @@ runs:
 
     - name: Setup vcpkg cache (MSVC)
       if: ${{ inputs.msystem == '' && inputs.build-type == 'Debug' }}
-      shell: pwsh
-      env:
-        USERNAME: ${{ github.repository_owner }}
-        GITHUB_TOKEN: ${{ github.token }}
-        FEED_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
-      # values are the repository owner and the run token, not user input
-      run: | # zizmor: ignore[github-env]
-        .$(vcpkg fetch nuget) `
-          sources add `
-          -Source "$env:FEED_URL" `
-          -StorePasswordInClearText `
-          -Name GitHubPackages `
-          -UserName "$env:USERNAME" `
-          -Password "$env:GITHUB_TOKEN"
-        .$(vcpkg fetch nuget) `
-          setapikey "$env:GITHUB_TOKEN" `
-          -Source "$env:FEED_URL"
-        "VCPKG_BINARY_SOURCES=clear;nuget,$env:FEED_URL,readwrite" | Out-File -Append $env:GITHUB_ENV
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~\AppData\Local\vcpkg\archives
+        key: ${{ runner.os }}-vcpkg-${{ inputs.build-type }}
+        restore-keys: ${{ runner.os }}-vcpkg-
 
     - name: Setup vcpkg environment (MSVC)
       if: ${{ inputs.msystem == '' }}
