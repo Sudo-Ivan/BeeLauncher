@@ -72,3 +72,6 @@ ecm_add_test(Migrate_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR
 
 ecm_add_test(InstanceBackup_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME InstanceBackup)
+
+ecm_add_test(PNGUtils_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
+    TEST_NAME PNGUtils)
