@@ -26,7 +26,7 @@ runs:
         arch: ${{ inputs.vcvars-arch }}
 
     - name: Setup Java (MSVC)
-      uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+      uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
       with:
         # NOTE(@getchoo): We should probably stay on Zulu.
         # Temurin doesn't have Java 17 builds for WoA
@@ -50,7 +50,7 @@ runs:
 
     - name: Setup MSYS2 (MinGW)
       if: ${{ inputs.msystem != '' }}
-      uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2
+      uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2.33.0
       with:
         msystem: ${{ inputs.msystem }}
         update: true
@@ -79,7 +79,7 @@ runs:
 
     - name: Retrieve ccache cache (MinGW)
       if: ${{ inputs.msystem != '' && inputs.build-type == 'Debug' }}
-      uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: '${{ github.workspace }}\.ccache'
         key: ${{ runner.os }}-mingw-w64-ccache-${{ github.run_id }}

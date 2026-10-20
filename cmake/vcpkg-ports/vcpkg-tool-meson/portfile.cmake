@@ -5,34 +5,34 @@
 set(VCPKG_POLICY_CMAKE_HELPER_PORT enabled)
 
 set(patches
-        meson-intl.patch
-        adjust-python-dep.patch
-        adjust-args.patch
-        remove-freebsd-pcfile-specialization.patch
-        fix-libcpp-enable-assertions.patch # https://github.com/mesonbuild/meson/pull/14548, Remove in 1.8.3
-        universal-osx.patch # NOTE(@getchoo): THIS IS THE ONLY CHANGE NEEDED FOR PRISM
+  meson-intl.patch
+  adjust-python-dep.patch
+  adjust-args.patch
+  remove-pkgconfig-specialization.patch
+  meson-56879d5.diff  # Remove with 1.9.1
+  universal-osx.patch  # NOTE(@getchoo): THIS IS THE ONLY CHANGE NEEDED FOR PRISM
 )
 set(scripts
-        vcpkg-port-config.cmake
-        vcpkg_configure_meson.cmake
-        vcpkg_install_meson.cmake
-        meson.template.in
+  vcpkg-port-config.cmake
+  vcpkg_configure_meson.cmake
+  vcpkg_install_meson.cmake
+  meson.template.in
 )
-set(to_hash
-        "${CMAKE_CURRENT_LIST_DIR}/vcpkg.json"
-        "${CMAKE_CURRENT_LIST_DIR}/portfile.cmake"
+set(to_hash 
+  "${CMAKE_CURRENT_LIST_DIR}/vcpkg.json"
+  "${CMAKE_CURRENT_LIST_DIR}/portfile.cmake"
 )
-foreach (file IN LISTS patches scripts)
-    set(filepath "${CMAKE_CURRENT_LIST_DIR}/${file}")
-    list(APPEND to_hash "${filepath}")
-    file(COPY "${filepath}" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
-endforeach ()
+foreach(file IN LISTS patches scripts)
+  set(filepath  "${CMAKE_CURRENT_LIST_DIR}/${file}")
+  list(APPEND to_hash "${filepath}")
+  file(COPY "${filepath}" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
+endforeach()
 
 set(meson_path_hash "")
-foreach (filepath IN LISTS to_hash)
-    file(SHA1 "${filepath}" to_append)
-    string(APPEND meson_path_hash "${to_append}")
-endforeach ()
+foreach(filepath IN LISTS to_hash)
+  file(SHA1 "${filepath}" to_append)
+  string(APPEND meson_path_hash "${to_append}")
+endforeach()
 string(SHA512 meson_path_hash "${meson_path_hash}")
 
 string(SUBSTRING "${meson_path_hash}" 0 6 MESON_SHORT_HASH)
