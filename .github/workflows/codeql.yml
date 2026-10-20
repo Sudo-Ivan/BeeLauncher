@@ -9,6 +9,20 @@ on:
   merge_group:
     types: [ checks_requested ]
   pull_request:
+    types: [ opened, synchronize, reopened, ready_for_review ]
+    paths:
+      - 'launcher/**'
+      - 'libraries/**'
+      - 'tests/**'
+      - 'CMakeLists.txt'
+      - 'CMakePresets.json'
+      - 'cmake/**'
+      - 'vcpkg.json'
+      - '.github/codeql/**'
+      - '.github/workflows/codeql.yml'
+      - '.github/actions/setup-dependencies/**'
+  schedule:
+    - cron: '17 5 * * 1'
   workflow_dispatch:
 
 permissions: { }
@@ -16,6 +30,8 @@ permissions: { }
 jobs:
   CodeQL:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
+    timeout-minutes: 60
 
     permissions:
       contents: read
