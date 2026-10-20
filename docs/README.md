@@ -8,6 +8,8 @@
 
 A FreesmLauncher fork that **removes offline account restrictions**, adds custom auth server support, and provides more customization
 
+
+**Website:** https://sudo-ivan.github.io/BeeLauncher/
 This fork is **not** endorsed by FreesmLauncher or Prism Launcher
 
 Based on FreesmLauncher (Prism Launcher **11.1.1**)
@@ -91,7 +93,7 @@ Bee Launcher also disables the built-in updater and the upstream network integra
 
 ### Stable Releases
 
-Download Bee Launcher from our [official website](https://github.com/Sudo-Ivan/BeeLauncher) or the [GitHub Releases](https://github.com/Sudo-Ivan/BeeLauncher/releases) page. Packages are available for **Linux, Windows, and macOS**.
+Download Bee Launcher from our [official website](https://sudo-ivan.github.io/BeeLauncher/) or the [GitHub Releases](https://github.com/Sudo-Ivan/BeeLauncher/releases) page. Packages are available for **Linux, Windows, and macOS**.
 
 ### Development builds
 

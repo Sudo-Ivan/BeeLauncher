@@ -8,6 +8,8 @@
 
 Форк FreesmLauncher, который **позволяет играть с офлайн-аккаунтом без ограничений**, поддерживает кастомные сервера авторизации и расширяет кастомизацию
 
+
+**Сайт:** https://sudo-ivan.github.io/BeeLauncher/
 Этот форк **не** поддерживается FreesmLauncher или Prism Launcher'ом
 
 Основан на FreesmLauncher (Prism Launcher **11.1.1**)
@@ -91,7 +93,7 @@ Bee Launcher также отключает встроенный автообно
 
 ### Стабильные версии
 
-Скачайте Bee Launcher с нашего [официального сайта](https://github.com/Sudo-Ivan/BeeLauncher) или через страницу [GitHub Releases](https://github.com/Sudo-Ivan/BeeLauncher/releases). Лаунчер доступен на **Linux, Windows и macOS**.
+Скачайте Bee Launcher с нашего [официального сайта](https://sudo-ivan.github.io/BeeLauncher/) или через страницу [GitHub Releases](https://github.com/Sudo-Ivan/BeeLauncher/releases). Лаунчер доступен на **Linux, Windows и macOS**.
 
 
 ### Нестабильные сборки

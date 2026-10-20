@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bee Launcher - Minecraft Launcher</title>
+  <meta name="description" content="Bee Launcher is a FreesmLauncher fork that removes offline account restrictions, adds custom auth server support, and provides more customization.">
+  <meta name="theme-color" content="#131313">
+  <link rel="canonical" href="https://sudo-ivan.github.io/BeeLauncher/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Bee Launcher">
+  <meta property="og:description" content="A FreesmLauncher fork that removes offline account restrictions, adds custom auth server support, and provides more customization.">
+  <meta property="og:url" content="https://sudo-ivan.github.io/BeeLauncher/">
+  <meta property="og:image" content="https://sudo-ivan.github.io/BeeLauncher/assets/img/beelauncher_home_screenshot.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Bee Launcher">
+  <meta name="twitter:description" content="A FreesmLauncher fork that removes offline account restrictions, adds custom auth server support, and provides more customization.">
+  <meta name="twitter:image" content="https://sudo-ivan.github.io/BeeLauncher/assets/img/beelauncher_home_screenshot.webp">
+  <link rel="icon" href="assets/img/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="#">
+        <img src="assets/img/logo.webp" alt="Bee Launcher logo" width="32" height="32">
+        Bee Launcher
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="#features">Features</a>
+        <a href="#screenshots">Screenshots</a>
+        <a href="#compare">Compare</a>
+        <a href="#download">Download</a>
+        <a href="#about">About</a>
+        <a class="icon-btn keep" href="https://github.com/Sudo-Ivan/BeeLauncher" aria-label="Bee Launcher on GitHub">
+          <span class="icon icon-github" aria-hidden="true"></span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap">
+        <h1>Bee Launcher</h1>
+        <p class="tagline">A FreesmLauncher fork that removes offline account restrictions, adds custom auth server support, and provides more customization.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" id="hero-download" href="https://github.com/Sudo-Ivan/BeeLauncher/releases/latest">
+            <span class="icon icon-download" aria-hidden="true"></span>
+            Download
+          </a>
+          <a class="btn" href="https://github.com/Sudo-Ivan/BeeLauncher">
+            <span class="icon icon-github" aria-hidden="true"></span>
+            View on GitHub
+          </a>
+        </div>
+        <p class="version-line" id="version-line">Latest release: <a href="https://github.com/Sudo-Ivan/BeeLauncher/releases/latest">releases page</a></p>
+        <div class="hero-shot">
+          <img src="assets/img/beelauncher_home_screenshot.webp" alt="Bee Launcher main window showing the instance list in dark theme" width="1117" height="780">
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="wrap">
+        <h2>Features</h2>
+        <p class="section-sub">Everything from Prism Launcher, plus more.</p>
+        <div class="features-grid">
+          <div class="feature-card">
+            <span class="icon icon-person" aria-hidden="true"></span>
+            <h3>Offline mode without a Microsoft account</h3>
+            <p>Play without signing in. No Microsoft account required to launch the game.</p>
+          </div>
+          <div class="feature-card">
+            <span class="icon icon-shield" aria-hidden="true"></span>
+            <h3>Ely.by accounts</h3>
+            <p>Use Ely.by as an account option with seamless Minecraft integration. Your skin shows up everywhere, no mods or plugins needed.</p>
+          </div>
+          <div class="feature-card">
+            <span class="icon icon-key" aria-hidden="true"></span>
+            <h3>Custom auth servers</h3>
+            <p>Point the launcher at any compatible authentication server.</p>
+          </div>
+          <div class="feature-card">
+            <span class="icon icon-sparkle" aria-hidden="true"></span>
+            <h3>Polished themes</h3>
+            <p>Minimalist dark and light themes based on Fluent Dark with honey accent colors and Microsoft Fluent icons.</p>
+          </div>
+          <div class="feature-card">
+            <span class="icon icon-camera" aria-hidden="true"></span>
+            <h3>Screenshot to clipboard</h3>
+            <p>In-game screenshots are copied to your clipboard history automatically, no mods needed.</p>
+          </div>
+          <div class="feature-card">
+            <span class="icon icon-play" aria-hidden="true"></span>
+            <h3>Quick Play shortcuts</h3>
+            <p>Create desktop or menu shortcuts that launch straight into a world or server from the Worlds and Servers pages.</p>
+          </div>
+          <div class="feature-card">
+            <span class="icon icon-bug" aria-hidden="true"></span>
+            <h3>Crash analysis</h3>
+            <p>When the game crashes the launcher scans logs and crash reports and points out the likely cause, like low memory, missing mod dependencies or driver problems.</p>
+          </div>
+          <div class="feature-card">
+            <span class="icon icon-wrench" aria-hidden="true"></span>
+            <h3>Instance repair</h3>
+            <p>Verifies libraries, jars and assets against their checksums and re-downloads only the broken files.</p>
+          </div>
+          <div class="feature-card">
+            <span class="icon icon-history" aria-hidden="true"></span>
+            <h3>Instance backups</h3>
+            <p>Manual or scheduled snapshots with rotation and one-click restore from the Backups page.</p>
+          </div>
+          <div class="feature-card">
+            <span class="icon icon-swap" aria-hidden="true"></span>
+            <h3>Migration</h3>
+            <p>Detects and imports instances from the vanilla launcher, the MultiMC family, CurseForge, Modrinth App and GDLauncher, including worlds, mods and configs.</p>
+          </div>
+          <div class="feature-card">
+            <span class="icon icon-download" aria-hidden="true"></span>
+            <h3>Resumable downloads</h3>
+            <p>Automatic retries for Minecraft files, mods, libraries and Java runtimes.</p>
+          </div>
+          <div class="feature-card">
+            <span class="icon icon-snow" aria-hidden="true"></span>
+            <h3>Animated snow</h3>
+            <p>An optional snow effect for those who love snow.</p>
+          </div>
+          <div class="feature-card">
+            <span class="icon icon-globe" aria-hidden="true"></span>
+            <h3>Random names and icons</h3>
+            <p>Random username and instance icon selection powered by a lavarand grade random number generator.</p>
+          </div>
+          <div class="feature-card">
+            <span class="icon icon-code" aria-hidden="true"></span>
+            <h3>Free and open source</h3>
+            <p>FLOSS, licensed under GPL 3.0 only, with all of the Prism Launcher features included.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screenshots">
+      <div class="wrap">
+        <h2>Screenshots</h2>
+        <p class="section-sub">The dark honey theme in action.</p>
+        <div class="shots-grid">
+          <a href="#" data-shot="assets/img/beelauncher_home_screenshot.webp" data-caption="Dark theme dashboard">
+            <div class="shot-img"><img src="assets/img/beelauncher_home_screenshot.webp" alt="Dark theme dashboard" width="1117" height="780" loading="lazy"></div>
+            <div class="shot-caption">Dark theme dashboard</div>
+          </a>
+          <a href="#" data-shot="assets/img/beelauncher_home_screenshot_opacity.webp" data-caption="Dashboard with opacity">
+            <div class="shot-img"><img src="assets/img/beelauncher_home_screenshot_opacity.webp" alt="Dashboard with opacity" width="1117" height="766" loading="lazy"></div>
+            <div class="shot-caption">Dashboard with opacity</div>
+          </a>
+          <a href="#" data-shot="assets/img/beelauncher_settings_accounts_screenshot.webp" data-caption="Accounts settings">
+            <div class="shot-img"><img src="assets/img/beelauncher_settings_accounts_screenshot.webp" alt="Accounts settings" width="1264" height="809" loading="lazy"></div>
+            <div class="shot-caption">Accounts settings</div>
+          </a>
+          <a href="#" data-shot="assets/img/beelauncher_instance_add_screenshot.webp" data-caption="Add instance">
+            <div class="shot-img"><img src="assets/img/beelauncher_instance_add_screenshot.webp" alt="Add instance" width="1058" height="540" loading="lazy"></div>
+            <div class="shot-caption">Add instance</div>
+          </a>
+          <a href="#" data-shot="assets/img/beelauncher_instance_settings_screenshot.webp" data-caption="Instance settings">
+            <div class="shot-img"><img src="assets/img/beelauncher_instance_settings_screenshot.webp" alt="Instance settings" width="815" height="724" loading="lazy"></div>
+            <div class="shot-caption">Instance settings</div>
+          </a>
+          <a href="#" data-shot="assets/img/beelauncher_settings_theme_screenshot.webp" data-caption="Theme settings">
+            <div class="shot-img"><img src="assets/img/beelauncher_settings_theme_screenshot.webp" alt="Theme settings" width="1264" height="809" loading="lazy"></div>
+            <div class="shot-caption">Theme settings</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="compare">
+      <div class="wrap">
+        <h2>Compare</h2>
+        <p class="section-sub">How Bee Launcher stacks up against other launchers.</p>
+        <div class="table-scroll">
+          <table class="compare">
+            <caption>Feature comparison of Minecraft launchers. Partial support is marked with a footnote.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Feature</th>
+                <th scope="col" class="bee">Bee Launcher</th>
+                <th scope="col">Freesm Launcher</th>
+                <th scope="col">Shattered Prism</th>
+                <th scope="col">HMCL</th>
+                <th scope="col">Fjord</th>
+                <th scope="col">PollyMC</th>
+                <th scope="col">PineconeMC</th>
+                <th scope="col">UltimMC</th>
+                <th scope="col">Prism-Cracked</th>
+                <th scope="col">Prism Launcher</th>
+              </tr>
+            </thead>
+            <tbody id="compare-body">
+              <tr>
+                <th scope="row">Offline Mode without a Microsoft account</th>
+<td class="bee"><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+</tr>
+              <tr>
+                <th scope="row">FTB packs</th>
+<td class="bee"><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+</tr>
+              <tr>
+                <th scope="row">Ely.by support</th>
+<td class="bee"><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="cell-partial">Partial<sup>1</sup></span></td>
+<td><span class="cell-partial">Partial<sup>1</sup></span></td>
+<td><span class="cell-partial">Partial<sup>1</sup></span></td>
+<td><span class="cell-partial">Partial<sup>1</sup></span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="cell-partial">Partial<sup>1</sup></span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+</tr>
+              <tr>
+                <th scope="row">Authlib-injector support</th>
+<td class="bee"><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span><sup>2</sup></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span><sup>2</sup></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span><sup>2</sup></td>
+</tr>
+              <tr>
+                <th scope="row">Screenshots saving to the buffer history</th>
+<td class="bee"><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+</tr>
+              <tr>
+                <th scope="row">Discord Rich Presence</th>
+<td class="bee"><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+</tr>
+              <tr>
+                <th scope="row">Built-in news feed</th>
+<td class="bee"><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+</tr>
+              <tr>
+                <th scope="row">Cat packs and anime content</th>
+<td class="bee"><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+</tr>
+              <tr>
+                <th scope="row">Quick Play shortcuts (world/server)</th>
+<td class="bee"><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+</tr>
+              <tr>
+                <th scope="row">Crash analysis</th>
+<td class="bee"><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+</tr>
+              <tr>
+                <th scope="row">Instance repair (checksum verification)</th>
+<td class="bee"><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+</tr>
+              <tr>
+                <th scope="row">Instance backups with rotation</th>
+<td class="bee"><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+</tr>
+              <tr>
+                <th scope="row">Migration from other launchers</th>
+<td class="bee"><span class="icon icon-check cell-yes" aria-hidden="true"></span><span class="visually-hidden">Yes</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+<td><span class="icon icon-dismiss cell-no" aria-hidden="true"></span><span class="visually-hidden">No</span></td>
+</tr>
+              <tr>
+                <th scope="row">Fork</th>
+<td class="bee">FreesmLauncher</td>
+<td>PrismLauncher</td>
+<td>FjordLauncher</td>
+<td class="cell-no">None</td>
+<td>PollyMC</td>
+<td>PrismLauncher</td>
+<td>PrismLauncher</td>
+<td>MultiMC</td>
+<td>PrismLauncher</td>
+<td>PolyMC</td>
+</tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-notes">
+          <p><sup>1</sup> Does not use official Ely.by authlib patches.</p>
+          <p><sup>2</sup> You can still change a javaagent JVM argument to use your authlib-injector jar file as an auth server.</p>
+          <p>Bee Launcher also disables the built-in updater and the upstream network integrations it had no replacement for, such as news, socials and update checks.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="download">
+      <div class="wrap">
+        <h2>Download</h2>
+        <p class="section-sub">Stable releases for Linux, Windows and macOS.</p>
+        <div class="download-grid">
+          <div class="download-card">
+            <h3><span class="icon icon-windows" aria-hidden="true"></span> Windows</h3>
+            <p class="os-note">x86_64</p>
+            <ul>
+              <li><a data-asset="win-msvc-setup" href="https://github.com/Sudo-Ivan/BeeLauncher/releases/latest"><span class="icon icon-download" aria-hidden="true"></span> MSVC installer (exe)</a></li>
+              <li><a data-asset="win-msvc-portable" href="https://github.com/Sudo-Ivan/BeeLauncher/releases/latest"><span class="icon icon-download" aria-hidden="true"></span> MSVC portable (zip)</a></li>
+              <li><a data-asset="win-mingw-setup" href="https://github.com/Sudo-Ivan/BeeLauncher/releases/latest"><span class="icon icon-download" aria-hidden="true"></span> MinGW-w64 installer (exe)</a></li>
+              <li><a data-asset="win-mingw-portable" href="https://github.com/Sudo-Ivan/BeeLauncher/releases/latest"><span class="icon icon-download" aria-hidden="true"></span> MinGW-w64 portable (zip)</a></li>
+            </ul>
+          </div>
+          <div class="download-card">
+            <h3><span class="icon icon-linux" aria-hidden="true"></span> Linux</h3>
+            <p class="os-note">x86_64</p>
+            <ul>
+              <li><a data-asset="linux-appimage" href="https://github.com/Sudo-Ivan/BeeLauncher/releases/latest"><span class="icon icon-download" aria-hidden="true"></span> AppImage</a></li>
+              <li><a data-asset="linux-portable" href="https://github.com/Sudo-Ivan/BeeLauncher/releases/latest"><span class="icon icon-download" aria-hidden="true"></span> Portable tarball</a></li>
+            </ul>
+          </div>
+          <div class="download-card">
+            <h3><span class="icon icon-apple" aria-hidden="true"></span> macOS</h3>
+            <p class="os-note">Universal</p>
+            <ul>
+              <li><a data-asset="mac-dmg" href="https://github.com/Sudo-Ivan/BeeLauncher/releases/latest"><span class="icon icon-download" aria-hidden="true"></span> Disk image (dmg)</a></li>
+              <li><a data-asset="mac-zip" href="https://github.com/Sudo-Ivan/BeeLauncher/releases/latest"><span class="icon icon-download" aria-hidden="true"></span> Archive (zip)</a></li>
+            </ul>
+          </div>
+        </div>
+        <p class="source-note">You can also <a href="https://github.com/Sudo-Ivan/BeeLauncher">build from source</a>.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="about">
+    <div class="wrap">
+      <p>Bee Launcher is a fork of FreesmLauncher, which is a fork of Prism Launcher. This fork is not endorsed by FreesmLauncher or Prism Launcher.</p>
+      <p>Licensed under <a href="https://github.com/Sudo-Ivan/BeeLauncher/blob/master/LICENSE">GPL 3.0 only</a>. Source on <a href="https://github.com/Sudo-Ivan/BeeLauncher">GitHub</a>.</p>
+      <p>Icons: Microsoft Fluent UI System Icons (MIT license) and Font Awesome Free (CC BY 4.0 license).</p>
+      <p>Copyright Bee Launcher Contributors.</p>
+    </div>
+  </footer>
+
+  <dialog class="lightbox" id="lightbox" aria-label="Screenshot preview">
+    <img id="lightbox-img" src="assets/img/logo.webp" alt="">
+    <div class="lightbox-bar">
+      <span id="lightbox-caption"></span>
+      <button type="button" id="lightbox-close">Close</button>
+    </div>
+  </dialog>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
