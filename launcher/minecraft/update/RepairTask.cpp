@@ -92,19 +92,25 @@ void RepairVerifyTask::verifyLibraries()
 
                 QFileInfo info(fullPath);
                 if (!info.exists() || info.size() == 0) {
-                    m_broken++;
-                    if (entry)
+                    if (entry) {
+                        m_broken++;
                         entry->setStale(true);
-                    else
+                    } else {
+                        // local files cannot be re-downloaded, track them separately
+                        m_unfixable.fetchAndAddRelease(1);
+                        m_unfixableFiles.append(info.fileName());
                         qWarning() << "Repair: missing local file" << fullPath;
+                    }
                     continue;
                 }
                 if (!expected.sha1.isEmpty() && !fileMatchesSha1(fullPath, expected.sha1)) {
-                    m_broken++;
                     if (entry) {
+                        m_broken++;
                         entry->setStale(true);
                         qDebug() << "Repair: checksum mismatch" << fullPath;
                     } else {
+                        m_unfixable.fetchAndAddRelease(1);
+                        m_unfixableFiles.append(info.fileName());
                         qWarning() << "Repair: corrupted local file" << fullPath;
                     }
                 }

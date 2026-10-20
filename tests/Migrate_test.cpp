@@ -86,9 +86,36 @@ class MigrateTest : public QObject {
     void test_parseVersionId_neoforge()
     {
         QString mc, uid, ver;
-        parse("neoforge-21.0.0", mc, uid, ver);
+        parse("neoforge-21.0.30", mc, uid, ver);
         QCOMPARE(uid, QStringLiteral("net.neoforged"));
-        QCOMPARE(ver, QStringLiteral("21.0.0"));
+        QCOMPARE(ver, QStringLiteral("21.0.30"));
+        QCOMPARE(mc, QStringLiteral("1.21"));
+    }
+
+    void test_parseVersionId_neoforge_minor()
+    {
+        QString mc, uid, ver;
+        parse("neoforge-21.1.5", mc, uid, ver);
+        QCOMPARE(uid, QStringLiteral("net.neoforged"));
+        QCOMPARE(ver, QStringLiteral("21.1.5"));
+        QCOMPARE(mc, QStringLiteral("1.21.1"));
+    }
+
+    void test_parseVersionId_neoforge20()
+    {
+        QString mc, uid, ver;
+        parse("neoforge-20.4.237", mc, uid, ver);
+        QCOMPARE(uid, QStringLiteral("net.neoforged"));
+        QCOMPARE(ver, QStringLiteral("20.4.237"));
+        QCOMPARE(mc, QStringLiteral("1.20.4"));
+    }
+
+    void test_parseVersionId_neoforge_unresolved()
+    {
+        QString mc, uid, ver;
+        parse("neoforge-26.0.0", mc, uid, ver);
+        QCOMPARE(uid, QStringLiteral("net.neoforged"));
+        QCOMPARE(ver, QStringLiteral("26.0.0"));
         QVERIFY(mc.isEmpty());
     }
 

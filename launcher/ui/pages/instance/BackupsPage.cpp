@@ -113,7 +113,8 @@ void BackupsPage::on_restoreButton_clicked()
 
     auto response = CustomMessageBox::selectable(
                         this, tr("Restore backup?"),
-                        tr("This replaces the current instance files with the contents of %1.\n\nExisting files will be overwritten.")
+                        tr("This replaces the current files in the game folder (worlds, mods, configs) with the contents of "
+                           "%1.\n\nExisting files will be overwritten.")
                             .arg(QFileInfo(path).fileName()),
                         QMessageBox::Question, QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
                         ->exec();
@@ -129,6 +130,12 @@ void BackupsPage::on_deleteButton_clicked()
 {
     QString path = selectedBackupPath();
     if (path.isEmpty())
+        return;
+    auto response = CustomMessageBox::selectable(this, tr("Delete backup?"),
+                                               tr("Delete %1? This cannot be undone.").arg(QFileInfo(path).fileName()),
+                                               QMessageBox::Question, QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
+                        ->exec();
+    if (response != QMessageBox::Yes)
         return;
     QFile::remove(path);
     refreshList();

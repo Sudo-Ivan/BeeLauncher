@@ -18,10 +18,11 @@
 
 #pragma once
 
+#include <tasks/Task.h>
 #include <QAtomicInt>
 #include <QFuture>
 #include <QFutureWatcher>
-#include <tasks/Task.h>
+#include <QStringList>
 
 class MinecraftInstance;
 
@@ -39,6 +40,8 @@ class RepairVerifyTask : public Task {
 
     int checkedCount() const { return m_checked; }
     int brokenCount() const { return m_broken; }
+    int unfixableCount() const { return m_unfixable; }
+    QStringList unfixableFiles() const { return m_unfixableFiles; }
 
    protected:
     void executeTask() override;
@@ -54,6 +57,9 @@ class RepairVerifyTask : public Task {
     MinecraftInstance* m_inst;
     QAtomicInt m_checked{ 0 };
     QAtomicInt m_broken{ 0 };
+    QAtomicInt m_unfixable{ 0 };
+    // written on the worker thread, read after the task finishes
+    QStringList m_unfixableFiles;
     QAtomicInt m_cancel{ 0 };
 
     QFuture<void> m_future;

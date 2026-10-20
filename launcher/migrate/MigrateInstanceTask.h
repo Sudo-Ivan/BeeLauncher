@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <QAtomicInt>
+
 #include "InstanceCreationTask.h"
 #include "migrate/DetectedProfile.h"
 
@@ -30,6 +32,9 @@ class MigrateInstanceTask : public InstanceCreationTask {
     explicit MigrateInstanceTask(const DetectedProfile& profile) : m_profile(profile) {}
     virtual ~MigrateInstanceTask() = default;
 
+    bool canAbort() const override { return true; }
+    bool abort() override;
+
    protected:
     std::unique_ptr<MinecraftInstance> createInstance() override;
 
@@ -39,4 +44,6 @@ class MigrateInstanceTask : public InstanceCreationTask {
 
    private:
     DetectedProfile m_profile;
+    QAtomicInt m_copiedFiles{ 0 };
+    QAtomicInt m_cancel{ 0 };
 };

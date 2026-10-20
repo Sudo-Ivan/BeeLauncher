@@ -173,6 +173,38 @@ class CrashAnalyzerTest : public QObject {
         QVERIFY(!titles.contains("World or ticking crash"));
     }
 
+    void test_gameDir_usesFreshCrashReport()
+    {
+        QTemporaryDir tmp;
+        QVERIFY(tmp.isValid());
+        QDir dir(tmp.path());
+        QVERIFY(dir.mkpath("logs"));
+        QVERIFY(dir.mkpath("crash-reports"));
+
+        // latest.log written first, the crash report lands a bit later,
+        // as happens when the reporter writes after the last log flush
+        QFile latest(dir.filePath("logs/latest.log"));
+        QVERIFY(latest.open(QFile::WriteOnly));
+        latest.write("noise\n");
+        latest.close();
+        std::error_code ec;
+        std::filesystem::last_write_time(dir.filePath("logs/latest.log").toStdString(),
+                                         std::filesystem::file_time_type::clock::now() - std::chrono::minutes(1), ec);
+        QVERIFY(!ec);
+
+        QString reportPath = dir.filePath("crash-reports/crash-2026-01-01_00.00.00-client.txt");
+        QFile report(reportPath);
+        QVERIFY(report.open(QFile::WriteOnly));
+        report.write("---- Minecraft Crash Report ----\nDescription: Ticking entity\n");
+        report.close();
+
+        auto findings = CrashAnalyzer::analyzeGameDir(tmp.path());
+        QStringList titles;
+        for (const auto& f : findings)
+            titles << f.title;
+        QVERIFY(titles.contains("World or ticking crash"));
+    }
+
     void test_gameDir_missingLogs()
     {
         QTemporaryDir tmp;

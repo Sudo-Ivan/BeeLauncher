@@ -1321,19 +1321,25 @@ void MainWindow::on_actionRepairInstance_triggered()
     if (!progressDialog.execWithTask(task.get()))
         return;
 
-    if (verify->brokenCount() > 0) {
-        CustomMessageBox::selectable(this, tr("Instance repaired"),
-                                     tr("Re-downloaded %1 corrupted or missing files for instance %2.")
-                                         .arg(verify->brokenCount())
-                                         .arg(instance->name()),
-                                     QMessageBox::Information)
+    if (verify->brokenCount() > 0 || verify->unfixableCount() > 0) {
+        QString text;
+        if (verify->brokenCount() > 0)
+            text = tr("Re-downloaded %1 corrupted or missing files for instance %2.").arg(verify->brokenCount()).arg(instance->name());
+        if (verify->unfixableCount() > 0) {
+            if (!text.isEmpty())
+                text += "\n\n";
+            text += tr("%1 local files could not be repaired automatically:\n%2")
+                        .arg(verify->unfixableCount())
+                        .arg(verify->unfixableFiles().join("\n"));
+        }
+        CustomMessageBox::selectable(this, tr("Instance repaired"), text,
+                                     verify->unfixableCount() > 0 ? QMessageBox::Warning : QMessageBox::Information)
             ->show();
     } else {
-        CustomMessageBox::selectable(this, tr("Instance healthy"),
-                                     tr("All %1 checked files of instance %2 are intact.")
-                                         .arg(verify->checkedCount())
-                                         .arg(instance->name()),
-                                     QMessageBox::Information)
+        CustomMessageBox::selectable(
+            this, tr("Instance healthy"),
+            tr("All %1 checked files of instance %2 are intact.").arg(verify->checkedCount()).arg(instance->name()),
+            QMessageBox::Information)
             ->show();
     }
 }

@@ -113,6 +113,17 @@ void parseVersionId(const QString& versionId, QString& mcVersion, QString& loade
     if (neoforge.hasMatch()) {
         loaderUid = "net.neoforged";
         loaderVersion = neoforge.captured(1);
+        // neoforge major versions 20 and 21 map to Minecraft 1.20.x and 1.21.x,
+        // where the minor version becomes the Minecraft patch version
+        const auto parts = loaderVersion.split('.');
+        if (parts.size() >= 2) {
+            bool okMajor = false, okMinor = false;
+            int major = parts[0].toInt(&okMajor);
+            int minor = parts[1].toInt(&okMinor);
+            if (okMajor && okMinor && (major == 20 || major == 21)) {
+                mcVersion = minor == 0 ? QStringLiteral("1.%1").arg(major) : QStringLiteral("1.%1.%2").arg(major).arg(minor);
+            }
+        }
         return;
     }
     mcVersion = versionId;

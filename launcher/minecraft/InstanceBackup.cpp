@@ -162,7 +162,7 @@ QString BackupInstanceTask::doWork()
 
 void BackupInstanceTask::executeTask()
 {
-    setStatus(tr("Backing up instance %1...").arg(m_instance->name()));
+    setStatus(tr("Backing up game data for instance %1...").arg(m_instance->name()));
     m_future = QtConcurrent::run(QThreadPool::globalInstance(), [this] { return doWork(); });
     connect(&m_watcher, &QFutureWatcher<QString>::finished, this, [this] {
         if (m_cancel.loadAcquire()) {

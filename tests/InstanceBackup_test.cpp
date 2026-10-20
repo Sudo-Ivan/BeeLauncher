@@ -19,6 +19,8 @@
 #include <QFileInfo>
 #include <QTemporaryDir>
 #include <QTest>
+#include <chrono>
+#include <filesystem>
 
 #include <FileSystem.h>
 #include <MMCZip.h>
@@ -68,6 +70,32 @@ class InstanceBackupTest : public QObject {
 
         QCOMPARE(InstanceBackup::pruneBackups(backups.path(), 2), 2);
         QCOMPARE(InstanceBackup::listBackups(backups.path()).size(), 2);
+    }
+
+    void test_pruneRemovesOldest()
+    {
+        QTemporaryDir backups;
+        QVERIFY(backups.isValid());
+
+        QStringList names = { "old1.zip", "old2.zip", "new1.zip", "new2.zip" };
+        const auto base = std::filesystem::file_time_type::clock::now() - std::chrono::hours(7 * 24);
+        for (int i = 0; i < names.size(); ++i) {
+            QString path = FS::PathCombine(backups.path(), names.at(i));
+            writeFile(path, "x");
+            std::error_code ec;
+            std::filesystem::last_write_time(path.toStdString(), base + std::chrono::seconds(i), ec);
+            QVERIFY(!ec);
+        }
+
+        QCOMPARE(InstanceBackup::pruneBackups(backups.path(), 2), 2);
+        QVERIFY(!QFileInfo::exists(FS::PathCombine(backups.path(), "old1.zip")));
+        QVERIFY(!QFileInfo::exists(FS::PathCombine(backups.path(), "old2.zip")));
+        QVERIFY(QFileInfo::exists(FS::PathCombine(backups.path(), "new1.zip")));
+        QVERIFY(QFileInfo::exists(FS::PathCombine(backups.path(), "new2.zip")));
+
+        // clamped to at least one kept
+        QCOMPARE(InstanceBackup::pruneBackups(backups.path(), 0), 1);
+        QCOMPARE(InstanceBackup::listBackups(backups.path()).size(), 1);
     }
 
     void test_createBackup_roundTrip()

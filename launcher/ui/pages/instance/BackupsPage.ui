@@ -86,7 +86,7 @@
    <item>
     <widget class="QGroupBox" name="autoBackupGroup">
      <property name="title">
-      <string>Automatic backups</string>
+      <string>Automatic game data backups</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -95,7 +95,7 @@
       <item>
        <widget class="QLabel" name="intervalLabel">
         <property name="text">
-         <string>Back up before launch at most every</string>
+         <string>Back up game data before launch at most every</string>
         </property>
        </widget>
       </item>

@@ -18,11 +18,16 @@
 
 #include "MigrateInstanceTask.h"
 
+#include <QtConcurrent/QtConcurrent>
+
 #include <QDir>
 #include <QDirIterator>
+#include <QEventLoop>
 #include <QFile>
 #include <QFileInfo>
+#include <QFutureWatcher>
 #include <QSet>
+#include <QTimer>
 
 #include "FileSystem.h"
 #include "minecraft/MinecraftInstance.h"
@@ -54,6 +59,12 @@ const QSet<QString> s_deniedTopLevel = { "versions",
 
 }  // namespace
 
+bool MigrateInstanceTask::abort()
+{
+    m_cancel.storeRelease(1);
+    return InstanceCreationTask::abort();
+}
+
 bool MigrateInstanceTask::copyRecursively(const QString& sourceDir, const QString& destDir)
 {
     QDir source(sourceDir);
@@ -61,6 +72,8 @@ bool MigrateInstanceTask::copyRecursively(const QString& sourceDir, const QStrin
     while (it.hasNext()) {
         it.next();
         const auto info = it.fileInfo();
+        if (m_cancel.loadAcquire())
+            return false;
         const QString rel = source.relativeFilePath(info.absoluteFilePath());
         const QString destPath = FS::PathCombine(destDir, rel);
 
@@ -73,6 +86,7 @@ bool MigrateInstanceTask::copyRecursively(const QString& sourceDir, const QStrin
             return false;
         if (!QFile::copy(info.absoluteFilePath(), destPath))
             return false;
+        m_copiedFiles.fetchAndAddRelease(1);
     }
     return true;
 }
@@ -81,6 +95,8 @@ bool MigrateInstanceTask::copyContent(const QString& destinationRoot)
 {
     QDir content(m_profile.contentDir);
     for (const auto& entry : content.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System)) {
+        if (m_cancel.loadAcquire())
+            return false;
         if (s_deniedTopLevel.contains(entry.fileName()))
             continue;
         const QString destPath = FS::PathCombine(destinationRoot, entry.fileName());
@@ -114,9 +130,28 @@ std::unique_ptr<MinecraftInstance> MigrateInstanceTask::createInstance()
     inst->setIconKey(m_instIcon);
 
     if (!m_profile.contentDir.isEmpty() && QFileInfo::exists(m_profile.contentDir)) {
-        setStatus(tr("Copying files from %1...").arg(m_profile.launcherName));
-        if (!copyContent(inst->gameRoot())) {
-            setError(tr("Failed to copy files from %1").arg(m_profile.contentDir));
+        setStatus(tr("Copying game files from %1...").arg(m_profile.launcherName));
+        m_copiedFiles.storeRelease(0);
+        const QString gameRoot = inst->gameRoot();
+
+        // run the copy on a worker thread and pump events so the dialog and
+        // the abort button stay responsive
+        QFutureWatcher<bool> watcher;
+        QEventLoop loop;
+        connect(&watcher, &QFutureWatcher<bool>::finished, &loop, &QEventLoop::quit);
+        QTimer progressTimer;
+        progressTimer.setInterval(200);
+        connect(&progressTimer, &QTimer::timeout, this, [this] { setDetails(tr("%1 files copied").arg(m_copiedFiles.loadAcquire())); });
+        progressTimer.start();
+        watcher.setFuture(QtConcurrent::run(QThreadPool::globalInstance(), [this, gameRoot] { return copyContent(gameRoot); }));
+        loop.exec();
+        progressTimer.stop();
+
+        if (!watcher.result()) {
+            // remove the partially copied content so no half-migrated game data is left
+            FS::deletePath(gameRoot);
+            if (!m_cancel.loadAcquire())
+                setError(tr("Failed to copy files from %1").arg(m_profile.contentDir));
             return nullptr;
         }
     }
