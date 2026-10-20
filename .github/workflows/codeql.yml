@@ -6,10 +6,8 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  merge_group:
-    types: [ checks_requested ]
-  pull_request:
-    types: [ opened, synchronize, reopened, ready_for_review ]
+  push:
+    branches: [ master ]
     paths:
       - 'launcher/**'
       - 'libraries/**'
@@ -30,7 +28,6 @@ permissions: { }
 jobs:
   CodeQL:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
     timeout-minutes: 60
 
     permissions:

@@ -6,18 +6,14 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  merge_group:
-    types: [ checks_requested ]
-  pull_request:
-    types: [ opened, synchronize, reopened, ready_for_review ]
+  push:
+    branches: [ master ]
     paths-ignore:
       - '**/*.md'
       - 'docs/**'
+      - 'website/**'
       - 'LICENSE'
-      - 'renovate.json'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/pull_request_template.md'
-      - '.github/dco.yml'
+      - '.github/workflows/pages.yml'
   workflow_call:
     inputs:
       build-type:
@@ -65,7 +61,6 @@ jobs:
   build:
     name: Build (${{ matrix.artifact-name }})
 
-    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
     timeout-minutes: 90
 
     environment: ${{ inputs.environment || '' }}
