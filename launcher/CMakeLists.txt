@@ -1391,6 +1391,7 @@ qt_add_qml_module(BeeShell
         ui/shell/BeeButton.qml
         ui/shell/BeeCard.qml
         ui/shell/BeeChip.qml
+        ui/shell/BeeCornerPatch.qml
         ui/shell/BeeComboBox.qml
         ui/shell/BeeIconButton.qml
         ui/shell/BeeMenu.qml

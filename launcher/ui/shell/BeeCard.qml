@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Controls.impl
 import QtQuick.Layouts
+import QtQuick.Effects
 import Bee.Shell
 
 // Instance card used in the Library grid and Home recents.
@@ -17,6 +18,7 @@ Rectangle {
     property bool selected: false
     property bool compact: false
     property var controller: null
+    readonly property bool coverBlur: GraphicsInfo.api !== GraphicsInfo.Software
 
     signal clickedCard()
     signal playClicked()
@@ -50,18 +52,41 @@ Rectangle {
 
     ColumnLayout {
         anchors.fill: parent
+        anchors.margins: card.border.width
         spacing: 0
 
         Item {
             id: cover
             Layout.fillWidth: true
             Layout.preferredHeight: card.compact ? 96 : 136
+            Image {
+                id: coverArt
+                anchors.fill: parent
+                source: card.iconSource
+                sourceSize: Qt.size(96, 96)
+                fillMode: Image.PreserveAspectCrop
+                asynchronous: true
+                visible: false
+            }
+            Loader {
+                anchors.fill: parent
+                active: GraphicsInfo.api !== GraphicsInfo.Software && coverArt.status === Image.Ready
+                sourceComponent: MultiEffect {
+                    source: coverArt
+                    blurEnabled: true
+                    blurMax: 48
+                    blur: 1.0
+                    brightness: Theme.dark ? -0.35 : -0.05
+                    saturation: 0.2
+                    autoPaddingEnabled: false
+                }
+            }
             Rectangle {
                 anchors.fill: parent
                 gradient: Gradient {
                     orientation: Gradient.Horizontal
-                    GradientStop { position: 0.0; color: Theme.coverColors(card.instanceId)[0] }
-                    GradientStop { position: 1.0; color: Theme.coverColors(card.instanceId)[1] }
+                    GradientStop { position: 0.0; color: Theme.withAlpha(Theme.coverColors(card.instanceId)[0], coverBlur ? 0.55 : 1.0) }
+                    GradientStop { position: 1.0; color: Theme.withAlpha(Theme.coverColors(card.instanceId)[1], coverBlur ? 0.55 : 1.0) }
                 }
             }
             Rectangle {
@@ -145,6 +170,9 @@ Rectangle {
             Item { Layout.fillHeight: true }
         }
     }
+
+    BeeCornerPatch { x: 0; y: 0; z: 5 }
+    BeeCornerPatch { mirrored: true; x: card.width - width; y: 0; z: 5 }
 
     MouseArea {
         id: cardMouse

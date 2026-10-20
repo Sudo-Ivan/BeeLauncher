@@ -8,7 +8,7 @@ Button {
     id: btn
     property string variant: "secondary"   // primary | secondary | ghost | danger
     property string iconSource: ""
-    property int btnHeight: 44
+    property int btnHeight: 38
     implicitHeight: btnHeight
     leftPadding: Theme.sp16
     rightPadding: Theme.sp16

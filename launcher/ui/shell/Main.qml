@@ -205,9 +205,9 @@ ApplicationWindow {
                         font.weight: Font.DemiBold
                     }
                     Item { Layout.fillWidth: true }
-                    BeeTextField { Layout.preferredWidth: 320; onTextChanged: instances.filterText = text }
+                    BeeTextField { Layout.preferredWidth: 320; placeholderText: qsTr("Search instances"); onTextChanged: instances.filterText = text }
                     BeeComboBox { Layout.preferredWidth: 170; onActivated: function(i) { instances.sortMode = i } }
-                    BeeButton { variant: "primary"; text: qsTr("New instance"); iconSource: "icons/add.svg"; onClicked: controller.addInstance() }
+                    BeeButton { variant: "primary"; btnHeight: 40; text: qsTr("New instance"); iconSource: "icons/add.svg"; onClicked: controller.addInstance() }
                 }
                 Rectangle { anchors.bottom: parent.bottom; width: parent.width; height: 1; color: Theme.border }
             }
@@ -266,14 +266,14 @@ ApplicationWindow {
                                                 spacing: Theme.sp12
                                                 Layout.topMargin: Theme.sp8
                                                 BeeButton {
-                                                    btnHeight: 56
+                                                    btnHeight: 48
                                                     variant: "primary"
                                                     text: qsTr("Play")
                                                     iconSource: "icons/play.svg"
                                                     onClicked: if (instances.count) controller.launch(instances.instanceIdAt(0))
                                                 }
                                                 BeeButton {
-                                                    btnHeight: 56
+                                                    btnHeight: 48
                                                     variant: "ghost"
                                                     text: qsTr("Open instance")
                                                     onClicked: if (instances.count) controller.edit(instances.instanceIdAt(0))
@@ -526,7 +526,7 @@ ApplicationWindow {
                                     Layout.fillWidth: true
                                     Layout.leftMargin: Theme.sp24
                                     Layout.rightMargin: Theme.sp24
-                                    btnHeight: 52
+                                    btnHeight: 48
                                     variant: root.selectedData && root.selectedData.running ? "danger" : "primary"
                                     text: root.selectedData && root.selectedData.running ? qsTr("Stop") : qsTr("Play")
                                     iconSource: root.selectedData && root.selectedData.running ? "icons/stop.svg" : "icons/play.svg"

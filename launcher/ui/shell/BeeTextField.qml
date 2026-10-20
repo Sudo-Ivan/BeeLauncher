@@ -6,7 +6,7 @@ import Bee.Shell
 
 TextField {
     id: tf
-    implicitHeight: 44
+    implicitHeight: 40
     leftPadding: 40
     rightPadding: tf.text.length ? 40 : Theme.sp16
     placeholderTextColor: Theme.textFaint

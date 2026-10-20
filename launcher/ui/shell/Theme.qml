@@ -43,6 +43,7 @@ QtObject {
     readonly property int display: 40
 
     function accentAlpha(a) { return Qt.rgba(accent.r, accent.g, accent.b, a) }
+    function withAlpha(c, a) { return Qt.rgba(c.r, c.g, c.b, a) }
     function shadow(alpha) { return Qt.rgba(0, 0, 0, dark ? alpha : alpha * 0.6) }
 
     // per instance cover gradient hue derived from a string

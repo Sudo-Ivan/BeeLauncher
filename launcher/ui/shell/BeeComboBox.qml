@@ -6,7 +6,9 @@ import Bee.Shell
 
 ComboBox {
     id: cb
-    implicitHeight: 44
+    implicitHeight: 40
+    leftPadding: Theme.sp12
+    rightPadding: Theme.sp12
     model: [qsTr("Name"), qsTr("Last played"), qsTr("Play time")]
     indicator: Item { width: 0 }
     Accessible.role: Accessible.ComboBox
