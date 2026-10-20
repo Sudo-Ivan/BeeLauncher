@@ -55,11 +55,8 @@ jobs:
         run: |
           mv "$GITHUB_WORKSPACE"/BeeLauncher-source "BeeLauncher-$VERSION"
           mv BeeLauncher-Linux-Qt6-Portable*/BeeLauncher-portable.tar.gz "BeeLauncher-Linux-Qt6-Portable-$VERSION.tar.gz"
-          mv BeeLauncher-Linux-aarch64-Qt6-Portable*/BeeLauncher-portable.tar.gz "BeeLauncher-Linux-aarch64-Qt6-Portable-$VERSION.tar.gz"
           mv BeeLauncher-*.AppImage/BeeLauncher-*-x86_64.AppImage BeeLauncher-Linux-x86_64.AppImage
           mv BeeLauncher-*.AppImage.zsync/BeeLauncher-*-x86_64.AppImage.zsync BeeLauncher-Linux-x86_64.AppImage.zsync
-          mv BeeLauncher-*.AppImage/BeeLauncher-*-aarch64.AppImage BeeLauncher-Linux-aarch64.AppImage
-          mv BeeLauncher-*.AppImage.zsync/BeeLauncher-*-aarch64.AppImage.zsync BeeLauncher-Linux-aarch64.AppImage.zsync
           mv BeeLauncher-macOS*/BeeLauncher.zip "BeeLauncher-macOS-$VERSION.zip"
           mv BeeLauncher-macOS*/BeeLauncher.dmg "BeeLauncher-macOS-$VERSION.dmg"
 
@@ -68,12 +65,10 @@ jobs:
           for d in BeeLauncher-Windows-MSVC*; do
             cd "${d}" || continue
             LEGACY="$(echo -n ${d} | grep -o Legacy || true)"
-            ARM64="$(echo -n ${d} | grep -o arm64 || true)"
             INST="$(echo -n ${d} | grep -o Setup || true)"
             PORT="$(echo -n ${d} | grep -o Portable || true)"
             NAME="BeeLauncher-Windows-MSVC"
             test -z "${LEGACY}" || NAME="${NAME}-Legacy"
-            test -z "${ARM64}" || NAME="${NAME}-arm64"
             test -z "${PORT}" || NAME="${NAME}-Portable"
             test -z "${INST}" || mv BeeLauncher-*.exe "../${NAME}-Setup-${VERSION}.exe"
             test -n "${INST}" || zip -r -9 "../${NAME}-${VERSION}.zip" *
@@ -91,17 +86,6 @@ jobs:
             cd ..
           done
 
-          for d in BeeLauncher-Windows-MinGW-arm64*; do
-            cd "${d}" || continue
-            INST="$(echo -n ${d} | grep -o Setup || true)"
-            PORT="$(echo -n ${d} | grep -o Portable || true)"
-            NAME="BeeLauncher-Windows-MinGW-arm64"
-            test -z "${PORT}" || NAME="${NAME}-Portable"
-            test -z "${INST}" || mv BeeLauncher-*.exe "../${NAME}-Setup-${VERSION}.exe"
-            test -n "${INST}" || zip -r -9 "../${NAME}-${VERSION}.zip" *
-            cd ..
-          done
-
       - name: Create release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -113,19 +97,10 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             "BeeLauncher-Linux-x86_64.AppImage" \
             "BeeLauncher-Linux-x86_64.AppImage.zsync" \
-            "BeeLauncher-Linux-aarch64.AppImage" \
-            "BeeLauncher-Linux-aarch64.AppImage.zsync" \
             "BeeLauncher-Linux-Qt6-Portable-$VERSION.tar.gz" \
-            "BeeLauncher-Linux-aarch64-Qt6-Portable-$VERSION.tar.gz" \
             "BeeLauncher-Windows-MinGW-w64-$VERSION.zip" \
             "BeeLauncher-Windows-MinGW-w64-Portable-$VERSION.zip" \
             "BeeLauncher-Windows-MinGW-w64-Setup-$VERSION.exe" \
-            "BeeLauncher-Windows-MinGW-arm64-$VERSION.zip" \
-            "BeeLauncher-Windows-MinGW-arm64-Portable-$VERSION.zip" \
-            "BeeLauncher-Windows-MinGW-arm64-Setup-$VERSION.exe" \
-            "BeeLauncher-Windows-MSVC-arm64-$VERSION.zip" \
-            "BeeLauncher-Windows-MSVC-arm64-Portable-$VERSION.zip" \
-            "BeeLauncher-Windows-MSVC-arm64-Setup-$VERSION.exe" \
             "BeeLauncher-Windows-MSVC-$VERSION.zip" \
             "BeeLauncher-Windows-MSVC-Portable-$VERSION.zip" \
             "BeeLauncher-Windows-MSVC-Setup-$VERSION.exe" \
