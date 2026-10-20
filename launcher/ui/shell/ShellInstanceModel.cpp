@@ -1,6 +1,61 @@
 #include "ShellInstanceModel.h"
 #include "../../InstanceList.h"
 #include "../../BaseInstance.h"
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QHash>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+
+namespace {
+
+BaseInstance* instanceOf(const QModelIndex& src)
+{
+    return static_cast<BaseInstance*>(src.data(InstanceList::InstancePointerRole).value<void*>());
+}
+
+QString versionTextFor(BaseInstance* inst)
+{
+    struct Cached {
+        qint64 mtime = 0;
+        QString text;
+    };
+    static QHash<QString, Cached> cache;
+    const QString path = QDir(inst->instanceRoot()).filePath("mmc-pack.json");
+    const QFileInfo info(path);
+    if (!info.exists())
+        return {};
+    auto& entry = cache[path];
+    const qint64 mtime = info.lastModified().toMSecsSinceEpoch();
+    if (entry.mtime == mtime)
+        return entry.text;
+    entry.mtime = mtime;
+    entry.text.clear();
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly))
+        return {};
+    QString mc, loader;
+    static const QList<QPair<QString, QString>> loaders = { { "net.fabricmc.fabric-loader", "Fabric" },
+                                                            { "org.quiltmc.quilt-loader", "Quilt" },
+                                                            { "net.neoforged", "NeoForge" },
+                                                            { "net.minecraftforge", "Forge" },
+                                                            { "com.mumfrey.liteloader", "LiteLoader" } };
+    for (const auto& value : QJsonDocument::fromJson(file.readAll()).object().value("components").toArray()) {
+        const auto component = value.toObject();
+        const QString uid = component.value("uid").toString();
+        if (uid == "net.minecraft")
+            mc = component.value("version").toString();
+        for (const auto& [loaderUid, label] : loaders)
+            if (uid == loaderUid && loader.isEmpty())
+                loader = label;
+    }
+    entry.text = loader.isEmpty() ? mc : (mc.isEmpty() ? loader : mc + " " + loader);
+    return entry.text;
+}
+
+}  // namespace
 
 ShellInstanceModel::ShellInstanceModel(QAbstractItemModel* source, QObject* parent) : QSortFilterProxyModel(parent)
 {
@@ -53,33 +108,33 @@ QVariant ShellInstanceModel::data(const QModelIndex& index, int role) const
         case GroupRole2: return src.data(InstanceList::GroupRole);
         case InstancePointerShellRole: return src.data(InstanceList::InstancePointerRole);
         case IconSourceRole: {
-            auto* inst = src.data(InstanceList::InstancePointerRole).value<BaseInstance*>();
+            auto* inst = instanceOf(src);
             if (inst) return QString("image://beeicons/" + inst->iconKey());
             QVariant k = src.data(Qt::UserRole + 20);  // test hook: icon key
             return k.isValid() ? QString("image://beeicons/" + k.toString()) : QVariant();
         }
         case RunningRole: {
-            auto* inst = src.data(InstanceList::InstancePointerRole).value<BaseInstance*>();
+            auto* inst = instanceOf(src);
             if (inst) return inst->isRunning();
             QVariant v = src.data(Qt::UserRole + 23);
             return v.isValid() && v.toBool();
         }
         case TotalPlayTimeMsRole: {
-            auto* inst = src.data(InstanceList::InstancePointerRole).value<BaseInstance*>();
+            auto* inst = instanceOf(src);
             if (inst) return inst->totalTimePlayed() * 1000LL;
             QVariant v = src.data(Qt::UserRole + 22);
             return v.isValid() ? v : 0;
         }
         case LastPlayedMsRole: {
-            auto* inst = src.data(InstanceList::InstancePointerRole).value<BaseInstance*>();
+            auto* inst = instanceOf(src);
             if (inst) return inst->lastLaunch();
             QVariant v = src.data(Qt::UserRole + 21);
             return v.isValid() ? v : 0;
         }
         case VersionTextRole: {
-            QVariant v = src.data(Qt::UserRole + 24);  // test hook
-            if (v.isValid()) return v;
-            return src.data(Qt::ToolTipRole).toString().section('\n', 0, 0);
+            if (auto* inst = instanceOf(src))
+                return versionTextFor(inst);
+            return src.data(Qt::UserRole + 24);  // test hook
         }
         case StatusTextRole: return RunningRole == role ? QVariant() : src.data(Qt::StatusTipRole);
         default: return {};

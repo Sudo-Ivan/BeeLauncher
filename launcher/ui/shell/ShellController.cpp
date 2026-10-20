@@ -1,65 +1,147 @@
 #include "ShellController.h"
 #include "../../Application.h"
-#include "../../InstanceList.h"
 #include "../../BaseInstance.h"
 #include "../../DesktopServices.h"
+#include "../../InstanceList.h"
+#include "../../minecraft/auth/AccountList.h"
+#include "../MainWindow.h"
 
 ShellController::ShellController(QObject* parent) : QObject(parent) {}
+
+void ShellController::attachBackend()
+{
+    m_backend = true;
+    connect(APPLICATION->accounts(), &AccountList::defaultAccountChanged, this, &ShellController::accountChanged);
+    connect(APPLICATION->accounts(), &AccountList::listChanged, this, &ShellController::accountChanged);
+}
+
+QString ShellController::accountName() const
+{
+    if (!m_backend)
+        return QStringLiteral("BeeUser");
+    auto account = APPLICATION->accounts()->defaultAccount();
+    return account ? account->profileName() : tr("No account");
+}
+
+QString ShellController::accountType() const
+{
+    if (!m_backend)
+        return tr("Offline account");
+    auto account = APPLICATION->accounts()->defaultAccount();
+    if (!account)
+        return tr("Sign in from Accounts");
+    const auto type = account->typeString();
+    if (type == "msa")
+        return tr("Microsoft account");
+    if (type == "offline")
+        return tr("Offline account");
+    if (type == "elyby")
+        return tr("Ely.by account");
+    return tr("Custom account");
+}
 
 static BaseInstance* inst(const QString& id)
 {
     return APPLICATION->instances()->getInstanceById(id);
 }
 
+bool ShellController::legacyAction(const QString& id, const char* slot)
+{
+    if (!m_backend)
+        return false;
+    auto* window = APPLICATION->legacyWindow();
+    if (!window)
+        return false;
+    if (!id.isEmpty())
+        QMetaObject::invokeMethod(window, "setSelectedInstanceById", Q_ARG(QString, id));
+    return QMetaObject::invokeMethod(window, slot);
+}
+
 void ShellController::launch(const QString& id)
 {
+    if (!m_backend)
+        return;
     if (auto* i = inst(id))
         APPLICATION->launch(i);
 }
 
-void ShellController::kill(const QString&)
+void ShellController::kill(const QString& id)
 {
-    emit toast(tr("Stop runs from the instance page"));
+    if (!legacyAction(id, "on_actionKillInstance_triggered"))
+        emit toast(tr("Stop is unavailable right now"));
 }
 
 void ShellController::edit(const QString& id)
 {
+    if (!m_backend)
+        return;
     if (auto* i = inst(id))
         APPLICATION->showInstanceWindow(i);
 }
 
 void ShellController::openFolder(const QString& id)
 {
+    if (!m_backend)
+        return;
     if (auto* i = inst(id))
         DesktopServices::openPath(i->instanceRoot(), true);
 }
 
 void ShellController::changeGroup(const QString& id, const QString& group)
 {
+    if (!m_backend)
+        return;
     if (auto* i = inst(id))
         APPLICATION->instances()->setInstanceGroup(i->id(), group);
 }
 
+void ShellController::copyInstance(const QString& id)
+{
+    legacyAction(id, "on_actionCopyInstance_triggered");
+}
+
+void ShellController::deleteInstance(const QString& id)
+{
+    legacyAction(id, "on_actionDeleteInstance_triggered");
+}
+
+void ShellController::createShortcut(const QString& id)
+{
+    legacyAction(id, "on_actionCreateInstanceShortcut_triggered");
+}
+
+void ShellController::repair(const QString& id)
+{
+    legacyAction(id, "on_actionRepairInstance_triggered");
+}
+
+void ShellController::backupNow(const QString& id)
+{
+    if (!m_backend)
+        return;
+    if (auto* i = inst(id))
+        APPLICATION->showInstanceWindow(i, "backups");
+}
+
 void ShellController::addInstance()
 {
-    // stub: the add instance flow is a private MainWindow slot
-    emit toast(tr("Add Instance opens in the classic interface for now"));
+    legacyAction({}, "on_actionAddInstance_triggered");
 }
 
 void ShellController::openSettings()
 {
-    // stub: private MainWindow slot
-    emit toast(tr("Settings open in the classic interface for now"));
+    legacyAction({}, "on_actionSettings_triggered");
 }
 
 void ShellController::openAccounts()
 {
-    // stub: private MainWindow slot
-    emit toast(tr("Account management opens in the classic interface for now"));
+    legacyAction({}, "on_actionManageAccounts_triggered");
 }
 
-void ShellController::copyInstance(const QString&) { emit toast(tr("Copy is available in the classic interface for now")); }
-void ShellController::deleteInstance(const QString&) { emit toast(tr("Delete is available in the classic interface for now")); }
-void ShellController::createShortcut(const QString&) { emit toast(tr("Shortcuts are available in the classic interface for now")); }
-void ShellController::backupNow(const QString&) { emit toast(tr("Backups are available in the classic interface for now")); }
-void ShellController::repair(const QString&) { emit toast(tr("Repair is available in the classic interface for now")); }
+void ShellController::useClassicInterface()
+{
+    if (!m_backend)
+        return;
+    APPLICATION->settings()->set("UiMode", "classic");
+    emit toast(tr("The classic interface will be used after you restart Bee Launcher"));
+}

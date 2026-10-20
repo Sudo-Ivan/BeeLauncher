@@ -57,6 +57,7 @@ class LaunchController;
 class LocalPeer;
 class InstanceWindow;
 class MainWindow;
+class ShellWindow;
 class ViewLogWindow;
 class SetupWizard;
 class GenericPageProvider;
@@ -193,6 +194,8 @@ class Application : public QApplication {
 
     InstanceWindow* showInstanceWindow(BaseInstance* instance, QString page = QString());
     MainWindow* showMainWindow(bool minimized = false);
+    MainWindow* legacyWindow();
+    bool useShellUi() const;
     ViewLogWindow* showLogWindow();
 
     void updateIsRunning(bool running);
@@ -297,6 +300,10 @@ class Application : public QApplication {
 
     // main window, if any
     MainWindow* m_mainWindow = nullptr;
+
+    // shell main window, if any
+    ShellWindow* m_shellWindow = nullptr;
+    bool m_classicUiFlag = false;
 
     // log window, if any
     ViewLogWindow* m_viewLogWindow = nullptr;

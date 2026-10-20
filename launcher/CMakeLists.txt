@@ -1430,6 +1430,7 @@ qt_add_qml_module(BeeShell
         ui/shell/ShellInstanceModel.h ui/shell/ShellInstanceModel.cpp
         ui/shell/BeeIconProvider.h ui/shell/BeeIconProvider.cpp
         ui/shell/ShellController.h ui/shell/ShellController.cpp
+        ui/shell/ShellWindow.h ui/shell/ShellWindow.cpp
 )
 target_link_libraries(BeeShell PUBLIC Launcher_logic Qt${QT_VERSION_MAJOR}::Quick)
 target_include_directories(BeeShell PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
@@ -1530,7 +1531,7 @@ if(${Launcher_USE_PCH})
     target_precompile_headers(${Launcher_Name} REUSE_FROM Launcher_logic)
 endif()
 
-target_link_libraries(${Launcher_Name} Launcher_logic)
+target_link_libraries(${Launcher_Name} Launcher_logic BeeShellplugin)
 
 if(DEFINED Launcher_APP_BINARY_NAME)
     set_target_properties(${Launcher_Name} PROPERTIES OUTPUT_NAME "${Launcher_APP_BINARY_NAME}")

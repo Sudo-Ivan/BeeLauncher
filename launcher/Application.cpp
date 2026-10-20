@@ -53,6 +53,8 @@
 #include "ui/GuiUtil.h"
 #include "ui/InstanceWindow.h"
 #include "ui/MainWindow.h"
+#include "ui/shell/ShellWindow.h"
+#include "StartupProfile.h"
 #include "ui/ToolTipFilter.h"
 #include "ui/ViewLogWindow.h"
 
@@ -327,6 +329,7 @@ std::tuple<QDateTime, QString, QString, QString, QString> read_lock_File(const Q
 
 Application::Application(int& argc, char** argv) : QApplication(argc, argv)
 {
+    StartupProfile::mark("QApplication ready");
     if (console::isConsole()) {
         isANSIColorConsole = true;
     }
@@ -357,6 +360,7 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
           { { "o", "offline" }, "Launch offline, with given player name (only valid in combination with --launch)", "offline" },
           { "alive", "Write a small '" + liveCheckFile + "' file after the launcher starts" },
           { "show-window", "Show the main launcher window (useful in combination with --launch)" },
+          { "classic-ui", "Use the classic interface for this run" },
           { { "I", "import" }, "Import instance or resource from specified local path or URL", "url" },
           { "show", "Opens the window for the specified instance (by instance ID)", "show" } });
     // Has to be positional for some OS to handle that properly
@@ -379,6 +383,7 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
 
     m_instanceIdToShowWindowOf = parser.value("show");
     m_showMainWindow = parser.isSet("show-window");
+    m_classicUiFlag = parser.isSet("classic-ui");
 
     for (auto url : parser.values("import")) {
         m_urlsToImport.append(normalizeImportUrl(url));
@@ -862,6 +867,8 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
         // Window state and geometry
         m_settings->registerSetting("MainWindowState", "");
         m_settings->registerSetting("MainWindowGeometry", "");
+        m_settings->registerSetting("ShellWindowGeometry", "");
+        m_settings->registerSetting("UiMode", "shell");
 
         m_settings->registerSetting("ConsoleWindowState", "");
         m_settings->registerSetting("ConsoleWindowGeometry", "");
@@ -1028,6 +1035,7 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
         connect(InstDirSetting.get(), &Setting::SettingChanged, m_instances.get(), &InstanceList::on_InstFolderChanged);
         qInfo() << "Loading Instances...";
         m_instances->loadList();
+        StartupProfile::mark("instance list loaded");
         qInfo() << "<> Instances loaded.";
     }
 
@@ -1366,11 +1374,11 @@ bool Application::event(QEvent* event)
 #endif
 
     if (event->type() == QEvent::FileOpen) {
-        if (!m_mainWindow) {
+        if (!m_mainWindow && !m_shellWindow) {
             showMainWindow(false);
         }
         auto ev = static_cast<QFileOpenEvent*>(event);
-        m_mainWindow->processURLs({ ev->url() });
+        legacyWindow()->processURLs({ ev->url() });
     }
 
     return QApplication::event(event);
@@ -1424,7 +1432,7 @@ void Application::performMainStartupAction()
             return;
         }
     }
-    if (!m_mainWindow) {
+    if (!m_mainWindow && !m_shellWindow) {
         // normal main window
         showMainWindow(false);
         qDebug() << "<> Main window shown.";
@@ -1451,7 +1459,7 @@ void Application::performMainStartupAction()
 
     if (!m_urlsToImport.isEmpty()) {
         qDebug() << "<> Importing from url:" << m_urlsToImport;
-        m_mainWindow->processURLs(m_urlsToImport);
+        legacyWindow()->processURLs(m_urlsToImport);
     }
 }
 
@@ -1495,10 +1503,10 @@ void Application::messageReceived(const QByteArray& message)
             qWarning() << "Received" << command << "message without a zip path/URL.";
             return;
         }
-        if (!m_mainWindow) {
+        if (!m_mainWindow && !m_shellWindow) {
             showMainWindow(false);
         }
-        m_mainWindow->processURLs({ normalizeImportUrl(url) });
+        legacyWindow()->processURLs({ normalizeImportUrl(url) });
     } else if (command == "launch") {
         QString id = received.args["id"];
         QString server = received.args["server"];
@@ -1715,8 +1723,34 @@ void Application::ShowGlobalSettings(class QWidget* parent, QString open_page)
     }
 }
 
+bool Application::useShellUi() const
+{
+    return !m_classicUiFlag && m_settings->get("UiMode").toString() != "classic";
+}
+
+MainWindow* Application::legacyWindow()
+{
+    if (!m_mainWindow) {
+        m_mainWindow = new MainWindow();
+        connect(this, &Application::updateAllowedChanged, m_mainWindow, &MainWindow::updatesAllowedChanged);
+        m_mainWindow->checkInstancePathForProblems();
+    }
+    return m_mainWindow;
+}
+
 MainWindow* Application::showMainWindow(bool minimized)
 {
+    if (useShellUi()) {
+        if (m_shellWindow) {
+            m_shellWindow->raiseWindow();
+        } else {
+            m_shellWindow = new ShellWindow();
+            connect(m_shellWindow, &ShellWindow::isClosing, this, &Application::on_windowClose);
+            m_shellWindow->show(minimized);
+            m_openWindows++;
+        }
+        return m_mainWindow;
+    }
     if (m_mainWindow) {
         m_mainWindow->setWindowState(m_mainWindow->windowState() & ~Qt::WindowMinimized);
         m_mainWindow->raise();
@@ -1732,6 +1766,7 @@ MainWindow* Application::showMainWindow(bool minimized)
             m_mainWindow->show();
         }
 
+        StartupProfile::mark("first frame");
         m_mainWindow->checkInstancePathForProblems();
         connect(this, &Application::updateAllowedChanged, m_mainWindow, &MainWindow::updatesAllowedChanged);
         connect(m_mainWindow, &MainWindow::isClosing, this, &Application::on_windowClose);
@@ -1807,6 +1842,14 @@ void Application::on_windowClose()
     auto mainWindow = qobject_cast<MainWindow*>(sender());
     if (mainWindow) {
         m_mainWindow = nullptr;
+    }
+    if (qobject_cast<ShellWindow*>(sender())) {
+        m_shellWindow->deleteLater();
+        m_shellWindow = nullptr;
+        if (m_mainWindow) {
+            m_mainWindow->deleteLater();
+            m_mainWindow = nullptr;
+        }
     }
     auto logWindow = qobject_cast<ViewLogWindow*>(sender());
     if (logWindow) {

@@ -174,8 +174,8 @@ ApplicationWindow {
                         ColumnLayout {
                             visible: root.width >= 1100 && width > 40
                             spacing: 0
-                            Text { text: "BeeUser"; color: Theme.text; font.pixelSize: Theme.body; font.weight: Font.Medium }
-                            Text { text: qsTr("Offline account"); color: Theme.textFaint; font.pixelSize: Theme.caption }
+                            Text { text: controller.accountName; color: Theme.text; font.pixelSize: Theme.body; font.weight: Font.Medium }
+                            Text { text: controller.accountType; color: Theme.textFaint; font.pixelSize: Theme.caption }
                         }
                     }
                     MouseArea { id: acctArea; anchors.fill: parent; hoverEnabled: true; onClicked: controller.openAccounts() }

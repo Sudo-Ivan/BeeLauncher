@@ -35,7 +35,11 @@
 
 #include <iostream>
 
+#include <QtQml/qqmlextensionplugin.h>
+
 #include "Application.h"
+
+Q_IMPORT_QML_PLUGIN(Bee_ShellPlugin)
 
 #if defined Q_OS_WIN32
 #include "console/WindowsConsole.h"
