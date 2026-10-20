@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.25) # Required for features like `CMAKE_MSVC_DEBUG_INFORMATION_FORMAT`
 
+# Must be set before project() so the compiler checks also avoid PDB files, which sccache cannot cache.
+# See https://github.com/ccache/ccache/issues/1040
+set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
+
 project(Launcher LANGUAGES C CXX)
 if(APPLE)
     enable_language(OBJC OBJCXX)
@@ -58,10 +62,6 @@ if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
     if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         add_compile_options("$<$<AND:$<CONFIG:Release,RelWithDebInfo>,$<COMPILE_LANGUAGE:C,CXX>>:/GL>")
     endif()
-
-    # See https://github.com/ccache/ccache/issues/1040
-    # TODO(@getchoo): Is sccache affected by this? Would be nice to use `ProgramDatabase`....
-    set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
 
     if(CMAKE_MSVC_RUNTIME_LIBRARY STREQUAL "MultiThreadedDLL")
         set(CMAKE_MAP_IMPORTED_CONFIG_DEBUG Release "")
