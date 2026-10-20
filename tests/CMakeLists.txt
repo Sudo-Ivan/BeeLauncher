@@ -67,6 +67,12 @@ ecm_add_test(ConfigMigration_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSI
 ecm_add_test(CrashAnalyzer_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME CrashAnalyzer)
 
+ecm_add_test(ShellModel_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
+    TEST_NAME ShellModel)
+
+ecm_add_test(ShellRender_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Qml BeeShellplugin
+    TEST_NAME ShellRender)
+
 ecm_add_test(Migrate_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME Migrate)
 
@@ -75,3 +81,7 @@ ecm_add_test(InstanceBackup_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSIO
 
 ecm_add_test(PNGUtils_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME PNGUtils)
+
+# Dev-only shell preview, not installed and not part of the app
+add_executable(BeeShellPreview ShellPreview_main.cpp ShellMocks.h)
+target_link_libraries(BeeShellPreview PRIVATE Launcher_logic BeeShellplugin Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Qml Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Test)

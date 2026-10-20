@@ -1379,6 +1379,61 @@ endif()
 
 # Add executable
 add_library(Launcher_logic STATIC ${LOGIC_SOURCES} ${LAUNCHER_SOURCES} ${LAUNCHER_UI} ${LAUNCHER_RESOURCES})
+
+add_library(BeeShell STATIC)
+set_source_files_properties(ui/shell/Theme.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
+
+qt_add_qml_module(BeeShell
+    URI Bee.Shell
+    VERSION 1.0
+    RESOURCE_PREFIX /qt/qml
+    QML_FILES
+        ui/shell/BeeButton.qml
+        ui/shell/BeeCard.qml
+        ui/shell/BeeChip.qml
+        ui/shell/BeeComboBox.qml
+        ui/shell/BeeIconButton.qml
+        ui/shell/BeeMenu.qml
+        ui/shell/BeeMenuItem.qml
+        ui/shell/BeeNavButton.qml
+        ui/shell/BeeScrollBar.qml
+        ui/shell/BeeTextField.qml
+        ui/shell/Theme.qml
+        ui/shell/Main.qml
+    RESOURCES
+        ui/shell/icons/add.svg
+        ui/shell/icons/arrow_sort.svg
+        ui/shell/icons/checkmark.svg
+        ui/shell/icons/chevron_down.svg
+        ui/shell/icons/collections.svg
+        ui/shell/icons/compass.svg
+        ui/shell/icons/copy.svg
+        ui/shell/icons/cube.svg
+        ui/shell/icons/delete.svg
+        ui/shell/icons/dismiss.svg
+        ui/shell/icons/edit.svg
+        ui/shell/icons/folder.svg
+        ui/shell/icons/history.svg
+        ui/shell/icons/home.svg
+        ui/shell/icons/more_horizontal.svg
+        ui/shell/icons/person.svg
+        ui/shell/icons/play.svg
+        ui/shell/icons/search.svg
+        ui/shell/icons/settings.svg
+        ui/shell/icons/stop.svg
+        ui/shell/icons/wrench.svg
+        ui/shell/icons/LICENSE.txt
+        ui/shell/fonts/Inter.ttf
+        ui/shell/fonts/OFL.txt
+        ui/shell/bee_logo.png
+    SOURCES
+        ui/shell/ShellInstanceModel.h ui/shell/ShellInstanceModel.cpp
+        ui/shell/BeeIconProvider.h ui/shell/BeeIconProvider.cpp
+        ui/shell/ShellController.h ui/shell/ShellController.cpp
+)
+target_link_libraries(BeeShell PUBLIC Launcher_logic Qt${QT_VERSION_MAJOR}::Quick)
+target_include_directories(BeeShell PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
 target_include_directories(Launcher_logic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_definitions(Launcher_logic PUBLIC LAUNCHER_APPLICATION)
 
@@ -1393,6 +1448,12 @@ target_link_libraries(Launcher_logic
     qdcss
     BuildConfig
     Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Qml
+    Qt${QT_VERSION_MAJOR}::Quick
+    Qt${QT_VERSION_MAJOR}::QuickControls2
+    Qt${QT_VERSION_MAJOR}::QuickLayouts
+    Qt${QT_VERSION_MAJOR}::Svg
+    BeeShell
 )
 
 if(TARGET PkgConfig::libqrencode)
@@ -1613,6 +1674,10 @@ endif()
 # Set basic compiler warning/error flags for all targets
 get_property(Launcher_TARGETS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 foreach(target ${Launcher_TARGETS})
+    get_target_property(_t_type ${target} TYPE)
+    if (_t_type STREQUAL "INTERFACE_LIBRARY" OR _t_type STREQUAL "UTILITY")
+        continue()
+    endif()
     if (NOT Launcher_DISABLE_WERROR)
         message(STATUS "Enabling all warnings as errors for target '${target}'")
     endif()
