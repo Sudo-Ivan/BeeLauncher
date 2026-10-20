@@ -14,6 +14,7 @@ class ShellWindow : public QObject {
     explicit ShellWindow(QObject* parent = nullptr);
     ~ShellWindow() override;
 
+    bool ok() const { return m_window != nullptr; }
     void show(bool minimized);
     void raiseWindow();
     ShellController* controller() const { return m_controller; }

@@ -1743,13 +1743,19 @@ MainWindow* Application::showMainWindow(bool minimized)
     if (useShellUi()) {
         if (m_shellWindow) {
             m_shellWindow->raiseWindow();
-        } else {
-            m_shellWindow = new ShellWindow();
+            return m_mainWindow;
+        }
+        auto* shell = new ShellWindow();
+        if (shell->ok()) {
+            m_shellWindow = shell;
             connect(m_shellWindow, &ShellWindow::isClosing, this, &Application::on_windowClose);
             m_shellWindow->show(minimized);
             m_openWindows++;
+            return m_mainWindow;
         }
-        return m_mainWindow;
+        qWarning() << "The new interface failed to load, falling back to the classic interface";
+        delete shell;
+        m_classicUiFlag = true;
     }
     if (m_mainWindow) {
         m_mainWindow->setWindowState(m_mainWindow->windowState() & ~Qt::WindowMinimized);
