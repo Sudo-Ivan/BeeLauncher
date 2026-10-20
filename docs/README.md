@@ -6,7 +6,7 @@
 <a style="color:#e8a33d" href="https://github.com/Sudo-Ivan/BeeLauncher">Bee Launcher</a>
 </h1>
 
-A FreesmLauncher fork that **removes offline account restrictions**, adds custom auth server support, and provides more customization
+A FreesmLauncher fork focused on a **modern UI and UX** and **reliability**
 
 
 **Website:** https://sudo-ivan.github.io/BeeLauncher/

@@ -6,7 +6,7 @@
 <a style="color:#e8a33d" href="https://github.com/Sudo-Ivan/BeeLauncher">Bee Launcher</a>
 </h1>
 
-Форк FreesmLauncher, который **позволяет играть с офлайн-аккаунтом без ограничений**, поддерживает кастомные сервера авторизации и расширяет кастомизацию
+Форк FreesmLauncher с упором на **современный интерфейс и UX** и **надежность**
 
 
 **Сайт:** https://sudo-ivan.github.io/BeeLauncher/
