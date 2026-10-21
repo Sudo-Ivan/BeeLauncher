@@ -41,7 +41,7 @@ fi
 
 cd "$dir"
 "${session[@]}" env -u QML2_IMPORT_PATH -u QML_IMPORT_PATH -u QT_PLUGIN_PATH -u QT_ROOT_DIR -u LD_LIBRARY_PATH -u Qt6_DIR \
-    QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software BEE_STARTUP_PROFILE=1 BEE_SHELL_GRAB="$data/shell.png" \
+    QT_QPA_PLATFORM=offscreen BEE_STARTUP_PROFILE=1 BEE_SHELL_GRAB="$data/shell.png" \
     timeout 60 ./sharun beelauncher -d "$data" > "$log" 2>&1 || true
 
 if grep -q "falling back to the classic interface" "$log"; then

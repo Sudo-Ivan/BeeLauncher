@@ -52,6 +52,12 @@ int main(int argc, char* argv[])
     console::WindowsConsoleGuard _consoleGuard;
 #endif
 
+    // Bundled sharun builds cannot reach the host GL and EGL drivers, so Qt Quick renders in software there
+    if (qEnvironmentVariableIsSet("SHARUN_DIR") && !qEnvironmentVariableIsSet("QT_QUICK_BACKEND") &&
+        !qEnvironmentVariableIsSet("QSG_RHI_BACKEND")) {
+        qputenv("QT_QUICK_BACKEND", "software");
+    }
+
     // initialize Qt
     Application app(argc, argv);
     switch (app.status()) {
