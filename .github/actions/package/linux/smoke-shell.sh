@@ -34,8 +34,13 @@ account = {
 json.dump({"accounts": [account], "formatVersion": 3}, open(sys.argv[1] + "/accounts.json", "w"))
 PY
 
+session=()
+if command -v dbus-run-session > /dev/null; then
+    session=(dbus-run-session --)
+fi
+
 cd "$dir"
-env -i HOME="$HOME" PATH=/usr/bin:/bin \
+"${session[@]}" env -u QML2_IMPORT_PATH -u QML_IMPORT_PATH -u QT_PLUGIN_PATH -u QT_ROOT_DIR -u LD_LIBRARY_PATH -u Qt6_DIR \
     QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software BEE_STARTUP_PROFILE=1 BEE_SHELL_GRAB="$data/shell.png" \
     timeout 60 ./sharun beelauncher -d "$data" > "$log" 2>&1 || true
 
