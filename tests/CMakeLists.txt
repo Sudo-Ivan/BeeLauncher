@@ -72,6 +72,7 @@ ecm_add_test(ShellModel_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MA
 
 ecm_add_test(ShellRender_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Qml BeeShellplugin
     TEST_NAME ShellRender)
+set_tests_properties(ShellRender PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
 
 ecm_add_test(Migrate_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME Migrate)
