@@ -13,11 +13,12 @@ if [ -z "$scanner" ]; then
     exit 1
 fi
 
-qt_dir="$(find "$dest/shared" -maxdepth 3 -type d -name 'qt[0-9]*' | head -n 1)"
-if [ -z "$qt_dir" ]; then
-    echo "No Qt directory found in $dest/shared" >&2
+platforms="$(find "$dest/shared" -type d -path '*/plugins/platforms' | head -n 1)"
+if [ -z "$platforms" ]; then
+    echo "No bundled Qt plugins found in $dest/shared" >&2
     exit 1
 fi
+qt_dir="$(dirname "$(dirname "$platforms")")"
 
 modules="$("$scanner" -rootPath "$app_qml" -importPath "$qml_src" | jq -r '.[] | select(.type == "module" and .path != null) | .path' | sort -u)"
 if [ -z "$modules" ]; then
