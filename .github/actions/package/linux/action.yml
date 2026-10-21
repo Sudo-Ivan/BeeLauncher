@@ -91,6 +91,7 @@ runs:
           "$INSTALL_APPIMAGE_DIR"/bin/* "$QT_PLUGIN_PATH"/*/*.so
 
         "$ACTION_PATH"/bundle-qml.sh "$INSTALL_APPIMAGE_DIR" "$QML2_IMPORT_PATH" "$GITHUB_WORKSPACE/launcher/ui/shell"
+        "$ACTION_PATH"/smoke-shell.sh "$INSTALL_APPIMAGE_DIR"
 
         cp ~/bin/AppImageUpdate.AppImage "$INSTALL_APPIMAGE_DIR"/bin/
         # FIXME(@getchoo): gamemode doesn't seem to be very portable with DBus. Find a way to make it work!
@@ -135,6 +136,7 @@ runs:
           "$INSTALL_PORTABLE_DIR"/bin/* "$QT_PLUGIN_PATH"/*/*.so
 
         "$ACTION_PATH"/bundle-qml.sh "$INSTALL_PORTABLE_DIR" "$QML2_IMPORT_PATH" "$GITHUB_WORKSPACE/launcher/ui/shell"
+        "$ACTION_PATH"/smoke-shell.sh "$INSTALL_PORTABLE_DIR"
 
         # FIXME(@getchoo): gamemode doesn't seem to be very portable with DBus. Find a way to make it work!
         find "$INSTALL_PORTABLE_DIR" -name '*gamemode*' -exec rm {} +
