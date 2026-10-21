@@ -66,6 +66,7 @@ runs:
         BUILD_DIR: build
         BUILD_TYPE: ${{ inputs.build-type }}
         INSTALL_APPIMAGE_DIR: install-appdir
+        ACTION_PATH: ${{ github.action_path }}
         REF_TYPE: ${{ github.ref_type }}
         REPO_OWNER: ${{ github.repository_owner }}
         REPO_NAME: ${{ github.event.repository.name }}
@@ -88,6 +89,8 @@ runs:
           --with-hooks \
           --dst-dir "$INSTALL_APPIMAGE_DIR" \
           "$INSTALL_APPIMAGE_DIR"/bin/* "$QT_PLUGIN_PATH"/*/*.so
+
+        "$ACTION_PATH"/bundle-qml.sh "$INSTALL_APPIMAGE_DIR" "$QML2_IMPORT_PATH" "$GITHUB_WORKSPACE/launcher/ui/shell"
 
         cp ~/bin/AppImageUpdate.AppImage "$INSTALL_APPIMAGE_DIR"/bin/
         # FIXME(@getchoo): gamemode doesn't seem to be very portable with DBus. Find a way to make it work!
@@ -120,6 +123,7 @@ runs:
         BUILD_DIR: build
         BUILD_TYPE: ${{ inputs.build-type }}
         INSTALL_PORTABLE_DIR: install-portable
+        ACTION_PATH: ${{ github.action_path }}
       run: |
         cmake --install "$BUILD_DIR" --config "$BUILD_TYPE" --prefix "$INSTALL_PORTABLE_DIR"
         cmake --install "$BUILD_DIR" --config "$BUILD_TYPE" --prefix "$INSTALL_PORTABLE_DIR" --component portable
@@ -129,6 +133,8 @@ runs:
           --hard-links \
           --dst-dir "$INSTALL_PORTABLE_DIR" \
           "$INSTALL_PORTABLE_DIR"/bin/* "$QT_PLUGIN_PATH"/*/*.so
+
+        "$ACTION_PATH"/bundle-qml.sh "$INSTALL_PORTABLE_DIR" "$QML2_IMPORT_PATH" "$GITHUB_WORKSPACE/launcher/ui/shell"
 
         # FIXME(@getchoo): gamemode doesn't seem to be very portable with DBus. Find a way to make it work!
         find "$INSTALL_PORTABLE_DIR" -name '*gamemode*' -exec rm {} +
