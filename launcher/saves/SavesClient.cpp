@@ -211,25 +211,24 @@ void SavesClient::cancelAll()
 
 void SavesClient::me(Done<MeInfo> done)
 {
-    perform(QStringLiteral("GET"), QStringLiteral("/v1/me"), {}, {},
-            [this, done](int status, const QByteArray& data, const QString& error) {
-                if (!error.isEmpty()) {
-                    done(MeInfo{}, error);
-                    return;
-                }
-                const QJsonObject obj = QJsonDocument::fromJson(data).object();
-                MeInfo info;
-                info.tier = getCI(obj, QStringLiteral("tier")).toString();
-                info.scopes = getCI(obj, QStringLiteral("scopes")).toString();
-                info.anonymous = getCI(obj, QStringLiteral("anonymous")).toBool();
-                info.requireEncryption = getCI(obj, QStringLiteral("require_encryption")).toBool();
-                const QJsonObject usage = getCI(obj, QStringLiteral("usage")).toObject();
-                info.usedBytes = static_cast<qint64>(getCI(usage, QStringLiteral("used_bytes")).toDouble());
-                info.quotaBytes = static_cast<qint64>(getCI(usage, QStringLiteral("quota_bytes")).toDouble());
-                info.slotCount = getCI(usage, QStringLiteral("slots")).toInt();
-                info.snapshotCount = getCI(usage, QStringLiteral("snapshots")).toInt();
-                done(info, QString());
-            });
+    perform(QStringLiteral("GET"), QStringLiteral("/v1/me"), {}, {}, [done](int status, const QByteArray& data, const QString& error) {
+        if (!error.isEmpty()) {
+            done(MeInfo{}, error);
+            return;
+        }
+        const QJsonObject obj = QJsonDocument::fromJson(data).object();
+        MeInfo info;
+        info.tier = getCI(obj, QStringLiteral("tier")).toString();
+        info.scopes = getCI(obj, QStringLiteral("scopes")).toString();
+        info.anonymous = getCI(obj, QStringLiteral("anonymous")).toBool();
+        info.requireEncryption = getCI(obj, QStringLiteral("require_encryption")).toBool();
+        const QJsonObject usage = getCI(obj, QStringLiteral("usage")).toObject();
+        info.usedBytes = static_cast<qint64>(getCI(usage, QStringLiteral("used_bytes")).toDouble());
+        info.quotaBytes = static_cast<qint64>(getCI(usage, QStringLiteral("quota_bytes")).toDouble());
+        info.slotCount = getCI(usage, QStringLiteral("slots")).toInt();
+        info.snapshotCount = getCI(usage, QStringLiteral("snapshots")).toInt();
+        done(info, QString());
+    });
 }
 
 static SavesClient::SlotInfo parseSlot(const QJsonObject& obj)
@@ -407,7 +406,7 @@ void SavesClient::commit(const QString& slot, const QString& snapshotId, const Q
 void SavesClient::getChunk(const QString& hash, Done<QByteArray> done)
 {
     const QString path = QStringLiteral("/v1/apps/%1/chunks/%2").arg(QString::fromLatin1(Saves::APP_ID), hash);
-    perform(QStringLiteral("GET"), path, {}, {}, [this, hash, done](int, const QByteArray& data, const QString& error) {
+    perform(QStringLiteral("GET"), path, {}, {}, [hash, done](int, const QByteArray& data, const QString& error) {
         if (!error.isEmpty()) {
             done(QByteArray(), error);
             return;

@@ -120,11 +120,16 @@ class SavesManifestTest : public QObject {
         writeFile(world.filePath("sub/nested.dat"), "nested");
         QVERIFY(QDir().mkpath(world.filePath("emptydir")));
         writeFile(world.filePath(QString::fromUtf8("caf\xc3\xa9.txt")), "nonascii");
+#ifndef Q_OS_WIN
         writeFile(world.filePath("bad:name.txt"), "invalid name");
+        QVERIFY(QFile::link(world.filePath("small.txt"), world.filePath("link.txt")));
+#endif
         writeFile(world.filePath("UPPER.txt"), "one");
         writeFile(world.filePath("upper.txt"), "two");
-
-        QFile::link(world.filePath("small.txt"), world.filePath("link.txt"));
+        QFile upperProbe(world.filePath("UPPER.txt"));
+        QVERIFY(upperProbe.open(QFile::ReadOnly));
+        const bool caseSensitive = upperProbe.readAll() == "one";
+        upperProbe.close();
 
         auto result = Saves::scanWorld(world.path());
         QVERIFY2(result.ok(), qPrintable(result.error));
@@ -140,9 +145,11 @@ class SavesManifestTest : public QObject {
         QStringList skippedPaths;
         for (const auto& s : result.skipped)
             skippedPaths.append(s.path);
-        QVERIFY(skippedPaths.contains("upper.txt"));
+        QCOMPARE(skippedPaths.contains("upper.txt"), caseSensitive);
+#ifndef Q_OS_WIN
         QVERIFY(skippedPaths.contains("bad:name.txt"));
         QVERIFY(skippedPaths.contains("link.txt"));
+#endif
 
         QVERIFY(result.dirs.contains("world/emptydir"));
         QVERIFY(!result.dirs.contains("world/sub"));
