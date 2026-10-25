@@ -93,6 +93,9 @@
       <addaction name="actionData_Packs"/>
    <addaction name="actionReset_Icon"/>
    <addaction name="separator"/>
+   <addaction name="actionBackUp_to_Cloud"/>
+   <addaction name="actionRestore_from_Cloud"/>
+   <addaction name="separator"/>
    <addaction name="actionCopy_Seed"/>
    <addaction name="actionRefresh"/>
    <addaction name="actionView_Folder"/>
@@ -161,6 +164,28 @@
    </property>
    <property name="toolTip">
        <string>Manage data packs inside the world.</string>
+   </property>
+  </action>
+  <action name="actionBackUp_to_Cloud">
+   <property name="icon">
+    <iconset theme="export"/>
+   </property>
+   <property name="text">
+    <string>Back Up to Cloud</string>
+   </property>
+   <property name="toolTip">
+    <string>Upload a snapshot of the selected world to the saves server.</string>
+   </property>
+  </action>
+  <action name="actionRestore_from_Cloud">
+   <property name="icon">
+    <iconset theme="new"/>
+   </property>
+   <property name="text">
+    <string>Restore from Cloud...</string>
+   </property>
+   <property name="toolTip">
+    <string>Download a cloud snapshot into a new world folder.</string>
    </property>
   </action>
  </widget>

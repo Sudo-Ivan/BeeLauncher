@@ -49,11 +49,12 @@
 
 #include "Application.h"
 #include "BuildConfig.h"
+#include "UrlUtils.h"
 #include "net/PasteUpload.h"
+#include "saves/SavesClient.h"
 #include "settings/SettingsObject.h"
 #include "tools/BaseProfiler.h"
 #include "ui/GuiUtil.h"
-#include "UrlUtils.h"
 
 APIPage::APIPage(QWidget* parent) : QWidget(parent), ui(new Ui::APIPage)
 {
@@ -80,11 +81,15 @@ APIPage::APIPage(QWidget* parent) : QWidget(parent), ui(new Ui::APIPage)
     ui->resourceURL->setValidator(new QRegularExpressionValidator(s_validUrlRegExp, ui->resourceURL));
     ui->baseURLEntry->setValidator(new QRegularExpressionValidator(s_validUrlRegExp, ui->baseURLEntry));
     ui->legacyFMLLibsURL->setValidator(new QRegularExpressionValidator(s_validUrlRegExp, ui->legacyFMLLibsURL));
+    ui->mvaURL->setValidator(new QRegularExpressionValidator(s_validUrlRegExp, ui->mvaURL));
+    ui->savesURL->setValidator(new QRegularExpressionValidator(s_validUrlRegExp, ui->savesURL));
     ui->msaClientID->setValidator(new QRegularExpressionValidator(s_validMSAClientID, ui->msaClientID));
 
     ui->metaURL->setPlaceholderText(BuildConfig.META_URL);
     ui->resourceURL->setPlaceholderText(BuildConfig.DEFAULT_RESOURCE_BASE);
     ui->legacyFMLLibsURL->setPlaceholderText(BuildConfig.LEGACY_FMLLIBS_BASE_URL);
+    ui->mvaURL->setPlaceholderText(BuildConfig.MVA_URL);
+    ui->savesURL->setPlaceholderText(BuildConfig.SAVES_URL);
     ui->userAgentLineEdit->setPlaceholderText(BuildConfig.USER_AGENT);
 
     loadSettings();
@@ -94,6 +99,7 @@ APIPage::APIPage(QWidget* parent) : QWidget(parent), ui(new Ui::APIPage)
     connect(ui->baseURLEntry, &QLineEdit::textEdited, this, &APIPage::resetBaseURLNote);
 
     connect(ui->fetchKeyButton, &QPushButton::clicked, this, &APIPage::fetchKeyButtonPressed);
+    connect(ui->savesTestButton, &QPushButton::clicked, this, &APIPage::testSavesConnection);
 }
 
 APIPage::~APIPage()
@@ -158,6 +164,11 @@ void APIPage::loadSettings()
     QString customUserAgent = s->get("UserAgentOverride").toString();
     ui->userAgentLineEdit->setText(customUserAgent);
     ui->technicClientID->setText(s->get("TechnicClientID").toString());
+
+    ui->mvaEnabled->setChecked(s->get("MvaEnabled").toBool());
+    ui->mvaURL->setText(s->get("MvaURL").toString());
+    ui->savesURL->setText(s->get("SavesURL").toString());
+    ui->savesToken->setText(s->get("SavesToken").toString());
 }
 
 void APIPage::applySettings()
@@ -198,6 +209,14 @@ void APIPage::applySettings()
     s->set("ModrinthToken", modrinthToken);
     s->set("UserAgentOverride", ui->userAgentLineEdit->text());
     s->set("TechnicClientID", ui->technicClientID->text());
+
+    QUrl mvaURL(ui->mvaURL->text());
+    addRequiredTrailingSlash(mvaURL);
+    UrlUtils::upgradeToHTTPS(mvaURL);
+    s->set("MvaEnabled", ui->mvaEnabled->isChecked());
+    s->set("MvaURL", mvaURL.toString());
+    s->set("SavesURL", ui->savesURL->text().trimmed());
+    s->set("SavesToken", ui->savesToken->text().trimmed());
 }
 
 void APIPage::fetchKeyButtonPressed()
@@ -206,6 +225,27 @@ void APIPage::fetchKeyButtonPressed()
 
     if (!apiKey.isEmpty())
         ui->flameKey->setText(apiKey);
+}
+
+void APIPage::testSavesConnection()
+{
+    const QString url = ui->savesURL->text().trimmed().isEmpty() ? BuildConfig.SAVES_URL : ui->savesURL->text().trimmed();
+    const QString token = ui->savesToken->text().trimmed();
+
+    ui->savesTestResult->setText(tr("Testing..."));
+    ui->savesTestButton->setEnabled(false);
+
+    auto* client = new SavesClient(APPLICATION->network(), url, token, this);
+    client->me([this](const SavesClient::MeInfo& info, const QString& error) {
+        ui->savesTestButton->setEnabled(true);
+        if (!error.isEmpty()) {
+            ui->savesTestResult->setText(error);
+            return;
+        }
+        const QString used = QLocale().formattedDataSize(info.usedBytes);
+        const QString quota = info.quotaBytes > 0 ? QLocale().formattedDataSize(info.quotaBytes) : tr("unlimited");
+        ui->savesTestResult->setText(tr("Connected. Tier: %1, %2 of %3 used").arg(info.tier, used, quota));
+    });
 }
 
 bool APIPage::apply()

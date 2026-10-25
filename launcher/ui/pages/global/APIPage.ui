@@ -455,6 +455,115 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="groupBox_mva">
+         <property name="title">
+          <string>Version Archive Mirror</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_9">
+          <item>
+           <widget class="QCheckBox" name="mvaEnabled">
+            <property name="text">
+             <string>Use Minecraft Version Archive mirror</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="mvaURL">
+            <property name="placeholderText">
+             <string>Use Default</string>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="mvaNote">
+            <property name="text">
+             <string>Routes launcher metadata and game assets through the mirror. Only versions archived on the mirror are available, and loaders it does not host (such as Forge) will not resolve. Explicit Meta and Resource URL overrides above take precedence.</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_saves">
+         <property name="title">
+          <string>Cloud Saves</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_10">
+          <item>
+           <widget class="QLabel" name="savesURLLabel">
+            <property name="text">
+             <string>Server URL:</string>
+            </property>
+            <property name="buddy">
+             <cstring>savesURL</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="savesURL">
+            <property name="placeholderText">
+             <string>Use Default</string>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="savesTokenLabel">
+            <property name="text">
+             <string>Token:</string>
+            </property>
+            <property name="buddy">
+             <cstring>savesToken</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="savesToken">
+            <property name="echoMode">
+             <enum>QLineEdit::Password</enum>
+            </property>
+            <property name="placeholderText">
+             <string>Paste your saves token</string>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="savesTestLayout">
+            <item>
+             <widget class="QPushButton" name="savesTestButton">
+              <property name="text">
+               <string>Test connection</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="savesTestResult">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
            <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>

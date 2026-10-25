@@ -103,6 +103,8 @@ class WorldListPage : public QMainWindow, public BasePage {
     void mceditState(LoggedProcess::State state);
     void on_actionJoin_triggered();
     void on_actionCreate_Shortcut_triggered();
+    void on_actionBackUp_to_Cloud_triggered();
+    void on_actionRestore_from_Cloud_triggered();
 
     void ShowContextMenu(const QPoint& pos);
 };

@@ -933,7 +933,16 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
 
             // Legacy FML libs URL
             resetIfInvalid(m_settings->registerSetting("LegacyFMLLibsURLOverride", "").get());
+
+            // MVA mirror URL
+            resetIfInvalid(m_settings->registerSetting("MvaURL", "").get());
+
+            // saves server URL
+            resetIfInvalid(m_settings->registerSetting("SavesURL", "").get());
         }
+
+        m_settings->registerSetting("MvaEnabled", false);
+        m_settings->registerSetting("SavesToken", "");
 
         m_settings->registerSetting("CloseAfterLaunch", false);
         m_settings->registerSetting("QuitAfterGameStop", false);

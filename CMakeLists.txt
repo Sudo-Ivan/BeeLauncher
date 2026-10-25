@@ -198,6 +198,12 @@ set(Launcher_BUILD_ARTIFACT "" CACHE STRING "Artifact name to help the updater i
 # The metadata server
 set(Launcher_META_URL "https://meta.freesmlauncher.org/v1/" CACHE STRING "URL to fetch the launcher's meta files from.")
 
+# The Minecraft Version Archive mirror
+set(Launcher_MVA_URL "https://mva.quad4.io" CACHE STRING "Base URL of the Minecraft Version Archive mirror.")
+
+# The saves cloud backup server
+set(Launcher_SAVES_URL "https://saves.quad4.io" CACHE STRING "Base URL of the saves cloud backup server.")
+
 # Imgur API Client ID
 set(Launcher_IMGUR_CLIENT_ID "5b97b0713fba4a3" CACHE STRING "Client ID you can get from Imgur when you register an application")
 

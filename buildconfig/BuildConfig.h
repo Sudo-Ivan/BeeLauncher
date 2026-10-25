@@ -159,6 +159,16 @@ class Config {
      */
     QString META_URL;
 
+    /**
+     * Minecraft Version Archive mirror base URL
+     */
+    QString MVA_URL;
+
+    /**
+     * saves cloud backup server base URL
+     */
+    QString SAVES_URL;
+
     QString GLFW_LIBRARY_NAME;
     QString OPENAL_LIBRARY_NAME;
 

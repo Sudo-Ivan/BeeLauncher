@@ -349,6 +349,15 @@ set(MINECRAFT_SOURCES
     minecraft/InstanceBackup.h
     minecraft/InstanceBackup.cpp
 
+    saves/SavesManifest.h
+    saves/SavesManifest.cpp
+    saves/SavesClient.h
+    saves/SavesClient.cpp
+    saves/SavesPushTask.h
+    saves/SavesPushTask.cpp
+    saves/SavesRestoreTask.h
+    saves/SavesRestoreTask.cpp
+
     migrate/DetectedProfile.h
     migrate/DetectedProfile.cpp
     migrate/MigrateInstanceTask.h
@@ -825,6 +834,8 @@ SET(LAUNCHER_SOURCES
     DataMigrationTask.cpp
     ApplicationMessage.h
     ApplicationMessage.cpp
+    ServiceUrls.h
+    ServiceUrls.cpp
     SysInfo.h
     SysInfo.cpp
     HardwareInfo.cpp
@@ -1132,6 +1143,8 @@ SET(LAUNCHER_SOURCES
     ui/dialogs/VersionSelectDialog.h
     ui/dialogs/ResourceDownloadDialog.cpp
     ui/dialogs/ResourceDownloadDialog.h
+    ui/dialogs/SavesRestoreDialog.cpp
+    ui/dialogs/SavesRestoreDialog.h
     ui/dialogs/ScrollMessageBox.cpp
     ui/dialogs/ScrollMessageBox.h
     ui/dialogs/BlockedModsDialog.cpp

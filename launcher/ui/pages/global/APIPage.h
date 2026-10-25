@@ -67,6 +67,7 @@ class APIPage : public QWidget, public BasePage {
     void loadSettings();
     void applySettings();
     void fetchKeyButtonPressed();
+    void testSavesConnection();
 
    private:
     Ui::APIPage* ui;

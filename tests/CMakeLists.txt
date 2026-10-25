@@ -83,6 +83,15 @@ ecm_add_test(InstanceBackup_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSIO
 ecm_add_test(PNGUtils_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME PNGUtils)
 
+ecm_add_test(ServiceUrls_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
+    TEST_NAME ServiceUrls)
+
+ecm_add_test(SavesManifest_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
+    TEST_NAME SavesManifest)
+
+ecm_add_test(SavesClient_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test Qt${QT_VERSION_MAJOR}::Network
+    TEST_NAME SavesClient)
+
 # Dev-only shell preview, not installed and not part of the app
 add_executable(BeeShellPreview ShellPreview_main.cpp ShellMocks.h)
 target_link_libraries(BeeShellPreview PRIVATE Launcher_logic BeeShellplugin Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Qml Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Test)

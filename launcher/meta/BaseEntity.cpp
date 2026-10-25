@@ -26,6 +26,7 @@
 #include "net/NetJob.h"
 
 #include "Application.h"
+#include "ServiceUrls.h"
 #include "settings/SettingsObject.h"
 #include "BuildConfig.h"
 #include "tasks/Task.h"
@@ -74,12 +75,7 @@ class ParsingValidator : public Net::Validator {
 
 QUrl BaseEntity::url() const
 {
-    auto s = APPLICATION->settings();
-    QString metaOverride = s->get("MetaURLOverride").toString();
-    if (metaOverride.isEmpty()) {
-        return QUrl(BuildConfig.META_URL).resolved(localFilename());
-    }
-    return QUrl(metaOverride).resolved(localFilename());
+    return QUrl(ServiceUrls::metaBase()).resolved(localFilename());
 }
 
 Task::Ptr BaseEntity::loadTask(Net::Mode mode, bool forceReload)

@@ -62,6 +62,11 @@
 
 #include "Application.h"
 #include "DataPackPage.h"
+#include "saves/SavesManifest.h"
+#include "saves/SavesPushTask.h"
+#include "saves/SavesRestoreTask.h"
+#include "ui/dialogs/ProgressDialog.h"
+#include "ui/dialogs/SavesRestoreDialog.h"
 
 class WorldListProxyModel : public QSortFilterProxyModel {
     Q_OBJECT
@@ -380,6 +385,7 @@ void WorldListPage::worldChanged([[maybe_unused]] const QModelIndex& current, [[
     ui->actionCopy->setEnabled(enable);
     ui->actionRename->setEnabled(enable);
     ui->actionData_Packs->setEnabled(enable);
+    ui->actionBackUp_to_Cloud->setEnabled(enable);
     bool hasIcon = !index.data(WorldList::IconFileRole).isNull();
     ui->actionReset_Icon->setEnabled(enable && hasIcon);
 
@@ -462,6 +468,79 @@ void WorldListPage::on_actionRename_triggered()
 
     if (ok && name.length() > 0) {
         world->rename(name);
+    }
+}
+
+void WorldListPage::on_actionBackUp_to_Cloud_triggered()
+{
+    QModelIndex index = getSelectedWorld();
+    if (!index.isValid()) {
+        return;
+    }
+
+    if (APPLICATION->settings()->get("SavesToken").toString().isEmpty()) {
+        QMessageBox::information(this, tr("Cloud Saves"),
+                                 tr("Set a saves token in Settings, Services before backing up worlds to the cloud."));
+        return;
+    }
+
+    if (!worldSafetyNagQuestion(tr("Back Up to Cloud")))
+        return;
+
+    bool ok = false;
+    const QString label =
+        QInputDialog::getText(this, tr("Snapshot label"), tr("Optional label for this backup."), QLineEdit::Normal, QString(), &ok);
+    if (!ok) {
+        return;
+    }
+
+    const QString folder = m_worlds->data(index, WorldList::FolderRole).toString();
+    const QString slot = Saves::slotNameFor(QFileInfo(folder).fileName());
+
+    std::unique_ptr<Task> task = std::make_unique<SavesPushTask>(folder, slot, label);
+    auto* rawTask = static_cast<SavesPushTask*>(task.get());
+    ProgressDialog progress(this);
+    progress.execWithTask(task);
+
+    if (rawTask->getState() == Task::State::Succeeded) {
+        QString message = tr("The world was backed up to the cloud.\n%1").arg(rawTask->summary());
+        const auto skipped = rawTask->skipped();
+        if (!skipped.isEmpty()) {
+            QStringList lines;
+            for (const auto& s : skipped)
+                lines.append(tr("%1 (%2)").arg(s.path, s.reason));
+            message += tr("\n\nSkipped paths:\n%1").arg(lines.join('\n'));
+        }
+        QMessageBox::information(this, tr("Back Up to Cloud"), message);
+    } else if (rawTask->getState() == Task::State::Failed) {
+        QMessageBox::warning(this, tr("Back Up to Cloud"), rawTask->failReason());
+    }
+}
+
+void WorldListPage::on_actionRestore_from_Cloud_triggered()
+{
+    if (APPLICATION->settings()->get("SavesToken").toString().isEmpty()) {
+        QMessageBox::information(this, tr("Cloud Saves"),
+                                 tr("Set a saves token in Settings, Services before restoring worlds from the cloud."));
+        return;
+    }
+
+    SavesRestoreDialog dialog(this);
+    if (!dialog.exec() || dialog.selectedSnapshotId().isEmpty()) {
+        return;
+    }
+
+    std::unique_ptr<Task> task =
+        std::make_unique<SavesRestoreTask>(m_worlds->dir().absolutePath(), dialog.selectedSlot(), dialog.selectedSnapshotId());
+    auto* rawTask = static_cast<SavesRestoreTask*>(task.get());
+    ProgressDialog progress(this);
+    progress.execWithTask(task);
+
+    if (rawTask->getState() == Task::State::Succeeded) {
+        QMessageBox::information(this, tr("Restore from Cloud"),
+                                 tr("The snapshot was restored as \"%1\".").arg(rawTask->restoredDirName()));
+    } else if (rawTask->getState() == Task::State::Failed) {
+        QMessageBox::warning(this, tr("Restore from Cloud"), rawTask->failReason());
     }
 }
 

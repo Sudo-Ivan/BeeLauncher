@@ -113,6 +113,8 @@ Config::Config()
     ELYBY_CLIENT_ID = "@Launcher_ELYBY_CLIENT_ID@";
     FLAME_API_KEY = "@Launcher_CURSEFORGE_API_KEY@";
     META_URL = "@Launcher_META_URL@";
+    MVA_URL = "@Launcher_MVA_URL@";
+    SAVES_URL = "@Launcher_SAVES_URL@";
     LEGACY_FMLLIBS_BASE_URL = "@Launcher_LEGACY_FMLLIBS_BASE_URL@";
 
     GLFW_LIBRARY_NAME = "@Launcher_GLFW_LIBRARY_NAME@";
