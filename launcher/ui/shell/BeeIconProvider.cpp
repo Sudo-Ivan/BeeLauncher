@@ -1,23 +1,29 @@
 #include "BeeIconProvider.h"
 #include "../../Application.h"
 #include "../../icons/IconList.h"
+#include <QCoreApplication>
+#include <QImage>
 #include <QPixmap>
-#include <QtConcurrent/QtConcurrent>
+#include <QPointer>
+#include <QTimer>
 
 class BeeIconResponse : public QQuickImageResponse {
    public:
     BeeIconResponse(const QString& id, const QSize& size)
     {
-        m_future = QtConcurrent::run([id, size]() -> QPixmap {
-            int px = size.width() > 0 ? size.width() : 128;
-            return APPLICATION->icons()->getIcon(id).pixmap(px, px);
+        const int px = size.width() > 0 ? size.width() : 128;
+        // QIcon::fromTheme and QIcon::pixmap go through the shared QIconLoader,
+        // which is only safe on the GUI thread, so resolve the icon there.
+        QPointer<BeeIconResponse> self(this);
+        QTimer::singleShot(0, qApp, [self, id, px] {
+            if (!self)
+                return;
+            self->m_image = APPLICATION->icons()->getIcon(id).pixmap(px, px).toImage();
+            emit self->finished();
         });
-        m_watcher.setFuture(m_future);
-        connect(&m_watcher, &QFutureWatcher<QPixmap>::finished, this, &QQuickImageResponse::finished);
     }
-    QQuickTextureFactory* textureFactory() const override { return QQuickTextureFactory::textureFactoryForImage(m_watcher.result().toImage()); }
-    QFuture<QPixmap> m_future;
-    QFutureWatcher<QPixmap> m_watcher;
+    QQuickTextureFactory* textureFactory() const override { return QQuickTextureFactory::textureFactoryForImage(m_image); }
+    QImage m_image;
 };
 
 QQuickImageResponse* BeeIconProvider::requestImageResponse(const QString& id, const QSize& requestedSize)
