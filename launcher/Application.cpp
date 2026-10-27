@@ -869,6 +869,7 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
         m_settings->registerSetting("MainWindowGeometry", "");
         m_settings->registerSetting("ShellWindowGeometry", "");
         m_settings->registerSetting("UiMode", "shell");
+        m_settings->registerSetting("ShellLightMode", false);
 
         m_settings->registerSetting("ConsoleWindowState", "");
         m_settings->registerSetting("ConsoleWindowGeometry", "");

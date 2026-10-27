@@ -15,6 +15,13 @@
 #include "BeeIconProvider.h"
 #include "ShellController.h"
 #include "ShellInstanceModel.h"
+#include "backend/ShellAccountBridge.h"
+#include "backend/ShellCreateController.h"
+#include "backend/ShellDiscoverModel.h"
+#include "backend/ShellInstanceBridge.h"
+#include "backend/ShellServerModel.h"
+#include "backend/ShellSettings.h"
+#include "backend/ShellTaskRunner.h"
 
 ShellWindow::ShellWindow(QObject* parent) : QObject(parent), m_engine(new QQmlApplicationEngine)
 {
@@ -24,8 +31,30 @@ ShellWindow::ShellWindow(QObject* parent) : QObject(parent), m_engine(new QQmlAp
     m_model = new ShellInstanceModel(APPLICATION->instances(), this);
     m_controller = new ShellController(this);
     m_controller->attachBackend();
+    m_settings = new ShellSettings(this);
+    m_settings->attachBackend();
+    m_accounts = new ShellAccountBridge(this);
+    m_accounts->attachBackend();
+    m_servers = new ShellServerModel(this);
+    m_servers->attachBackend();
+    m_instanceBridge = new ShellInstanceBridge(this);
+    m_instanceBridge->attachBackend();
+    m_taskRunner = new ShellTaskRunner(this);
+    m_createController = new ShellCreateController(this);
+    m_createController->attachBackend();
+    m_createController->setTaskRunner(m_taskRunner);
+    m_discover = new ShellDiscoverModel(this);
+    m_discover->attachBackend();
+    m_discover->setTaskRunner(m_taskRunner);
     m_engine->rootContext()->setContextProperty(QStringLiteral("instances"), m_model);
     m_engine->rootContext()->setContextProperty(QStringLiteral("controller"), m_controller);
+    m_engine->rootContext()->setContextProperty(QStringLiteral("shellSettings"), m_settings);
+    m_engine->rootContext()->setContextProperty(QStringLiteral("accounts"), m_accounts);
+    m_engine->rootContext()->setContextProperty(QStringLiteral("servers"), m_servers);
+    m_engine->rootContext()->setContextProperty(QStringLiteral("instanceBridge"), m_instanceBridge);
+    m_engine->rootContext()->setContextProperty(QStringLiteral("taskRunner"), m_taskRunner);
+    m_engine->rootContext()->setContextProperty(QStringLiteral("createCtrl"), m_createController);
+    m_engine->rootContext()->setContextProperty(QStringLiteral("discover"), m_discover);
 
     m_engine->load(QUrl(QStringLiteral("qrc:/qt/qml/Bee/Shell/ui/shell/Main.qml")));
     if (!m_engine->rootObjects().isEmpty())

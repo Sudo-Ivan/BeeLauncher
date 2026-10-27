@@ -70,7 +70,7 @@ ecm_add_test(CrashAnalyzer_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION
 ecm_add_test(ShellModel_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test
     TEST_NAME ShellModel)
 
-ecm_add_test(ShellRender_test.cpp LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Qml BeeShellplugin
+ecm_add_test(ShellRender_test.cpp ShellMocks.h LINK_LIBRARIES Launcher_logic Qt${QT_VERSION_MAJOR}::Test Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Qml BeeShellplugin
     TEST_NAME ShellRender)
 set_tests_properties(ShellRender PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
 

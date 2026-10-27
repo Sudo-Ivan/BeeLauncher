@@ -4,8 +4,9 @@ import QtQuick.Controls.impl
 import QtQuick.Layouts
 import Bee.Shell
 
-// Stage 1 shell window. Discover, Accounts and Settings are placeholders that
-// open the classic Widgets dialogs until later stages port them.
+// Qt Quick shell window. Home, Library, Servers, Discover, Accounts and
+// Settings are fully native; heavyweight wizards still delegate to the
+// classic Widgets dialogs.
 ApplicationWindow {
     id: root
     width: 1280
@@ -22,18 +23,38 @@ ApplicationWindow {
     palette.highlight: Theme.accent
     palette.dark: Theme.text
 
-    onLightModeChanged: Theme.dark = !lightMode
-
-    FontLoader { id: uiFont; source: "fonts/Inter.ttf" }
-    font.family: uiFont.status === FontLoader.Ready ? uiFont.name : "sans-serif"
-
     property int pageIndex: 0
     property bool lightMode: false
     property string selectedId: ""
     property var selectedData: null
+    property string detailId: ""
 
-    readonly property var pageTitles: [qsTr("Home"), qsTr("Library"), qsTr("Discover"), qsTr("Accounts"), qsTr("Settings")]
-    readonly property var pageIcons: ["home.svg", "collections.svg", "compass.svg", "person.svg", "settings.svg"]
+    function toast(message) {
+        if (!message || String(message).length === 0)
+            return
+        toastText.text = message
+        toastTimer.restart()
+        toastBox.visible = true
+    }
+
+    onLightModeChanged: {
+        Theme.dark = !lightMode
+        shellSettings.setValue("ShellLightMode", lightMode)
+    }
+
+    Component.onCompleted: {
+        var light = shellSettings.value("ShellLightMode")
+        if (light === undefined || light === null)
+            light = false
+        lightMode = light === true || light === "true"
+        Theme.dark = !lightMode
+    }
+
+    FontLoader { id: uiFont; source: "fonts/Inter.ttf" }
+    font.family: uiFont.status === FontLoader.Ready ? uiFont.name : "sans-serif"
+
+    readonly property var pageTitles: [qsTr("Home"), qsTr("Library"), qsTr("Servers"), qsTr("Discover"), qsTr("Accounts"), qsTr("Settings")]
+    readonly property var pageIcons: ["home.svg", "collections.svg", "server.svg", "compass.svg", "person.svg", "settings.svg"]
 
     function groupCount(g) {
         var n = 0
@@ -88,6 +109,7 @@ ApplicationWindow {
         property string targetId: ""
         property bool targetRunning: false
         BeeMenuItem { text: cardMenu.targetRunning ? qsTr("Stop") : qsTr("Launch"); iconSource: cardMenu.targetRunning ? "icons/stop.svg" : "icons/play.svg"; onTriggered: cardMenu.targetRunning ? controller.kill(cardMenu.targetId) : controller.launch(cardMenu.targetId) }
+        BeeMenuItem { text: qsTr("Details"); iconSource: "icons/info.svg"; onTriggered: root.detailId = cardMenu.targetId }
         BeeMenuItem { text: qsTr("Edit"); iconSource: "icons/edit.svg"; onTriggered: controller.edit(cardMenu.targetId) }
         BeeMenuItem { text: qsTr("Open folder"); iconSource: "icons/folder.svg"; onTriggered: controller.openFolder(cardMenu.targetId) }
         BeeMenuItem { text: qsTr("Copy"); iconSource: "icons/copy.svg"; onTriggered: controller.copyInstance(cardMenu.targetId) }
@@ -205,9 +227,9 @@ ApplicationWindow {
                         font.weight: Font.DemiBold
                     }
                     Item { Layout.fillWidth: true }
-                    BeeTextField { Layout.preferredWidth: 320; placeholderText: qsTr("Search instances"); onTextChanged: instances.filterText = text }
-                    BeeComboBox { Layout.preferredWidth: 170; onActivated: function(i) { instances.sortMode = i } }
-                    BeeButton { variant: "primary"; btnHeight: 40; text: qsTr("New instance"); iconSource: "icons/add.svg"; onClicked: controller.addInstance() }
+                    BeeTextField { visible: root.pageIndex === 1; Layout.preferredWidth: 320; placeholderText: qsTr("Search instances"); onTextChanged: instances.filterText = text }
+                    BeeComboBox { visible: root.pageIndex === 1; Layout.preferredWidth: 170; onActivated: function(i) { instances.sortMode = i } }
+                    BeeButton { visible: root.pageIndex <= 3; variant: "primary"; btnHeight: 40; text: qsTr("New instance"); iconSource: "icons/add.svg"; onClicked: newInstanceDialog.open() }
                 }
                 Rectangle { anchors.bottom: parent.bottom; width: parent.width; height: 1; color: Theme.border }
             }
@@ -405,46 +427,18 @@ ApplicationWindow {
                             }
                         }
 
-                        // Discover placeholder
-                        Item {
-                            ColumnLayout {
-                                anchors.centerIn: parent
-                                spacing: Theme.sp16
-                                Text { text: qsTr("Discover"); color: Theme.text; font.pixelSize: Theme.headline; font.weight: Font.DemiBold; Layout.alignment: Qt.AlignHCenter }
-                                Text { text: qsTr("Pack sources land here in a later stage"); color: Theme.textDim; font.pixelSize: Theme.body }
-                                BeeButton { text: qsTr("Add instance"); variant: "primary"; iconSource: "icons/add.svg"; onClicked: controller.addInstance(); Layout.alignment: Qt.AlignHCenter }
-                            }
-                        }
+                        // Servers
+                        ServersPage { }
 
-                        // Accounts placeholder
-                        Item {
-                            ColumnLayout {
-                                anchors.centerIn: parent
-                                spacing: Theme.sp16
-                                Text { text: qsTr("Accounts"); color: Theme.text; font.pixelSize: Theme.headline; font.weight: Font.DemiBold; Layout.alignment: Qt.AlignHCenter }
-                                Text { text: qsTr("Account management opens the classic dialog"); color: Theme.textDim; font.pixelSize: Theme.body }
-                                BeeButton { text: qsTr("Manage accounts"); variant: "secondary"; iconSource: "icons/person.svg"; onClicked: controller.openAccounts(); Layout.alignment: Qt.AlignHCenter }
-                            }
-                        }
+                        // Discover
+                        DiscoverPage { }
 
-                        // Settings placeholder
-                        Item {
-                            ColumnLayout {
-                                anchors.centerIn: parent
-                                spacing: Theme.sp16
-                                Text { text: qsTr("Settings"); color: Theme.text; font.pixelSize: Theme.headline; font.weight: Font.DemiBold; Layout.alignment: Qt.AlignHCenter }
-                                Text { text: qsTr("Settings open the classic dialog"); color: Theme.textDim; font.pixelSize: Theme.body }
-                                BeeButton { text: qsTr("Open settings"); variant: "secondary"; iconSource: "icons/settings.svg"; onClicked: controller.openSettings(); Layout.alignment: Qt.AlignHCenter }
-                                RowLayout {
-                                    Layout.alignment: Qt.AlignHCenter
-                                    spacing: Theme.sp8
-                                    Text { text: qsTr("Light theme"); color: Theme.textDim; font.pixelSize: Theme.body }
-                                    CheckBox {
-                                        checked: !Theme.dark
-                                        onToggled: Theme.dark = !checked
-                                    }
-                                }
-                            }
+                        // Accounts
+                        AccountsPage { }
+
+                        // Settings
+                        SettingsPage {
+                            onRequestNav: function(index) { root.pageIndex = index }
                         }
                     }
 
@@ -581,5 +575,99 @@ ApplicationWindow {
                 }
             }
         }
+    }
+
+    // instance detail overlay
+    Loader {
+        id: detailLoader
+        anchors.fill: parent
+        active: root.detailId.length > 0
+        sourceComponent: InstanceDetailPage {
+            instanceId: root.detailId
+            onClosed: root.detailId = ""
+        }
+    }
+
+    // new instance wizard
+    NewInstanceDialog {
+        id: newInstanceDialog
+    }
+
+    // background task banner
+    Rectangle {
+        visible: taskRunner.busy
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        height: 44
+        color: Theme.surfaceRaised
+        Rectangle { anchors.top: parent.top; width: parent.width; height: 1; color: Theme.border }
+        RowLayout {
+            anchors.fill: parent
+            anchors.leftMargin: Theme.sp16
+            anchors.rightMargin: Theme.sp16
+            spacing: Theme.sp12
+            Text { text: taskRunner.statusText; color: Theme.text; font.pixelSize: Theme.body; elide: Text.ElideRight; Layout.fillWidth: true }
+            ProgressBar {
+                Layout.preferredWidth: 200
+                indeterminate: taskRunner.progress < 0
+                value: taskRunner.progress < 0 ? 0 : taskRunner.progress
+            }
+            BeeIconButton { iconSource: "icons/dismiss.svg"; onClicked: taskRunner.abort() }
+        }
+    }
+
+    // toast
+    Rectangle {
+        id: toastBox
+        visible: false
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: taskRunner.busy ? 60 : Theme.sp24
+        width: toastText.implicitWidth + Theme.sp32
+        height: toastText.implicitHeight + Theme.sp16
+        radius: Theme.r12
+        color: Theme.surfaceRaised
+        border.width: 1
+        border.color: Theme.border
+        Text {
+            id: toastText
+            anchors.centerIn: parent
+            color: Theme.text
+            font.pixelSize: Theme.body
+        }
+        Timer { id: toastTimer; interval: 4000; onTriggered: toastBox.visible = false }
+    }
+
+    Connections {
+        target: controller
+        function onToast(message) { root.toast(message) }
+    }
+    Connections {
+        target: servers
+        function onErrorOccurred(message) { root.toast(message) }
+    }
+    Connections {
+        target: accounts
+        function onMsaFailed(reason) { root.toast(reason) }
+        function onElybyFailed(reason) { root.toast(reason) }
+    }
+    Connections {
+        target: instanceBridge
+        function onActionFailed(message) { root.toast(message) }
+    }
+    Connections {
+        target: taskRunner
+        function onTaskFailed(reason) { root.toast(reason) }
+    }
+    Connections {
+        target: createCtrl
+        function onCreateFailed(reason) { root.toast(reason) }
+        function onInstanceCreated() { root.toast(qsTr("Instance created")) }
+    }
+    Connections {
+        target: discover
+        function onSearchFailed(reason) { root.toast(reason) }
+        function onInstallFailed(reason) { root.toast(reason) }
     }
 }

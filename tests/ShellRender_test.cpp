@@ -12,22 +12,10 @@
 #include "ui/shell/ShellController.h"
 #include "ui/shell/ShellInstanceModel.h"
 #include "InstanceList.h"
+#include "ShellMocks.h"
 
 #include <QtQml/qqmlextensionplugin.h>
 Q_IMPORT_QML_PLUGIN(Bee_ShellPlugin);
-
-class SolidIconProvider : public QQuickImageProvider {
-   public:
-    SolidIconProvider() : QQuickImageProvider(QQuickImageProvider::Pixmap) {}
-    QPixmap requestPixmap(const QString& id, QSize* size, const QSize& requestedSize) override
-    {
-        int px = requestedSize.width() > 0 ? requestedSize.width() : 96;
-        QPixmap p(px, px);
-        p.fill(QColor::fromString(id.length() > 2 ? "#e8a33d" : "#777777"));
-        if (size) *size = p.size();
-        return p;
-    }
-};
 
 class ShellRender_test : public QObject {
     Q_OBJECT
@@ -57,6 +45,7 @@ class ShellRender_test : public QObject {
         ShellController controller;
         engine.rootContext()->setContextProperty("instances", &proxy);
         engine.rootContext()->setContextProperty("controller", &controller);
+        registerShellContextMocks(engine.rootContext(), &controller);
         engine.addImportPath(QStringLiteral("qrc:/qt/qml"));
 
         QQmlComponent comp(&engine, QUrl("qrc:/qt/qml/Bee/Shell/ui/shell/Main.qml"));
@@ -90,6 +79,12 @@ class ShellRender_test : public QObject {
         if (!dir.isEmpty()) {
             QDir().mkpath(dir);
             img.save(dir + "/library-dark.png");
+            static const char* names[] = { "home", "library", "servers", "discover", "accounts", "settings" };
+            for (int i = 0; i < 6; ++i) {
+                obj->setProperty("pageIndex", i);
+                QTest::qWait(120);
+                win->grabWindow().save(dir + "/" + names[i] + ".png");
+            }
         }
 
         // empty state

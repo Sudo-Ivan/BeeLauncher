@@ -1403,38 +1403,88 @@ qt_add_qml_module(BeeShell
     QML_FILES
         ui/shell/BeeButton.qml
         ui/shell/BeeCard.qml
+        ui/shell/BeeCheckBox.qml
         ui/shell/BeeChip.qml
         ui/shell/BeeCornerPatch.qml
         ui/shell/BeeComboBox.qml
+        ui/shell/BeeDialog.qml
+        ui/shell/BeeFieldRow.qml
         ui/shell/BeeIconButton.qml
+        ui/shell/BeeListDelegate.qml
         ui/shell/BeeMenu.qml
         ui/shell/BeeMenuItem.qml
         ui/shell/BeeNavButton.qml
         ui/shell/BeeScrollBar.qml
+        ui/shell/BeeSectionHeader.qml
+        ui/shell/BeeSlider.qml
+        ui/shell/BeeSpinBox.qml
+        ui/shell/BeeTabButton.qml
         ui/shell/BeeTextField.qml
         ui/shell/Theme.qml
         ui/shell/Main.qml
+        ui/shell/pages/AccountsPage.qml
+        ui/shell/pages/DiscoverPage.qml
+        ui/shell/pages/InstanceDetailPage.qml
+        ui/shell/pages/ServersPage.qml
+        ui/shell/pages/SettingsPage.qml
+        ui/shell/pages/instance/InstanceSettingsTab.qml
+        ui/shell/pages/instance/LogsTab.qml
+        ui/shell/pages/instance/ModsTab.qml
+        ui/shell/pages/instance/NotesTab.qml
+        ui/shell/pages/instance/OverviewTab.qml
+        ui/shell/pages/instance/ScreenshotsTab.qml
+        ui/shell/pages/instance/WorldsTab.qml
+        ui/shell/pages/settings/BoolRow.qml
+        ui/shell/pages/settings/ComboRow.qml
+        ui/shell/pages/settings/IntRow.qml
+        ui/shell/pages/settings/PathRow.qml
+        ui/shell/pages/settings/SecretRow.qml
+        ui/shell/pages/settings/SliderRow.qml
+        ui/shell/pages/settings/TextRow.qml
+        ui/shell/dialogs/AddElybyDialog.qml
+        ui/shell/dialogs/AddOfflineDialog.qml
+        ui/shell/dialogs/MsaSignInDialog.qml
+        ui/shell/dialogs/NewInstanceDialog.qml
+        ui/shell/dialogs/ServerEditDialog.qml
     RESOURCES
         ui/shell/icons/add.svg
         ui/shell/icons/arrow_sort.svg
         ui/shell/icons/checkmark.svg
         ui/shell/icons/chevron_down.svg
+        ui/shell/icons/chevron_right.svg
         ui/shell/icons/collections.svg
         ui/shell/icons/compass.svg
         ui/shell/icons/copy.svg
         ui/shell/icons/cube.svg
         ui/shell/icons/delete.svg
         ui/shell/icons/dismiss.svg
+        ui/shell/icons/download.svg
         ui/shell/icons/edit.svg
+        ui/shell/icons/eye.svg
+        ui/shell/icons/eye_off.svg
         ui/shell/icons/folder.svg
+        ui/shell/icons/globe.svg
         ui/shell/icons/history.svg
         ui/shell/icons/home.svg
+        ui/shell/icons/image.svg
+        ui/shell/icons/info.svg
+        ui/shell/icons/link.svg
+        ui/shell/icons/log.svg
         ui/shell/icons/more_horizontal.svg
+        ui/shell/icons/note.svg
+        ui/shell/icons/paste.svg
         ui/shell/icons/person.svg
+        ui/shell/icons/person_add.svg
         ui/shell/icons/play.svg
+        ui/shell/icons/puzzle.svg
+        ui/shell/icons/refresh.svg
         ui/shell/icons/search.svg
+        ui/shell/icons/server.svg
         ui/shell/icons/settings.svg
+        ui/shell/icons/star.svg
         ui/shell/icons/stop.svg
+        ui/shell/icons/warning.svg
+        ui/shell/icons/world.svg
         ui/shell/icons/wrench.svg
         ui/shell/icons/LICENSE.txt
         ui/shell/fonts/Inter.ttf
@@ -1445,6 +1495,14 @@ qt_add_qml_module(BeeShell
         ui/shell/BeeIconProvider.h ui/shell/BeeIconProvider.cpp
         ui/shell/ShellController.h ui/shell/ShellController.cpp
         ui/shell/ShellWindow.h ui/shell/ShellWindow.cpp
+        ui/shell/backend/ShellSettings.h ui/shell/backend/ShellSettings.cpp
+        ui/shell/backend/ShellAccountBridge.h ui/shell/backend/ShellAccountBridge.cpp
+        ui/shell/backend/ShellServerModel.h ui/shell/backend/ShellServerModel.cpp
+        ui/shell/backend/ShellResourceModel.h ui/shell/backend/ShellResourceModel.cpp
+        ui/shell/backend/ShellInstanceBridge.h ui/shell/backend/ShellInstanceBridge.cpp
+        ui/shell/backend/ShellTaskRunner.h ui/shell/backend/ShellTaskRunner.cpp
+        ui/shell/backend/ShellCreateController.h ui/shell/backend/ShellCreateController.cpp
+        ui/shell/backend/ShellDiscoverModel.h ui/shell/backend/ShellDiscoverModel.cpp
 )
 target_link_libraries(BeeShell PUBLIC Launcher_logic Qt${QT_VERSION_MAJOR}::Quick)
 target_include_directories(BeeShell PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

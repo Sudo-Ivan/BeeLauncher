@@ -20,11 +20,12 @@ Q_IMPORT_QML_PLUGIN(Bee_ShellPlugin);
 
 int main(int argc, char** argv)
 {
+    QQuickWindow::setSceneGraphBackend(QStringLiteral("software"));
     QGuiApplication app(argc, argv);
     QCommandLineParser p;
     p.addOptions({ { "page", "page", "home" }, { "theme", "theme", "dark" }, { "width", "w", "1280" },
                    { "height", "h", "800" }, { "output", "png", "/tmp/preview.png" }, { "select", "instance index to select", "-1" },
-                   { "empty", "empty model", "0" }, { "hover", "card index to hover", "-1" }, { "menu", "open card context menu", "" }, { "assets", "modrinth asset dir", "dir" } });
+                   { "detail", "open instance detail overlay", "" }, { "empty", "empty model", "0" }, { "hover", "card index to hover", "-1" }, { "menu", "open card context menu", "" }, { "assets", "modrinth asset dir", "dir" } });
     p.process(app);
 
     QQmlEngine engine;
@@ -44,6 +45,7 @@ int main(int argc, char** argv)
     MockShellController controller;
     engine.rootContext()->setContextProperty("instances", &proxy);
     engine.rootContext()->setContextProperty("controller", &controller);
+    registerShellContextMocks(engine.rootContext(), &controller);
     engine.addImportPath(QStringLiteral("qrc:/qt/qml"));
 
     QQmlComponent comp(&engine, QUrl("qrc:/qt/qml/Bee/Shell/ui/shell/Main.qml"));
@@ -59,10 +61,12 @@ int main(int argc, char** argv)
 
     // page select + theme + selection via root properties
     QMetaObject::invokeMethod(obj.get(), [&]() {
-        static const QHash<QString, int> pages = { { "home", 0 }, { "library", 1 }, { "discover", 2 }, { "accounts", 3 }, { "settings", 4 } };
+        static const QHash<QString, int> pages = { { "home", 0 }, { "library", 1 }, { "servers", 2 }, { "discover", 3 }, { "accounts", 4 }, { "settings", 5 } };
         if (p.isSet("page") && pages.contains(p.value("page")))
             obj->setProperty("pageIndex", pages.value(p.value("page")));
         obj->setProperty("lightMode", p.value("theme") == "light");
+        if (p.isSet("detail"))
+            obj->setProperty("detailId", p.value("detail"));
         int sel = p.isSet("select") ? p.value("select").toInt() : -1;
         if (sel >= 0)
             QMetaObject::invokeMethod(obj.get(), "pickInstance", Q_ARG(QVariant, sel));
