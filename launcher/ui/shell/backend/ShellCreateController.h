@@ -73,6 +73,8 @@ class ShellCreateController : public QObject {
                             const QString& mcDescriptor,
                             const QString& loaderUid,
                             const QString& loaderDescriptor);
+    Q_INVOKABLE void copyInstance(const QString& instanceId, const QString& name, const QString& group);
+    Q_INVOKABLE void renameInstance(const QString& instanceId, const QString& name);
     Q_INVOKABLE void openClassicWizard();
     Q_INVOKABLE QVariantList loaderOptions() const;
 

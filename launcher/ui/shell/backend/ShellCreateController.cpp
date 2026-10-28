@@ -8,6 +8,7 @@
 #include "Version.h"
 #include "meta/Index.h"
 #include "meta/VersionList.h"
+#include "InstanceCopyTask.h"
 #include "minecraft/VanillaInstanceCreationTask.h"
 #include "ui/MainWindow.h"
 
@@ -308,6 +309,43 @@ void ShellCreateController::create(const QString& name,
 
     m_createPending = true;
     m_runner->runTask(APPLICATION->instances()->wrapInstanceTask(task));
+}
+
+void ShellCreateController::copyInstance(const QString& instanceId, const QString& name, const QString& group)
+{
+    if (!m_backend || !m_runner) {
+        emit createFailed(tr("The launcher backend is not available"));
+        return;
+    }
+    const QString trimmedName = name.trimmed();
+    if (trimmedName.isEmpty()) {
+        emit createFailed(tr("The instance name is empty"));
+        return;
+    }
+    auto* inst = APPLICATION->instances()->getInstanceById(instanceId);
+    if (!inst) {
+        emit createFailed(tr("The instance no longer exists"));
+        return;
+    }
+    auto* task = new InstanceCopyTask(inst, InstanceCopyPrefs());
+    task->setName(trimmedName);
+    task->setGroup(group);
+    task->setIcon(inst->iconKey());
+    m_createPending = true;
+    m_runner->runTask(APPLICATION->instances()->wrapInstanceTask(task));
+}
+
+void ShellCreateController::renameInstance(const QString& instanceId, const QString& name)
+{
+    if (!m_backend)
+        return;
+    const QString trimmedName = name.trimmed();
+    if (trimmedName.isEmpty()) {
+        emit createFailed(tr("The instance name is empty"));
+        return;
+    }
+    if (auto* inst = APPLICATION->instances()->getInstanceById(instanceId))
+        inst->setName(trimmedName);
 }
 
 void ShellCreateController::openClassicWizard()

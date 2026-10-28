@@ -1443,6 +1443,7 @@ qt_add_qml_module(BeeShell
         ui/shell/pages/settings/TextRow.qml
         ui/shell/dialogs/AddElybyDialog.qml
         ui/shell/dialogs/AddOfflineDialog.qml
+        ui/shell/dialogs/InstanceTextDialog.qml
         ui/shell/dialogs/MsaSignInDialog.qml
         ui/shell/dialogs/NewInstanceDialog.qml
         ui/shell/dialogs/ServerEditDialog.qml

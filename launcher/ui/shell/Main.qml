@@ -112,7 +112,9 @@ ApplicationWindow {
         BeeMenuItem { text: qsTr("Details"); iconSource: "icons/info.svg"; onTriggered: root.detailId = cardMenu.targetId }
         BeeMenuItem { text: qsTr("Edit"); iconSource: "icons/edit.svg"; onTriggered: controller.edit(cardMenu.targetId) }
         BeeMenuItem { text: qsTr("Open folder"); iconSource: "icons/folder.svg"; onTriggered: controller.openFolder(cardMenu.targetId) }
-        BeeMenuItem { text: qsTr("Copy"); iconSource: "icons/copy.svg"; onTriggered: controller.copyInstance(cardMenu.targetId) }
+        BeeMenuItem { text: qsTr("Rename"); iconSource: "icons/edit.svg"; onTriggered: textDlg.openWith(qsTr("Rename instance"), cardMenu.targetId, cardMenu.targetId) }
+        BeeMenuItem { text: qsTr("Move to group"); iconSource: "icons/folder.svg"; onTriggered: { textDlg.field2Label = ""; textDlg.openWith(qsTr("Move to group"), cardMenu.targetId, "") } }
+        BeeMenuItem { text: qsTr("Copy"); iconSource: "icons/copy.svg"; onTriggered: { textDlg.field2Label = qsTr("Group"); textDlg.openWith(qsTr("Copy instance"), cardMenu.targetId, "") } }
         BeeMenuItem { text: qsTr("Backup now"); iconSource: "icons/history.svg"; onTriggered: controller.backupNow(cardMenu.targetId) }
         BeeMenuItem { text: qsTr("Repair"); iconSource: "icons/wrench.svg"; onTriggered: controller.repair(cardMenu.targetId) }
         BeeMenuItem { text: qsTr("Create shortcut"); iconSource: "icons/add.svg"; onTriggered: controller.createShortcut(cardMenu.targetId) }
@@ -200,7 +202,7 @@ ApplicationWindow {
                             Text { text: controller.accountType; color: Theme.textFaint; font.pixelSize: Theme.caption }
                         }
                     }
-                    MouseArea { id: acctArea; anchors.fill: parent; hoverEnabled: true; onClicked: controller.openAccounts() }
+                    MouseArea { id: acctArea; anchors.fill: parent; hoverEnabled: true; onClicked: root.pageIndex = 4 }
                 }
             }
         }
@@ -591,6 +593,30 @@ ApplicationWindow {
     // new instance wizard
     NewInstanceDialog {
         id: newInstanceDialog
+    }
+
+    // rename / group / copy prompt
+    InstanceTextDialog {
+        id: textDlg
+        property string mode: ""
+        onAcceptedText: function(v1, v2) {
+            if (mode === "copy")
+                createCtrl.copyInstance(targetId, v1, v2)
+            else if (mode === "group")
+                controller.changeGroup(targetId, v1)
+            else
+                createCtrl.renameInstance(targetId, v1)
+        }
+        function openWith(t, id, v1) {
+            if (t === qsTr("Copy instance")) mode = "copy"
+            else if (t === qsTr("Move to group")) mode = "group"
+            else mode = "rename"
+            title = t
+            targetId = id
+            field1Text = v1
+            field2Text = ""
+            open()
+        }
     }
 
     // background task banner
