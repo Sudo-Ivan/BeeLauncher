@@ -7,6 +7,7 @@ class ShellController : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString accountName READ accountName NOTIFY accountChanged)
     Q_PROPERTY(QString accountType READ accountType NOTIFY accountChanged)
+    Q_PROPERTY(QString accountFace READ accountFace NOTIFY accountChanged)
    public:
     explicit ShellController(QObject* parent = nullptr);
 
@@ -15,6 +16,7 @@ class ShellController : public QObject {
 
     QString accountName() const;
     QString accountType() const;
+    QString accountFace() const;
 
     Q_INVOKABLE void launch(const QString& id);
     Q_INVOKABLE void kill(const QString& id);
@@ -38,4 +40,5 @@ class ShellController : public QObject {
    private:
     bool legacyAction(const QString& id, const char* slot);
     bool m_backend = false;
+    int m_revision = 0;
 };

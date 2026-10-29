@@ -19,6 +19,7 @@
 #include "backend/ShellCreateController.h"
 #include "backend/ShellDiscoverModel.h"
 #include "backend/ShellInstanceBridge.h"
+#include "backend/ShellNewsModel.h"
 #include "backend/ShellServerModel.h"
 #include "backend/ShellSettings.h"
 #include "backend/ShellTaskRunner.h"
@@ -27,6 +28,7 @@ ShellWindow::ShellWindow(QObject* parent) : QObject(parent), m_engine(new QQmlAp
 {
     m_engine->addImportPath(QStringLiteral("qrc:/qt/qml"));
     m_engine->addImageProvider(QStringLiteral("beeicons"), new BeeIconProvider());
+    m_engine->addImageProvider(QStringLiteral("beeavatar"), new BeeAvatarProvider());
 
     m_model = new ShellInstanceModel(APPLICATION->instances(), this);
     m_controller = new ShellController(this);
@@ -46,6 +48,8 @@ ShellWindow::ShellWindow(QObject* parent) : QObject(parent), m_engine(new QQmlAp
     m_discover = new ShellDiscoverModel(this);
     m_discover->attachBackend();
     m_discover->setTaskRunner(m_taskRunner);
+    m_news = new ShellNewsModel(this);
+    m_news->attachBackend();
     m_engine->rootContext()->setContextProperty(QStringLiteral("instances"), m_model);
     m_engine->rootContext()->setContextProperty(QStringLiteral("controller"), m_controller);
     m_engine->rootContext()->setContextProperty(QStringLiteral("shellSettings"), m_settings);
@@ -55,10 +59,13 @@ ShellWindow::ShellWindow(QObject* parent) : QObject(parent), m_engine(new QQmlAp
     m_engine->rootContext()->setContextProperty(QStringLiteral("taskRunner"), m_taskRunner);
     m_engine->rootContext()->setContextProperty(QStringLiteral("createCtrl"), m_createController);
     m_engine->rootContext()->setContextProperty(QStringLiteral("discover"), m_discover);
+    m_engine->rootContext()->setContextProperty(QStringLiteral("news"), m_news);
 
     m_engine->load(QUrl(QStringLiteral("qrc:/qt/qml/Bee/Shell/ui/shell/Main.qml")));
     if (!m_engine->rootObjects().isEmpty())
         m_window = qobject_cast<QQuickWindow*>(m_engine->rootObjects().first());
+    if (m_window)
+        m_window->setIcon(APPLICATION->logo());
     StartupProfile::mark("shell window created");
     if (!m_window)
         return;

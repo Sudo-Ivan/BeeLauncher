@@ -13,6 +13,7 @@ class ShellInstanceBridge;
 class ShellTaskRunner;
 class ShellCreateController;
 class ShellDiscoverModel;
+class ShellNewsModel;
 
 // Qt Quick main window host used when the UI mode is shell.
 class ShellWindow : public QObject {
@@ -43,5 +44,6 @@ class ShellWindow : public QObject {
     ShellTaskRunner* m_taskRunner = nullptr;
     ShellCreateController* m_createController = nullptr;
     ShellDiscoverModel* m_discover = nullptr;
+    ShellNewsModel* m_news = nullptr;
     QQuickWindow* m_window = nullptr;
 };

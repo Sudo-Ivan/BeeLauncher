@@ -27,18 +27,31 @@ Rectangle {
     implicitWidth: 240
     implicitHeight: compact ? 180 : 228
     radius: Theme.r16
-    color: cardMouse.containsMouse ? Theme.surfaceHover : Theme.surface
+    color: cardHover.hovered ? Theme.surfaceHover : Theme.surface
     border.width: card.selected ? 2 : 1
-    border.color: card.selected ? Theme.accent : (cardMouse.containsMouse ? Theme.accentAlpha(0.45) : Theme.border)
+    border.color: card.selected ? Theme.accent : (cardHover.hovered ? Theme.accentAlpha(0.45) : Theme.border)
     clip: true
     Accessible.role: Accessible.Button
     Accessible.name: card.name
 
-    transform: Translate { y: cardMouse.containsMouse ? -4 : 0 }
+    transform: Translate { y: cardHover.hovered ? -4 : 0 }
     Behavior on transform { PropertyAnimation { duration: Theme.dur(160); easing.type: Easing.OutCubic } }
     Behavior on color { ColorAnimation { duration: Theme.dur(120) } }
     scale: cardMouse.pressed ? 0.985 : 1.0
     Behavior on scale { NumberAnimation { duration: Theme.dur(100) } }
+
+    // Whole-card click area sits under the content so overlay buttons like
+    // play and more still receive their own clicks.
+    MouseArea {
+        id: cardMouse
+        anchors.fill: parent
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        onClicked: function(mouse) {
+            if (mouse.button === Qt.RightButton) card.menuRequested(mouse.x, mouse.y)
+            else card.clickedCard()
+        }
+    }
+    HoverHandler { id: cardHover }
 
     function lastPlayedText() {
         if (!lastPlayedMs) return qsTr("Never played")
@@ -107,22 +120,29 @@ Rectangle {
                 asynchronous: true
             }
             // running indicator
-            RowLayout {
+            Rectangle {
                 visible: card.running
                 anchors.left: parent.left; anchors.top: parent.top
                 anchors.margins: Theme.sp8
-                spacing: Theme.sp8
-                Rectangle { width: 8; height: 8; radius: 4; color: Theme.success
-                    SequentialAnimation on opacity { loops: Animation.Infinite; running: card.running && Theme.animations
-                        NumberAnimation { to: 0.3; duration: 700 } NumberAnimation { to: 1.0; duration: 700 } } }
-                Text { text: qsTr("Running"); color: "#ffffff"; font.pixelSize: Theme.caption; font.weight: Font.DemiBold }
+                width: runLabel.implicitWidth + Theme.sp16
+                height: runLabel.implicitHeight + Theme.sp4
+                radius: height / 2
+                color: Qt.rgba(0, 0, 0, 0.55)
+                Text {
+                    id: runLabel
+                    anchors.centerIn: parent
+                    text: qsTr("Running")
+                    color: "#ffffff"
+                    font.pixelSize: Theme.caption
+                    font.weight: Font.DemiBold
+                }
             }
             // more button
             BeeIconButton {
                 anchors.right: parent.right; anchors.top: parent.top
                 anchors.margins: Theme.sp8
                 iconSource: "icons/more_horizontal.svg"
-                visible: cardMouse.containsMouse || activeFocus
+                visible: cardHover.hovered || activeFocus
                 onClicked: card.menuRequested(parent.width, height)
                 z: 2
             }
@@ -132,9 +152,9 @@ Rectangle {
                 anchors.right: parent.right; anchors.bottom: parent.bottom
                 anchors.margins: Theme.sp12
                 color: card.running ? Theme.danger : Theme.accent
-                opacity: cardMouse.containsMouse ? 1 : 0
-                y: cardMouse.containsMouse ? 0 : 6
-                transform: Translate { y: cardMouse.containsMouse ? 0 : 6 }
+                opacity: cardHover.hovered ? 1 : 0
+                y: cardHover.hovered ? 0 : 6
+                transform: Translate { y: cardHover.hovered ? 0 : 6 }
                 Behavior on opacity { NumberAnimation { duration: Theme.dur(140) } }
                 IconImage {
                     anchors.centerIn: parent
@@ -173,15 +193,4 @@ Rectangle {
 
     BeeCornerPatch { x: 0; y: 0; z: 5 }
     BeeCornerPatch { mirrored: true; x: card.width - width; y: 0; z: 5 }
-
-    MouseArea {
-        id: cardMouse
-        anchors.fill: parent
-        hoverEnabled: true
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        onClicked: function(mouse) {
-            if (mouse.button === Qt.RightButton) card.menuRequested(mouse.x, mouse.y)
-            else card.clickedCard()
-        }
-    }
 }

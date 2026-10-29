@@ -12,7 +12,7 @@ Item {
     signal requestNav(int index)
 
     // Nav index of the Accounts page in the shell StackLayout.
-    property int accountsNavIndex: 4
+    property int accountsNavIndex: 5
     property int category: 0
 
     function backend() { return typeof shellSettings !== "undefined" ? shellSettings : null }

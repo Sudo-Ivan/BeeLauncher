@@ -578,6 +578,10 @@ void InstanceList::add(std::vector<std::unique_ptr<BaseInstance>>& t)
     for (auto& ptr : t) {
         m_instances.push_back(std::move(ptr));
         connect(m_instances.back().get(), &BaseInstance::propertiesChanged, this, &InstanceList::propertiesChanged);
+        connect(m_instances.back().get(), &BaseInstance::runningStatusChanged, this, [this](bool) {
+            if (auto* inst = qobject_cast<BaseInstance*>(sender()))
+                propertiesChanged(inst);
+        });
     }
     endInsertRows();
 }

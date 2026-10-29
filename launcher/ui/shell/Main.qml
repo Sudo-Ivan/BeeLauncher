@@ -53,20 +53,44 @@ ApplicationWindow {
     FontLoader { id: uiFont; source: "fonts/Inter.ttf" }
     font.family: uiFont.status === FontLoader.Ready ? uiFont.name : "sans-serif"
 
-    readonly property var pageTitles: [qsTr("Home"), qsTr("Library"), qsTr("Servers"), qsTr("Discover"), qsTr("Accounts"), qsTr("Settings")]
-    readonly property var pageIcons: ["home.svg", "collections.svg", "server.svg", "compass.svg", "person.svg", "settings.svg"]
+    readonly property var pageTitles: [qsTr("Home"), qsTr("Library"), qsTr("Servers"), qsTr("Discover"), qsTr("News"), qsTr("Accounts"), qsTr("Settings")]
+    readonly property var pageIcons: ["home.svg", "collections.svg", "server.svg", "compass.svg", "news.svg", "person.svg", "settings.svg"]
+
+    // Bumped whenever the instance model changes so bindings that read roles
+    // through instances.data() re-evaluate.
+    property int instancesRev: 0
+
+    function instData(row, role) {
+        void root.instancesRev
+        return instances.data(instances.index(row, 0), role)
+    }
 
     function groupCount(g) {
+        void root.instancesRev
         var n = 0
         for (var i = 0; i < instances.count; i++)
             if (instances.groupAt(i) === g) n++
         return n
     }
     function rowsInGroup(g) {
+        void root.instancesRev
         var rows = []
         for (var i = 0; i < instances.count; i++)
             if (instances.groupAt(i) === g) rows.push(i)
         return rows
+    }
+
+    function refreshSelected() {
+        if (!root.selectedId)
+            return
+        for (var i = 0; i < instances.count; i++) {
+            if (instances.instanceIdAt(i) === root.selectedId) {
+                root.pickInstance(i)
+                return
+            }
+        }
+        root.selectedId = ""
+        root.selectedData = null
     }
 
     function openCardMenu(card, x, y) {
@@ -188,21 +212,38 @@ ApplicationWindow {
                     color: acctArea.containsMouse ? Theme.surfaceHover : "transparent"
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: Theme.sp12
-                        spacing: Theme.sp12
+                        anchors.leftMargin: Theme.sp8
+                        spacing: Theme.sp8
                         Rectangle {
-                            width: 32; height: 32; radius: 16
+                            Layout.preferredWidth: 32; Layout.preferredHeight: 32
+                            Layout.alignment: Qt.AlignVCenter
+                            radius: 16
                             color: Theme.accentAlpha(0.25)
-                            Text { anchors.centerIn: parent; text: "B"; color: Theme.accent; font.weight: Font.DemiBold }
+                            clip: true
+                            Image {
+                                id: acctFace
+                                anchors.fill: parent
+                                source: controller.accountFace
+                                sourceSize: Qt.size(32, 32)
+                                visible: status === Image.Ready
+                            }
+                            Text {
+                                anchors.centerIn: parent
+                                visible: acctFace.status !== Image.Ready
+                                text: controller.accountName.length > 0 ? controller.accountName.charAt(0).toUpperCase() : "?"
+                                color: Theme.accent
+                                font.weight: Font.DemiBold
+                            }
                         }
                         ColumnLayout {
-                            visible: root.width >= 1100 && width > 40
+                            Layout.fillWidth: true
+                            visible: root.width >= 1100
                             spacing: 0
-                            Text { text: controller.accountName; color: Theme.text; font.pixelSize: Theme.body; font.weight: Font.Medium }
-                            Text { text: controller.accountType; color: Theme.textFaint; font.pixelSize: Theme.caption }
+                            Text { text: controller.accountName; color: Theme.text; font.pixelSize: Theme.body; font.weight: Font.Medium; elide: Text.ElideRight; Layout.fillWidth: true }
+                            Text { text: controller.accountType; color: Theme.textFaint; font.pixelSize: Theme.caption; elide: Text.ElideRight; Layout.fillWidth: true }
                         }
                     }
-                    MouseArea { id: acctArea; anchors.fill: parent; hoverEnabled: true; onClicked: root.pageIndex = 4 }
+                    MouseArea { id: acctArea; anchors.fill: parent; hoverEnabled: true; onClicked: root.pageIndex = 5 }
                 }
             }
         }
@@ -280,11 +321,11 @@ ApplicationWindow {
                                         ColumnLayout {
                                             spacing: Theme.sp12
                                             Text { text: qsTr("Continue playing"); color: Theme.accent; font.pixelSize: Theme.caption; font.weight: Font.DemiBold }
-                                            Text { text: instances.count ? instances.data(instances.index(0, 0), 258) : ""; color: "#ffffff"; font.pixelSize: Theme.display; font.weight: Font.DemiBold; elide: Text.ElideRight; Layout.maximumWidth: 700 }
+                                            Text { text: instances.count ? root.instData(0, 258) : ""; color: "#ffffff"; font.pixelSize: Theme.display; font.weight: Font.DemiBold; elide: Text.ElideRight; Layout.maximumWidth: 700 }
                                             RowLayout {
                                                 spacing: Theme.sp12
-                                                BeeChip { label: instances.count ? instances.data(instances.index(0, 0), 261) : "" }
-                                                Text { text: instances.count ? root.formatLastPlayed(instances.data(instances.index(0, 0), 262)) : ""; color: Qt.rgba(1,1,1,0.7); font.pixelSize: Theme.caption }
+                                                BeeChip { label: instances.count ? root.instData(0, 261) : "" }
+                                                Text { text: instances.count ? root.formatLastPlayed(root.instData(0, 262)) : ""; color: Qt.rgba(1,1,1,0.7); font.pixelSize: Theme.caption }
                                             }
                                             RowLayout {
                                                 spacing: Theme.sp12
@@ -310,7 +351,7 @@ ApplicationWindow {
                                             Layout.preferredWidth: 180
                                             Layout.preferredHeight: 180
                                             Layout.alignment: Qt.AlignVCenter
-                                            source: instances.count ? instances.data(instances.index(0, 0), 260) : ""
+                                            source: instances.count ? root.instData(0, 260) : ""
                                             fillMode: Image.PreserveAspectFit
                                             asynchronous: true
                                             opacity: Theme.dark ? 0.9 : 1.0
@@ -341,8 +382,8 @@ ApplicationWindow {
                                             versionText: model.versionText
                                             lastPlayedMs: model.lastPlayedMs
                                             running: model.running
-                                            onClickedCard: root.pickInstance(myIndex)
-                                            onPlayClicked: controller.launch(instanceId)
+                                            onClickedCard: root.pickInstance(index)
+                                            onPlayClicked: running ? controller.kill(instanceId) : controller.launch(instanceId)
                                             onMenuRequested: function(x, y) { root.openCardMenu(this, x, y) }
                                         }
                                     }
@@ -411,15 +452,15 @@ ApplicationWindow {
                                                     property int row: modelData
                                                     width: libCol.width > 0 ? Math.floor((libCol.width + Theme.sp16) / Math.max(1, Math.floor((libCol.width + Theme.sp16) / 256))) - Theme.sp16 : 240
                                                     height: 228
-                                                    instanceId: instances.instanceIdAt(row)
-                                                    name: instances.data(instances.index(row, 0), 258)
-                                                    iconSource: instances.data(instances.index(row, 0), 260)
-                                                    versionText: instances.data(instances.index(row, 0), 261)
-                                                    lastPlayedMs: instances.data(instances.index(row, 0), 262)
-                                                    running: instances.data(instances.index(row, 0), 264)
+                                                    instanceId: root.instData(row, 257)
+                                                    name: root.instData(row, 258)
+                                                    iconSource: root.instData(row, 260)
+                                                    versionText: root.instData(row, 261)
+                                                    lastPlayedMs: root.instData(row, 262)
+                                                    running: root.instData(row, 264)
                                                     selected: root.selectedId === instanceId
                                                     onClickedCard: root.pickInstance(row)
-                                                    onPlayClicked: controller.launch(instanceId)
+                                                    onPlayClicked: running ? controller.kill(instanceId) : controller.launch(instanceId)
                                                     onMenuRequested: function(x, y) { root.openCardMenu(this, x, y) }
                                                 }
                                             }
@@ -434,6 +475,9 @@ ApplicationWindow {
 
                         // Discover
                         DiscoverPage { }
+
+                        // News
+                        NewsPage { }
 
                         // Accounts
                         AccountsPage { }
@@ -668,6 +712,18 @@ ApplicationWindow {
     Connections {
         target: controller
         function onToast(message) { root.toast(message) }
+    }
+    Connections {
+        target: instances
+        function onDataChanged() { root.instancesRev++; root.refreshSelected() }
+        function onModelReset() { root.instancesRev++; root.refreshSelected() }
+        function onRowsInserted() { root.instancesRev++ }
+        function onRowsRemoved() { root.instancesRev++ }
+        function onLayoutChanged() { root.instancesRev++ }
+    }
+    Connections {
+        target: news
+        function onFetchFailed(reason) { root.toast(reason) }
     }
     Connections {
         target: servers

@@ -1425,6 +1425,7 @@ qt_add_qml_module(BeeShell
         ui/shell/pages/AccountsPage.qml
         ui/shell/pages/DiscoverPage.qml
         ui/shell/pages/InstanceDetailPage.qml
+        ui/shell/pages/NewsPage.qml
         ui/shell/pages/ServersPage.qml
         ui/shell/pages/SettingsPage.qml
         ui/shell/pages/instance/InstanceSettingsTab.qml
@@ -1472,6 +1473,7 @@ qt_add_qml_module(BeeShell
         ui/shell/icons/link.svg
         ui/shell/icons/log.svg
         ui/shell/icons/more_horizontal.svg
+        ui/shell/icons/news.svg
         ui/shell/icons/note.svg
         ui/shell/icons/paste.svg
         ui/shell/icons/person.svg
@@ -1504,6 +1506,7 @@ qt_add_qml_module(BeeShell
         ui/shell/backend/ShellTaskRunner.h ui/shell/backend/ShellTaskRunner.cpp
         ui/shell/backend/ShellCreateController.h ui/shell/backend/ShellCreateController.cpp
         ui/shell/backend/ShellDiscoverModel.h ui/shell/backend/ShellDiscoverModel.cpp
+        ui/shell/backend/ShellNewsModel.h ui/shell/backend/ShellNewsModel.cpp
 )
 target_link_libraries(BeeShell PUBLIC Launcher_logic Qt${QT_VERSION_MAJOR}::Quick)
 target_include_directories(BeeShell PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

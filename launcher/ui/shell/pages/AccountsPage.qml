@@ -124,8 +124,17 @@ Item {
                         Layout.preferredHeight: 40
                         radius: 20
                         color: Theme.accentAlpha(0.25)
+                        clip: true
+                        Image {
+                            id: faceImg
+                            anchors.fill: parent
+                            source: model.faceSource
+                            sourceSize: Qt.size(40, 40)
+                            visible: status === Image.Ready
+                        }
                         Text {
                             anchors.centerIn: parent
+                            visible: faceImg.status !== Image.Ready
                             text: model.profileName.length > 0 ? model.profileName.charAt(0).toUpperCase() : "?"
                             color: Theme.accent
                             font.pixelSize: Theme.bodyLarge

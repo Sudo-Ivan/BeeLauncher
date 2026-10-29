@@ -22,6 +22,7 @@ class ShellAccountBridge : public QAbstractListModel {
         StatusOkRole,
         IsDefaultRole,
         IsWorkingRole,
+        FaceSourceRole,
     };
 
     explicit ShellAccountBridge(QObject* parent = nullptr);
@@ -74,6 +75,7 @@ class ShellAccountBridge : public QAbstractListModel {
     void abortElybyFlows();
 
     bool m_backend = false;
+    int m_revision = 0;
 
     MinecraftAccountPtr m_msaAccount;
     shared_qobject_ptr<AuthFlow> m_msaFlow;

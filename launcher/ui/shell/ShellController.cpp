@@ -11,8 +11,14 @@ ShellController::ShellController(QObject* parent) : QObject(parent) {}
 void ShellController::attachBackend()
 {
     m_backend = true;
-    connect(APPLICATION->accounts(), &AccountList::defaultAccountChanged, this, &ShellController::accountChanged);
-    connect(APPLICATION->accounts(), &AccountList::listChanged, this, &ShellController::accountChanged);
+    auto* accounts = APPLICATION->accounts();
+    auto notify = [this] {
+        ++m_revision;
+        emit accountChanged();
+    };
+    connect(accounts, &AccountList::defaultAccountChanged, this, notify);
+    connect(accounts, &AccountList::listChanged, this, notify);
+    connect(accounts, &AccountList::dataChanged, this, notify);
 }
 
 QString ShellController::accountName() const
@@ -38,6 +44,18 @@ QString ShellController::accountType() const
     if (type == "elyby")
         return tr("Ely.by account");
     return tr("Custom account");
+}
+
+QString ShellController::accountFace() const
+{
+    if (!m_backend)
+        return {};
+    auto account = APPLICATION->accounts()->defaultAccount();
+    if (!account)
+        return {};
+    // The revision query forces QML to refetch when account data changes,
+    // e.g. after a skin refresh.
+    return QStringLiteral("image://beeavatar/%1?v=%2").arg(account->internalId()).arg(m_revision);
 }
 
 static BaseInstance* inst(const QString& id)

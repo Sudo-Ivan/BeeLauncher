@@ -131,14 +131,14 @@ class MockAccountsModel : public QStandardItemModel {
     Q_PROPERTY(bool msaSupported READ msaSupported CONSTANT)
    public:
     using QStandardItemModel::QStandardItemModel;
-    enum Roles { ProfileNameRole = Qt::UserRole + 1, TypeIdRole, TypeDisplayRole, StatusTextRole, StatusOkRole, IsDefaultRole, IsWorkingRole };
+    enum Roles { ProfileNameRole = Qt::UserRole + 1, TypeIdRole, TypeDisplayRole, StatusTextRole, StatusOkRole, IsDefaultRole, IsWorkingRole, FaceSourceRole };
     bool busy() const { return false; }
     bool msaSupported() const { return true; }
     QHash<int, QByteArray> roleNames() const override
     {
         return { { ProfileNameRole, "profileName" }, { TypeIdRole, "typeId" },         { TypeDisplayRole, "typeDisplay" },
                  { StatusTextRole, "statusText" },   { StatusOkRole, "statusOk" },   { IsDefaultRole, "isDefault" },
-                 { IsWorkingRole, "isWorking" } };
+                 { IsWorkingRole, "isWorking" },     { FaceSourceRole, "faceSource" } };
     }
     Q_INVOKABLE void setDefault(int) {}
     Q_INVOKABLE void refresh(int) {}
@@ -224,6 +224,30 @@ class MockDiscoverModel : public QStandardItemModel {
     void searchingChanged();
     void countChanged();
     void openClassicWizardRequested();
+};
+
+class MockNewsModel : public QStandardItemModel {
+    Q_OBJECT
+    Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
+    Q_PROPERTY(bool busy READ busy NOTIFY busyChanged)
+    Q_PROPERTY(QString lastError READ lastError NOTIFY lastErrorChanged)
+   public:
+    using QStandardItemModel::QStandardItemModel;
+    enum Roles { TitleRole = Qt::UserRole + 1, TagRole, CategoryRole, DateRole, TextRole, ImageUrlRole, LinkRole };
+    bool busy() const { return false; }
+    QString lastError() const { return {}; }
+    QHash<int, QByteArray> roleNames() const override
+    {
+        return { { TitleRole, "title" }, { TagRole, "tag" },         { CategoryRole, "category" }, { DateRole, "date" },
+                 { TextRole, "text" },   { ImageUrlRole, "imageUrl" }, { LinkRole, "link" } };
+    }
+    Q_INVOKABLE void refresh() {}
+    Q_INVOKABLE void openLink(const QString&) {}
+   signals:
+    void countChanged();
+    void busyChanged();
+    void lastErrorChanged();
+    void fetchFailed(QString reason);
 };
 
 class MockInstanceBridge : public QObject {
@@ -383,6 +407,7 @@ inline void registerShellContextMocks(QQmlContext* ctx, QObject* owner)
     ctx->setContextProperty("taskRunner", new MockTaskRunner(owner));
     ctx->setContextProperty("createCtrl", new MockCreateController(owner));
     ctx->setContextProperty("discover", new MockDiscoverModel(owner));
+    ctx->setContextProperty("news", new MockNewsModel(owner));
 }
 
 #include <QJsonDocument>

@@ -79,8 +79,8 @@ class ShellRender_test : public QObject {
         if (!dir.isEmpty()) {
             QDir().mkpath(dir);
             img.save(dir + "/library-dark.png");
-            static const char* names[] = { "home", "library", "servers", "discover", "accounts", "settings" };
-            for (int i = 0; i < 6; ++i) {
+            static const char* names[] = { "home", "library", "servers", "discover", "news", "accounts", "settings" };
+            for (int i = 0; i < 7; ++i) {
                 obj->setProperty("pageIndex", i);
                 QTest::qWait(120);
                 win->grabWindow().save(dir + "/" + names[i] + ".png");

@@ -18,6 +18,7 @@ void ShellAccountBridge::attachBackend()
     // listChanged also fires when a single account's data changes (the
     // accountChanged slot forwards to onListChanged), so a reset is correct.
     connect(accounts, &AccountList::listChanged, this, [this] {
+        ++m_revision;
         beginResetModel();
         endResetModel();
         emit countChanged();
@@ -25,6 +26,7 @@ void ShellAccountBridge::attachBackend()
 
     // Per-row updates that do not go through listChanged.
     auto poke = [this] {
+        ++m_revision;
         const int rows = rowCount();
         if (rows > 0)
             emit dataChanged(index(0), index(rows - 1));
@@ -47,9 +49,9 @@ int ShellAccountBridge::rowCount(const QModelIndex& parent) const
 QHash<int, QByteArray> ShellAccountBridge::roleNames() const
 {
     return {
-        { ProfileNameRole, "profileName" }, { TypeIdRole, "typeId" },   { TypeDisplayRole, "typeDisplay" },
-        { StatusTextRole, "statusText" },   { StatusOkRole, "statusOk" }, { IsDefaultRole, "isDefault" },
-        { IsWorkingRole, "isWorking" },
+        { ProfileNameRole, "profileName" }, { TypeIdRole, "typeId" },         { TypeDisplayRole, "typeDisplay" },
+        { StatusTextRole, "statusText" },   { StatusOkRole, "statusOk" },     { IsDefaultRole, "isDefault" },
+        { IsWorkingRole, "isWorking" },     { FaceSourceRole, "faceSource" },
     };
 }
 
@@ -123,6 +125,8 @@ QVariant ShellAccountBridge::data(const QModelIndex& index, int role) const
             return APPLICATION->accounts()->defaultAccount() == account;
         case IsWorkingRole:
             return account->isActive() || account->accountState() == AccountState::Working;
+        case FaceSourceRole:
+            return QStringLiteral("image://beeavatar/%1?v=%2").arg(account->internalId()).arg(m_revision);
         default:
             return {};
     }
@@ -179,8 +183,7 @@ void ShellAccountBridge::addMicrosoft()
             [this](const QString& url, const QString& code, int) { emit msaCodeRequested(url, code); });
     // The device code flow should not emit this, but if a future variant does
     // the only headless option is to hand the URL to the browser.
-    connect(m_msaFlow.get(), &AuthFlow::authorizeWithBrowser, this,
-            [](const QUrl& url) { DesktopServices::openUrl(url); });
+    connect(m_msaFlow.get(), &AuthFlow::authorizeWithBrowser, this, [](const QUrl& url) { DesktopServices::openUrl(url); });
 
     updateBusy();
     QMetaObject::invokeMethod(m_msaFlow.get(), &Task::start, Qt::QueuedConnection);
@@ -264,8 +267,7 @@ void ShellAccountBridge::addElyby(const QString& username, const QString& passwo
         connect(flow.get(), &Task::succeeded, this, &ShellAccountBridge::elybySucceeded);
         connect(flow.get(), &Task::failed, this, [this](const QString& reason) { m_elybyFailReason = reason; });
         connect(flow.get(), &Task::finished, this, &ShellAccountBridge::elybyFlowFinished);
-        connect(flow.get(), &AuthFlow::authorizeWithBrowser, this,
-                [](const QUrl& url) { DesktopServices::openUrl(url); });
+        connect(flow.get(), &AuthFlow::authorizeWithBrowser, this, [](const QUrl& url) { DesktopServices::openUrl(url); });
         connect(flow.get(), &AuthFlow::authorizeWithBrowserWithExtra, this,
                 [this](const QString& url, const QString& code, int) { emit elybyCodeRequested(url, code); });
     }
