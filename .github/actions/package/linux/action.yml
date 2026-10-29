@@ -104,6 +104,7 @@ runs:
         ln -s org.beelauncher.BeeLauncher.metainfo.xml "$INSTALL_APPIMAGE_DIR"/share/metainfo/org.beelauncher.BeeLauncher.appdata.xml
         ln -s share/applications/org.beelauncher.BeeLauncher.desktop "$INSTALL_APPIMAGE_DIR"
         ln -s share/icons/hicolor/256x256/apps/org.beelauncher.BeeLauncher.png "$INSTALL_APPIMAGE_DIR"
+        ln -s share/icons/hicolor/256x256/apps/org.beelauncher.BeeLauncher.png "$INSTALL_APPIMAGE_DIR"/.DirIcon
         mv "$INSTALL_APPIMAGE_DIR"/{sharun,AppRun}
         ls -la "$INSTALL_APPIMAGE_DIR"
 
