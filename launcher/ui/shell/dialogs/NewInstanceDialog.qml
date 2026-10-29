@@ -34,9 +34,12 @@ BeeDialog {
 
     onOpened: {
         errorText = ""
+        nameField.text = ""
+        groupField.text = ""
         loaderOptions = createCtrl.loaderOptions()
         createCtrl.loadVersions()
         pickDefaultVersion()
+        nameField.forceActiveFocus()
     }
 
     Connections {

@@ -21,13 +21,20 @@ BeeDialog {
         dlg.open()
     }
 
+    // Fields are set imperatively because typing breaks the text binding.
+    onOpened: {
+        f1.text = dlg.field1Text
+        f2.text = dlg.field2Text
+        f1.forceActiveFocus()
+    }
+
     ColumnLayout {
         spacing: Theme.sp8
         Layout.preferredWidth: 380
         Text { text: dlg.field1Label; color: Theme.textDim; font.pixelSize: Theme.caption }
-        BeeTextField { id: f1; Layout.fillWidth: true; text: dlg.field1Text }
+        BeeTextField { id: f1; Layout.fillWidth: true }
         Text { visible: dlg.field2Label.length > 0; text: dlg.field2Label; color: Theme.textDim; font.pixelSize: Theme.caption }
-        BeeTextField { id: f2; visible: dlg.field2Label.length > 0; Layout.fillWidth: true; text: dlg.field2Text }
+        BeeTextField { id: f2; visible: dlg.field2Label.length > 0; Layout.fillWidth: true }
     }
     actions: [
         BeeButton {

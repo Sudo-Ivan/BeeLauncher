@@ -23,8 +23,11 @@ Item {
     }
     function openJoinMenu(row, anchor) {
         joinMenu.targetRow = row
-        while (joinMenu.count > 0)
-            joinMenu.removeItem(joinMenu.itemAt(0))
+        while (joinMenu.count > 0) {
+            var item = joinMenu.itemAt(0)
+            joinMenu.removeItem(item)
+            item.destroy()
+        }
         if (typeof instances !== "undefined" && instances) {
             for (var i = 0; i < instances.count; i++) {
                 var item = joinItemComponent.createObject(joinMenu, {

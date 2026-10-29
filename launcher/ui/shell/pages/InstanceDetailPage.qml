@@ -95,7 +95,7 @@ Item {
                     variant: page.bridge && page.bridge.running ? "danger" : "primary"
                     btnHeight: 44
                     text: page.bridge && page.bridge.running ? qsTr("Stop") : qsTr("Play")
-                    iconSource: page.bridge && page.bridge.running ? "../icons/stop.svg" : "../icons/play.svg"
+                    iconSource: page.bridge && page.bridge.running ? "icons/stop.svg" : "icons/play.svg"
                     enabled: page.bridge !== null && page.bridge.hasInstance
                     onClicked: {
                         if (!page.bridge)

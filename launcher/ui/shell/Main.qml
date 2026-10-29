@@ -136,7 +136,7 @@ ApplicationWindow {
         BeeMenuItem { text: qsTr("Details"); iconSource: "icons/info.svg"; onTriggered: root.detailId = cardMenu.targetId }
         BeeMenuItem { text: qsTr("Edit"); iconSource: "icons/edit.svg"; onTriggered: controller.edit(cardMenu.targetId) }
         BeeMenuItem { text: qsTr("Open folder"); iconSource: "icons/folder.svg"; onTriggered: controller.openFolder(cardMenu.targetId) }
-        BeeMenuItem { text: qsTr("Rename"); iconSource: "icons/edit.svg"; onTriggered: textDlg.openWith(qsTr("Rename instance"), cardMenu.targetId, cardMenu.targetId) }
+        BeeMenuItem { text: qsTr("Rename"); iconSource: "icons/edit.svg"; onTriggered: { textDlg.field2Label = ""; textDlg.openWith(qsTr("Rename instance"), cardMenu.targetId, cardMenu.targetId) } }
         BeeMenuItem { text: qsTr("Move to group"); iconSource: "icons/folder.svg"; onTriggered: { textDlg.field2Label = ""; textDlg.openWith(qsTr("Move to group"), cardMenu.targetId, "") } }
         BeeMenuItem { text: qsTr("Copy"); iconSource: "icons/copy.svg"; onTriggered: { textDlg.field2Label = qsTr("Group"); textDlg.openWith(qsTr("Copy instance"), cardMenu.targetId, "") } }
         BeeMenuItem { text: qsTr("Backup now"); iconSource: "icons/history.svg"; onTriggered: controller.backupNow(cardMenu.targetId) }
