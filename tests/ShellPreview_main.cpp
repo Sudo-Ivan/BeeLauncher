@@ -25,7 +25,9 @@ int main(int argc, char** argv)
     QCommandLineParser p;
     p.addOptions({ { "page", "page", "home" }, { "theme", "theme", "dark" }, { "width", "w", "1280" },
                    { "height", "h", "800" }, { "output", "png", "/tmp/preview.png" }, { "select", "instance index to select", "-1" },
-                   { "detail", "open instance detail overlay", "" }, { "empty", "empty model", "0" }, { "hover", "card index to hover", "-1" }, { "menu", "open card context menu", "" }, { "assets", "modrinth asset dir", "dir" } });
+                   { "detail", "open instance detail overlay", "id" }, { "detailtab", "instance detail tab index", "n" },
+                   { "settingcat", "settings category index", "n" }, { "newinstance", "open new instance dialog", "" },
+                   { "empty", "empty model", "0" }, { "hover", "card index to hover", "-1" }, { "menu", "open card context menu", "" }, { "assets", "modrinth asset dir", "dir" } });
     p.process(app);
 
     QQmlEngine engine;
@@ -43,9 +45,11 @@ int main(int argc, char** argv)
     fprintf(stderr, "rows=%d assets=%s\n", src.rowCount(), qPrintable(p.value("assets")));
     ShellInstanceModel proxy(&src);
     MockShellController controller;
+    MockInstanceBridge bridge;
     engine.rootContext()->setContextProperty("instances", &proxy);
     engine.rootContext()->setContextProperty("controller", &controller);
     registerShellContextMocks(engine.rootContext(), &controller);
+    engine.rootContext()->setContextProperty("instanceBridge", &bridge);
     engine.addImportPath(QStringLiteral("qrc:/qt/qml"));
 
     QQmlComponent comp(&engine, QUrl("qrc:/qt/qml/Bee/Shell/ui/shell/Main.qml"));
@@ -61,12 +65,15 @@ int main(int argc, char** argv)
 
     // page select + theme + selection via root properties
     QMetaObject::invokeMethod(obj.get(), [&]() {
-        static const QHash<QString, int> pages = { { "home", 0 }, { "library", 1 }, { "servers", 2 }, { "discover", 3 }, { "accounts", 4 }, { "settings", 5 } };
+        static const QHash<QString, int> pages = { { "home", 0 },     { "library", 1 }, { "servers", 2 },  { "discover", 3 },
+                                                   { "news", 4 },     { "accounts", 5 }, { "settings", 6 } };
         if (p.isSet("page") && pages.contains(p.value("page")))
             obj->setProperty("pageIndex", pages.value(p.value("page")));
         obj->setProperty("lightMode", p.value("theme") == "light");
-        if (p.isSet("detail"))
+        if (p.isSet("detail")) {
+            bridge.setInstanceId(p.value("detail"));
             obj->setProperty("detailId", p.value("detail"));
+        }
         int sel = p.isSet("select") ? p.value("select").toInt() : -1;
         if (sel >= 0)
             QMetaObject::invokeMethod(obj.get(), "pickInstance", Q_ARG(QVariant, sel));
@@ -75,6 +82,12 @@ int main(int argc, char** argv)
     QObject::connect(win, &QQuickWindow::frameSwapped, win, [&]() {
         fprintf(stderr, "graphicsApi=%d\n", int(win->graphicsApi()));
         QTimer::singleShot(300, [&]() {
+            if (auto* cat = win->findChild<QObject*>("settingsPage"); cat && p.isSet("settingcat"))
+                cat->setProperty("category", p.value("settingcat").toInt());
+            if (auto* detail = win->findChild<QObject*>("instanceDetailPage"); detail && p.isSet("detailtab"))
+                detail->setProperty("currentTab", p.value("detailtab").toInt());
+            if (auto* dlg = win->findChild<QObject*>("newInstanceDialog"); dlg && p.isSet("newinstance"))
+                QMetaObject::invokeMethod(dlg, "open", Qt::DirectConnection);
             int hov = p.value("hover").toInt();
             if (hov >= 0 || p.isSet("menu")) {
                 auto cards = win->contentItem()->findChildren<QObject*>("instanceCard");
@@ -87,7 +100,7 @@ int main(int argc, char** argv)
                         QMetaObject::invokeMethod(card, "menuRequested", Q_ARG(QVariant, card->width() - 10), Q_ARG(QVariant, 10.0));
                 }
             }
-            QTimer::singleShot(350, [&]() {
+            QTimer::singleShot(600, [&]() {
                 win->grabWindow().save(p.value("output"));
                 // dev tool: skip static teardown to avoid plugin shutdown crash
                 std::fflush(nullptr);

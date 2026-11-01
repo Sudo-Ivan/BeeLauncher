@@ -9,6 +9,7 @@ import "settings"
 // matching form. All edits are applied to the SettingsObject immediately.
 Item {
     id: page
+    objectName: "settingsPage"
     signal requestNav(int index)
 
     // Nav index of the Accounts page in the shell StackLayout.

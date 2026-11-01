@@ -637,6 +637,7 @@ ApplicationWindow {
     // new instance wizard
     NewInstanceDialog {
         id: newInstanceDialog
+        objectName: "newInstanceDialog"
     }
 
     // rename / group / copy prompt

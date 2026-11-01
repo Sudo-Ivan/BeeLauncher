@@ -41,8 +41,14 @@ class SolidIconProvider : public QQuickImageProvider {
 
 class MockShellController : public QObject {
     Q_OBJECT
+    Q_PROPERTY(QString accountName READ accountName CONSTANT)
+    Q_PROPERTY(QString accountType READ accountType CONSTANT)
+    Q_PROPERTY(QString accountFace READ accountFace CONSTANT)
    public:
     using QObject::QObject;
+    QString accountName() const { return QStringLiteral("HoneyKeeper"); }
+    QString accountType() const { return QStringLiteral("Offline"); }
+    QString accountFace() const { return QStringLiteral("image://beeicons/honeykeeper"); }
     Q_INVOKABLE void launch(const QString& id) { emit toast("launch " + id); }
     Q_INVOKABLE void kill(const QString& id) { emit toast("kill " + id); }
     Q_INVOKABLE void edit(const QString& id) { emit toast("edit " + id); }
@@ -276,11 +282,26 @@ class MockInstanceBridge : public QObject {
     void setInstanceId(const QString& id) { m_id = id; emit instanceChanged(); }
     bool hasInstance() const { return !m_id.isEmpty(); }
     bool isMinecraft() const { return hasInstance(); }
-    QString name() const { return m_id.isEmpty() ? QString() : QStringLiteral("Mock Instance"); }
-    QString versionText() const { return hasInstance() ? QStringLiteral("1.21.4") : QString(); }
-    QString iconSource() const { return QStringLiteral("image://beeicons/mock"); }
+    QString name() const
+    {
+        static const QHash<QString, QString> names = { { "fab", "Fabulously Optimized" },     { "create", "Create Modpack" },
+                                                       { "sky", "SkyFactory 4" },           { "vanilla", "Vanilla 1.21.4" },
+                                                       { "lightly", "Lightly Modded" },     { "speed", "Speedrun Practice" } };
+        return m_id.isEmpty() ? QString() : names.value(m_id, QStringLiteral("Mock Instance"));
+    }
+    QString versionText() const
+    {
+        static const QHash<QString, QString> vers = { { "fab", "1.21.4 Fabric" }, { "create", "1.20.1 Forge" }, { "sky", "1.12.2 Forge" },
+                                                      { "vanilla", "1.21.4" },    { "lightly", "1.20.1 Fabric" }, { "speed", "1.16.1" } };
+        return hasInstance() ? vers.value(m_id, QStringLiteral("1.21.4")) : QString();
+    }
+    QString iconSource() const { return QStringLiteral("image://beeicons/") + m_id; }
     bool running() const { return false; }
-    QString typeDisplay() const { return QStringLiteral("Vanilla"); }
+    QString typeDisplay() const
+    {
+        static const QHash<QString, QString> types = { { "vanilla", "Vanilla" }, { "speed", "Vanilla" } };
+        return types.value(m_id, QStringLiteral("Modded"));
+    }
     QString instanceRoot() const { return QStringLiteral("/tmp/bee-mock/instances/") + m_id; }
     QString gameRoot() const { return instanceRoot() + QStringLiteral("/.minecraft"); }
     QString notes() const { return m_notes; }
@@ -396,12 +417,36 @@ class MockCreateController : public QObject {
     QString m_filter;
 };
 
+inline void fillMockAccounts(MockAccountsModel& m)
+{
+    struct Row { const char* name; const char* typeId; const char* typeDisplay; const char* status; bool ok; bool def; const char* face; };
+    const Row rows[] = {
+        { "HoneyKeeper", "offline", "Offline", "Ready", true, true, "honeykeeper" },
+        { "Builder_Bea", "msa", "Microsoft", "Ready", true, false, "builder" },
+    };
+    using Roles = MockAccountsModel::Roles;
+    for (auto& r : rows) {
+        auto* it = new QStandardItem;
+        it->setData(r.name, Roles::ProfileNameRole);
+        it->setData(r.typeId, Roles::TypeIdRole);
+        it->setData(r.typeDisplay, Roles::TypeDisplayRole);
+        it->setData(r.status, Roles::StatusTextRole);
+        it->setData(r.ok, Roles::StatusOkRole);
+        it->setData(r.def, Roles::IsDefaultRole);
+        it->setData(false, Roles::IsWorkingRole);
+        it->setData(QStringLiteral("image://beeicons/") + r.face, Roles::FaceSourceRole);
+        m.appendRow(it);
+    }
+}
+
 // Registers every context property Main.qml expects. Call after setting
 // "instances" and "controller".
 inline void registerShellContextMocks(QQmlContext* ctx, QObject* owner)
 {
     ctx->setContextProperty("shellSettings", new MockShellSettings(owner));
-    ctx->setContextProperty("accounts", new MockAccountsModel(owner));
+    auto* accounts = new MockAccountsModel(owner);
+    fillMockAccounts(*accounts);
+    ctx->setContextProperty("accounts", accounts);
     ctx->setContextProperty("servers", new MockServersModel(owner));
     ctx->setContextProperty("instanceBridge", new MockInstanceBridge(owner));
     ctx->setContextProperty("taskRunner", new MockTaskRunner(owner));

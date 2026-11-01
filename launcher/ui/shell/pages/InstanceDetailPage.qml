@@ -10,6 +10,7 @@ import "instance"
 // API: set instanceId, listen to closed() and launched().
 Item {
     id: page
+    objectName: "instanceDetailPage"
     property string instanceId: ""
     // Resolved lazily so the page still loads when the instanceBridge context
     // property has not been wired into the engine yet (tests, previews).
