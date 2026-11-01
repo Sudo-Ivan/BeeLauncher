@@ -49,8 +49,12 @@ class MockShellController : public QObject {
     QString accountName() const { return QStringLiteral("HoneyKeeper"); }
     QString accountType() const { return QStringLiteral("Offline"); }
     QString accountFace() const { return QStringLiteral("image://beeicons/honeykeeper"); }
-    Q_INVOKABLE void launch(const QString& id) { emit toast("launch " + id); }
-    Q_INVOKABLE void kill(const QString& id) { emit toast("kill " + id); }
+    Q_INVOKABLE void launch(const QString& id) { lastLaunch = id; ++launchCalls; emit toast("launch " + id); }
+    Q_INVOKABLE void kill(const QString& id) { lastKill = id; ++killCalls; emit toast("kill " + id); }
+    QString lastLaunch;
+    QString lastKill;
+    int launchCalls = 0;
+    int killCalls = 0;
     Q_INVOKABLE void edit(const QString& id) { emit toast("edit " + id); }
     Q_INVOKABLE void openFolder(const QString& id) { emit toast("folder " + id); }
     Q_INVOKABLE void copyInstance(const QString& id) { emit toast("copy " + id); }

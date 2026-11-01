@@ -176,17 +176,7 @@ void ShellInstanceBridge::launch()
 
 void ShellInstanceBridge::kill()
 {
-    if (!m_backend || !m_inst) {
-        emit actionFailed(tr("Stop is unavailable right now"));
-        return;
-    }
-    auto* window = APPLICATION->legacyWindow();
-    if (!window) {
-        emit actionFailed(tr("Stop is unavailable right now"));
-        return;
-    }
-    QMetaObject::invokeMethod(window, "setSelectedInstanceById", Q_ARG(QString, m_id));
-    if (!QMetaObject::invokeMethod(window, "on_actionKillInstance_triggered"))
+    if (!m_backend || !m_inst || !m_inst->isRunning() || !APPLICATION->kill(m_inst))
         emit actionFailed(tr("Stop is unavailable right now"));
 }
 

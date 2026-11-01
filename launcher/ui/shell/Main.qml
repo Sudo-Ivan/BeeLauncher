@@ -72,11 +72,24 @@ ApplicationWindow {
             if (instances.groupAt(i) === g) n++
         return n
     }
+    // Cached per group so a re-evaluation that produces the same rows returns
+    // the identical array. Repeater delegates then survive dataChanged signals
+    // (e.g. an instance starting/stopping) instead of being rebuilt.
+    property var groupRowsCache: ({})
+
     function rowsInGroup(g) {
         void root.instancesRev
         var rows = []
         for (var i = 0; i < instances.count; i++)
             if (instances.groupAt(i) === g) rows.push(i)
+        var prev = root.groupRowsCache[g]
+        if (prev && prev.length === rows.length) {
+            var same = true
+            for (var j = 0; j < rows.length; j++)
+                if (prev[j] !== rows[j]) { same = false; break }
+            if (same) return prev
+        }
+        root.groupRowsCache[g] = rows
         return rows
     }
 
@@ -130,6 +143,7 @@ ApplicationWindow {
 
     BeeMenu {
         id: cardMenu
+        objectName: "cardMenu"
         property string targetId: ""
         property bool targetRunning: false
         BeeMenuItem { text: cardMenu.targetRunning ? qsTr("Stop") : qsTr("Launch"); iconSource: cardMenu.targetRunning ? "icons/stop.svg" : "icons/play.svg"; onTriggered: cardMenu.targetRunning ? controller.kill(cardMenu.targetId) : controller.launch(cardMenu.targetId) }
@@ -332,10 +346,11 @@ ApplicationWindow {
                                                 Layout.topMargin: Theme.sp8
                                                 BeeButton {
                                                     btnHeight: 48
-                                                    variant: "primary"
-                                                    text: qsTr("Play")
-                                                    iconSource: "icons/play.svg"
-                                                    onClicked: if (instances.count) controller.launch(instances.instanceIdAt(0))
+                                                    property bool heroRunning: instances.count > 0 && root.instData(0, 264) === true
+                                                    variant: heroRunning ? "danger" : "primary"
+                                                    text: heroRunning ? qsTr("Stop") : qsTr("Play")
+                                                    iconSource: heroRunning ? "icons/stop.svg" : "icons/play.svg"
+                                                    onClicked: if (instances.count) heroRunning ? controller.kill(instances.instanceIdAt(0)) : controller.launch(instances.instanceIdAt(0))
                                                 }
                                                 BeeButton {
                                                     btnHeight: 48
@@ -375,7 +390,6 @@ ApplicationWindow {
                                             compact: true
                                             width: 200
                                             height: 196
-                                            controller: root.controller
                                             instanceId: model.instanceId
                                             name: model.name
                                             iconSource: model.iconSource
@@ -612,7 +626,11 @@ ApplicationWindow {
                                     Layout.bottomMargin: Theme.sp24
                                     variant: "secondary"
                                     text: qsTr("More actions")
-                                    onClicked: cardMenu.popup(moreBtn, 0, moreBtn.height + 4)
+                                    onClicked: {
+                                        cardMenu.targetId = root.selectedId
+                                        cardMenu.targetRunning = !!(root.selectedData && root.selectedData.running)
+                                        cardMenu.popup(moreBtn, 0, moreBtn.height + 4)
+                                    }
                                     id: moreBtn
                                 }
                             }

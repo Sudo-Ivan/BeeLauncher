@@ -17,7 +17,9 @@ Rectangle {
     property bool running: false
     property bool selected: false
     property bool compact: false
-    property var controller: null
+    // NOTE: do not add a "controller" property here. Signal handlers assigned
+    // by parents (onPlayClicked) resolve "controller" on this item first,
+    // which shadows the controller context object and silently breaks clicks.
     readonly property bool coverBlur: GraphicsInfo.api !== GraphicsInfo.Software
 
     signal clickedCard()
@@ -139,6 +141,7 @@ Rectangle {
             }
             // more button
             BeeIconButton {
+                objectName: "cardMoreButton"
                 anchors.right: parent.right; anchors.top: parent.top
                 anchors.margins: Theme.sp8
                 iconSource: "icons/more_horizontal.svg"
@@ -148,12 +151,13 @@ Rectangle {
             }
             // hover play button
             Rectangle {
+                id: playButton
+                objectName: "cardPlayButton"
                 width: 44; height: 44; radius: 22
                 anchors.right: parent.right; anchors.bottom: parent.bottom
                 anchors.margins: Theme.sp12
                 color: card.running ? Theme.danger : Theme.accent
                 opacity: cardHover.hovered ? 1 : 0
-                y: cardHover.hovered ? 0 : 6
                 transform: Translate { y: cardHover.hovered ? 0 : 6 }
                 Behavior on opacity { NumberAnimation { duration: Theme.dur(140) } }
                 IconImage {
@@ -163,7 +167,11 @@ Rectangle {
                     sourceSize: Qt.size(20,20)
                     width: 20; height: 20
                 }
-                MouseArea { anchors.fill: parent; onClicked: { mouse.accepted = true; card.playClicked() } }
+                MouseArea {
+                    anchors.fill: parent
+                    enabled: playButton.opacity > 0.5
+                    onClicked: card.playClicked()
+                }
             }
         }
 

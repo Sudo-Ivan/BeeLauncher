@@ -90,10 +90,21 @@ int main(int argc, char** argv)
                 QMetaObject::invokeMethod(dlg, "open", Qt::DirectConnection);
             int hov = p.value("hover").toInt();
             if (hov >= 0 || p.isSet("menu")) {
-                auto cards = win->contentItem()->findChildren<QObject*>("instanceCard");
+                // Repeater delegates are not in the QObject children() tree;
+                // walk the visual item hierarchy instead of findChildren().
+                QList<QQuickItem*> cards;
+                std::function<void(QQuickItem*)> collect = [&](QQuickItem* it) {
+                    if (!it)
+                        return;
+                    if (it->objectName() == QStringLiteral("instanceCard"))
+                        cards.append(it);
+                    for (auto* ch : it->childItems())
+                        collect(ch);
+                };
+                collect(win->contentItem());
                 if (hov < 0) hov = 0;
                 if (hov < cards.size()) {
-                    auto* card = qobject_cast<QQuickItem*>(cards.at(hov));
+                    auto* card = cards.at(hov);
                     QPointF c = card->mapToScene(QPointF(card->width() / 2, card->height() / 2));
                     QTest::mouseMove(win, QPoint(c.x(), c.y()));
                     if (p.isSet("menu"))

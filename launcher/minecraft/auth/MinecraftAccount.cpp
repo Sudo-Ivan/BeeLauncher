@@ -124,15 +124,24 @@ AccountState MinecraftAccount::accountState() const
 QPixmap MinecraftAccount::getFace(int width, int height) const
 {
     QPixmap skinTexture;
-    if (!skinTexture.loadFromData(data.minecraftProfile.skin.data, "PNG")) {
-        return QPixmap();
+    if (skinTexture.loadFromData(data.minecraftProfile.skin.data, "PNG")) {
+        QPixmap skin = QPixmap(8, 8);
+        skin.fill(QColorConstants::Transparent);
+        QPainter painter(&skin);
+        painter.drawPixmap(0, 0, skinTexture.copy(8, 8, 8, 8));
+        painter.drawPixmap(0, 0, skinTexture.copy(40, 8, 8, 8));
+        return skin.scaled(width, height, Qt::KeepAspectRatio);
     }
-    QPixmap skin = QPixmap(8, 8);
-    skin.fill(QColorConstants::Transparent);
-    QPainter painter(&skin);
-    painter.drawPixmap(0, 0, skinTexture.copy(8, 8, 8, 8));
-    painter.drawPixmap(0, 0, skinTexture.copy(40, 8, 8, 8));
-    return skin.scaled(width, height, Qt::KeepAspectRatio);
+    // No usable skin: fall back to the bundled default face so avatars are
+    // never blank. The source asset is the Steve icon with a dark backdrop,
+    // so crop down to the head.
+    static const QPixmap fallback = [] {
+        QPixmap icon(QStringLiteral(":/icons/multimc/128x128/instances/steve_legacy.png"));
+        return icon.isNull() ? icon : icon.copy(16, 14, 96, 96);
+    }();
+    if (fallback.isNull())
+        return QPixmap();
+    return fallback.scaled(width, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 }
 
 shared_qobject_ptr<AuthFlow> MinecraftAccount::login(bool useDeviceCode)

@@ -136,7 +136,7 @@ QVariant ShellInstanceModel::data(const QModelIndex& index, int role) const
                 return versionTextFor(inst);
             return src.data(Qt::UserRole + 24);  // test hook
         }
-        case StatusTextRole: return RunningRole == role ? QVariant() : src.data(Qt::StatusTipRole);
+        case StatusTextRole: return src.data(Qt::StatusTipRole);
         default: return {};
     }
 }
@@ -169,7 +169,13 @@ QStringList ShellInstanceModel::groups() const
 
 void ShellInstanceModel::refreshGroups()
 {
-    emit groupsChanged();
+    // Only notify when the set of groups actually changed; dataChanged and
+    // row churn would otherwise rebuild every QML delegate.
+    const QStringList now = groups();
+    if (now != m_groupCache) {
+        m_groupCache = now;
+        emit groupsChanged();
+    }
     emit countChanged();
 }
 

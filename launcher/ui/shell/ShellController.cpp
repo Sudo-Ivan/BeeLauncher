@@ -85,7 +85,12 @@ void ShellController::launch(const QString& id)
 
 void ShellController::kill(const QString& id)
 {
-    if (!legacyAction(id, "on_actionKillInstance_triggered"))
+    if (!m_backend)
+        return;
+    auto* i = inst(id);
+    if (!i)
+        return;
+    if (!i->isRunning() || !APPLICATION->kill(i))
         emit toast(tr("Stop is unavailable right now"));
 }
 

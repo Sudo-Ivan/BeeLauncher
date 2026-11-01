@@ -54,4 +54,5 @@ class ShellInstanceModel : public QSortFilterProxyModel {
     QString m_filter;
     QString m_groupFilter;
     SortMode m_sortMode = Name;
+    QStringList m_groupCache;
 };
